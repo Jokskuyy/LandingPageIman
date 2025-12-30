@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html class="dark" lang="en" style="scroll-behavior: smooth;"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Muhammad Iman Nugraha - Freelance Web Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#3b82f6", // Brighter blue
+                    "secondary": "#8b5cf6", // Purple
+                    "accent": "#06b6d4", // Cyan
+                    "background-dark": "#0f1115",
+                    "surface": "#181b21",
+                },
+                fontFamily: {
+                    "display": ["Space Grotesk", "sans-serif"]
+                },
+                backgroundImage: {
+                    'grid-pattern': "linear-gradient(to right, #1f2937 1px, transparent 1px), linear-gradient(to bottom, #1f2937 1px, transparent 1px)",
+                },
+                animation: {
+                    'float-slow': 'float 8s ease-in-out infinite',
+                    'float-medium': 'float 6s ease-in-out infinite',
+                    'float-fast': 'float 4s ease-in-out infinite',
+                    'pulse-glow': 'pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    'spin-slow': 'spin 15s linear infinite',
+                    'spin-reverse-slow': 'spin-reverse 20s linear infinite',
+                    'slide-up': 'slideUp 0.8s ease-out forwards',
+                    'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
+                },
+                keyframes: {
+                    float: {
+                        '0%, 100%': { transform: 'translateY(0)' },
+                        '50%': { transform: 'translateY(-20px)' },
+                    },
+                    'pulse-glow': {
+                        '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+                        '50%': { opacity: '0.8', transform: 'scale(1.05)' },
+                    },
+                    'spin-reverse': {
+                        '0%': { transform: 'rotate(360deg)' },
+                        '100%': { transform: 'rotate(0deg)' },
+                    },
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(20px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' },
+                    }
+                }
+            },
+        },
+    }
+</script>
+<style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f1115; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    .geo-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        background-color: #0f1115;
+    }
+    .geo-shape {
+        position: absolute;
+        opacity: 0.4;
+    }
+    .shape-blob-1 {
+        top: -10%;
+        left: -10%;
+        width: 60vw;
+        height: 60vw;
+        background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%);
+        border-radius: 50%;
+        filter: blur(80px);
+        animation: pulse-glow 8s infinite alternate;
+    }
+    .shape-blob-2 {
+        bottom: -20%;
+        right: -10%;
+        width: 50vw;
+        height: 50vw;
+        background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%);
+        border-radius: 50%;
+        filter: blur(80px);
+        animation: pulse-glow 10s infinite alternate-reverse;
+    }
+    .grid-lines {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    }
+    .floating-square {
+        position: absolute;
+        border: 1px solid rgba(255,255,255,0.05);
+        transform: rotate(45deg);
+        transition: all 0.5s ease;
+    }
+    .clip-geo-card {
+        clip-path: polygon(
+            0 0, 
+            100% 0, 
+            100% calc(100% - 20px), 
+            calc(100% - 20px) 100%, 
+            0 100%
+        );
+    }
+    .clip-geo-button {
+        clip-path: polygon(
+            10px 0, 
+            100% 0, 
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            0 100%, 
+            0 10px
+        );
+    }
+    .clip-hexagon {
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    .clip-triangle {
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .clip-trapezoid {
+        clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    }
+    .glass-panel {
+        background: rgba(24, 27, 33, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    .text-outline {
+        -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+        color: transparent;
+    }.hover-glitch:hover {
+        animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+        color: var(--primary);
+    }
+    @keyframes glitch-skew {
+        0% { transform: skew(0deg); }
+        20% { transform: skew(-2deg); }
+        40% { transform: skew(2deg); }
+        60% { transform: skew(-1deg); }
+        80% { transform: skew(1deg); }
+        100% { transform: skew(0deg); }
+    }
+    .card-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    .card-shine::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to bottom right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 40%,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0) 60%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(30deg);
+        transition: transform 0.5s;
+        pointer-events: none;
+    }
+    .card-shine:hover::after {
+        transform: rotate(30deg) translate(10%, 10%);
+    }.perspective-container {
+        perspective: 1000px;
+    }
+    .tilt-card {
+        transition: transform 0.1s ease;
+        transform-style: preserve-3d;
+    }
+    
+    /* Scroll Reveal Animation */
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .scroll-reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+<script src="parallax.js" defer></script>
+</head>
+<body class="bg-background-dark text-white font-display overflow-x-hidden min-h-screen flex flex-col selection:bg-primary selection:text-white">
+<div class="geo-bg">
+<div class="grid-lines opacity-40"></div>
+<div class="shape-blob-1" data-parallax="0.3" data-parallax-direction="down"></div>
+<div class="shape-blob-2" data-parallax="0.2" data-parallax-direction="up"></div>
+<div class="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-gradient-to-br from-primary/5 to-transparent clip-triangle opacity-20 animate-float-slow backdrop-blur-[1px]" data-parallax="0.15" data-parallax-direction="down"></div>
+<div class="absolute bottom-[20%] left-[-10%] w-[35vw] h-[35vw] border border-white/5 rounded-full flex items-center justify-center animate-spin-slow opacity-20">
+<div class="w-[70%] h-[70%] border border-white/5 rounded-full border-dashed"></div>
+<div class="w-[40%] h-[40%] border border-white/5 rounded-full"></div>
+</div>
+<div class="floating-square w-64 h-64 top-[20%] right-[10%] opacity-20 animate-float-slow border-primary/20" data-parallax="0.4" data-parallax-direction="up"></div>
+<div class="floating-square w-32 h-32 top-[50%] left-[5%] opacity-10 border-accent animate-float-medium" style="animation-delay: 1s;" data-parallax="0.6" data-parallax-direction="down"></div>
+<div class="floating-square w-96 h-96 bottom-[10%] left-[20%] opacity-5 border-secondary animate-float-fast" style="animation-delay: 2s;" data-parallax="0.25" data-parallax-direction="up"></div>
+<div class="absolute top-[15%] left-[20%] opacity-10 animate-pulse-glow" style="animation-duration: 5s">
+<div class="w-24 h-24 bg-white/5 clip-hexagon"></div>
+<div class="w-12 h-12 bg-primary/20 clip-hexagon absolute -bottom-4 -right-4"></div>
+</div>
+<div class="absolute top-[30%] right-[35%] text-8xl text-white/5 font-mono font-bold -rotate-12 select-none blur-[1px] animate-float-fast" data-parallax="0.5" data-parallax-direction="down">&lt;/&gt;</div>
+<div class="absolute bottom-[40%] left-[15%] text-9xl text-white/5 font-mono font-bold rotate-6 select-none blur-[2px] animate-float-slow" data-parallax="0.35" data-parallax-direction="up">{ }</div>
+<div class="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-white/5 to-transparent animate-pulse" style="animation-duration: 4s;"></div>
+<div class="absolute top-0 right-1/3 w-[1px] h-full bg-gradient-to-b from-transparent via-white/5 to-transparent animate-pulse" style="animation-duration: 6s;"></div>
+<div class="absolute inset-0 z-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:24px_24px]"></div>
+</div>
+<header class="fixed top-0 z-50 w-full border-b border-white/5 bg-[#0f1115]/80 backdrop-blur-md transition-all duration-300">
+<div class="px-6 md:px-12 h-20 flex items-center justify-between max-w-[1400px] mx-auto w-full">
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="w-10 h-10 bg-primary/20 flex items-center justify-center clip-geo-button group-hover:bg-primary transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">deployed_code</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight uppercase group-hover:text-white transition-colors">Iman<span class="text-primary group-hover:text-accent transition-colors">Dev</span></h2>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#hero">
+                Home
+                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+</a>
+<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#skills">
+                Skills
+                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+</a>
+<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#projects">
+                Projects
+                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+</a>
+</nav>
+<a class="hidden md:flex items-center justify-center px-6 py-2 bg-white text-black hover:bg-primary hover:text-white transition-all duration-300 transform hover:-translate-y-1 text-sm font-bold uppercase tracking-wider clip-geo-button hover:shadow-[4px_4px_0px_rgba(255,255,255,0.2)]" href="#contact">
+            Contact
+        </a>
+<button class="md:hidden text-white p-2">
+<span class="material-symbols-outlined">menu_open</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10 pt-20">
+<section class="min-h-[90vh] flex flex-col lg:flex-row items-center justify-center gap-12 py-10 relative" id="hero">
+<div class="absolute top-1/4 left-0 w-24 h-24 border-2 border-primary/20 rounded-full opacity-50 animate-spin-slow border-dashed z-0"></div>
+<div class="absolute bottom-1/4 right-10 w-16 h-16 border border-accent/30 rotate-45 opacity-60 animate-float-medium z-0"></div>
+<div class="absolute top-10 right-0 grid grid-cols-4 gap-4 opacity-20 animate-pulse z-0">
+<span class="text-white text-xs">+</span><span class="text-white text-xs">+</span><span class="text-white text-xs">+</span><span class="text-white text-xs">+</span>
+<span class="text-white text-xs">+</span><span class="text-white text-xs">+</span><span class="text-white text-xs">+</span><span class="text-white text-xs">+</span>
+</div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-2 opacity-10 select-none text-xs font-mono hidden md:flex z-0">
+<span class="animate-pulse">01</span><span>10</span><span>00</span><span class="animate-pulse">11</span><span>01</span>
+</div>
+<div class="flex-1 flex flex-col gap-8 relative z-10 animate-slide-up">
+<div class="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 w-fit backdrop-blur-sm clip-geo-button hover:bg-white/10 transition-colors cursor-default">
+<span class="w-2 h-2 bg-accent shadow-[0_0_10px_#06b6d4] rounded-full animate-pulse"></span>
+<span class="text-xs font-bold tracking-[0.2em] text-accent uppercase">System Online</span>
+</div>
+<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tight relative group cursor-default">
+<span class="absolute -left-12 -top-12 text-9xl text-white/5 font-mono hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-4 group-hover:translate-x-0">{</span>
+                CRAFTING <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary animate-gradient bg-[length:200%_auto] hover:bg-right transition-[background-position] duration-500">DIGITAL</span> <br/>
+                EXPERIENCES
+    <span class="absolute -right-12 -bottom-4 text-9xl text-white/5 font-mono hidden lg:block opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-4 group-hover:translate-x-0">}</span>
+</h1>
+<p class="text-slate-400 text-lg max-w-lg leading-relaxed border-l-2 border-primary/50 pl-6 backdrop-blur-sm bg-black/10 p-2 rounded-r-lg">
+                Freelance developer passionate about crafting elegant web solutions. Currently pursuing my degree while helping businesses bring their digital visions to life through clean code and modern technologies.
+            </p>
+<div class="flex flex-wrap gap-6 pt-4">
+<a class="flex items-center justify-center px-8 py-4 bg-primary hover:bg-blue-600 text-white font-bold uppercase tracking-wider clip-geo-button transition-all duration-300 hover:translate-x-1 hover:-translate-y-1 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:shadow-[6px_6px_0px_rgba(6,182,212,0.4)] group" href="#projects">
+                    Explore Works
+                    <span class="material-symbols-outlined ml-2 group-hover:rotate-45 transition-transform">arrow_outward</span>
+</a>
+<a class="flex items-center justify-center px-8 py-4 bg-transparent border border-white/20 hover:border-white text-white font-bold uppercase tracking-wider clip-geo-button transition-all hover:bg-white/5" href="#">
+                    Resume
+                </a>
+</div>
+</div>
+<div class="flex-1 w-full relative group perspective-container">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 clip-trapezoid rotate-180 blur-xl animate-float-slow delay-75"></div>
+<div class="absolute -bottom-5 -left-10 w-32 h-32 bg-primary/10 clip-triangle blur-xl animate-float-medium"></div>
+<div class="absolute inset-0 bg-gradient-to-tr from-primary to-secondary opacity-20 blur-3xl transform rotate-3 scale-105 animate-pulse-glow"></div>
+<div class="relative w-full aspect-square md:aspect-[4/3] max-w-[600px] mx-auto clip-geo-card bg-surface border border-white/10 p-2 transform transition-transform duration-500 hover:scale-[1.02] hover:rotate-1">
+<div class="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-primary/50 -mt-4 -mr-4 z-0 transition-all duration-500 group-hover:w-36 group-hover:h-36 group-hover:border-accent"></div>
+<div class="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-accent/50 -mb-4 -ml-4 z-0 transition-all duration-500 group-hover:w-36 group-hover:h-36 group-hover:border-primary"></div>
+<div class="w-full h-full relative overflow-hidden bg-[#15181e] group-hover:shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]">
+<div class="absolute inset-0 bg-cover bg-center opacity-80 mix-blend-overlay z-10 scale-100 group-hover:scale-110 transition-transform duration-1000" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdnYpym4YjNkLBtDcpfZBL4VkzR0slPsJXsLYdcRLKxOEJaipcqKWzMok3OcTSelb73iEvoKOfBB-UMjblTJBvwQOAQzWQWPHVX2B_3Mq9rQdTnIJSWMa2MATxn2TAQvUh_jxVQ1NCdVM7p5FAMiroIUZZLeXQ17SIfXNoyz0AyaFeDemlF8MJxNyNhxocxmWM4sVBdXGqACyKU7Y08mQAhnZrMvjAnnF3i6xIYPxKFoa7DeHhKIDPUO2mfDq0URT5xwZWH-C_368k');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-20"></div>
+<div class="absolute inset-0 z-10 opacity-10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDl0h4RKfW5ryXJ60qeFMCO7rHFPEjyM1IALeU2gzSlS_MHW_qLiTK82lYoAAHsythP6mqjseSnvpI2UJWs_dyKrDb_e7LqauvaeZIusg_7gu7bRpsMGTQiAUeCS6clYy9yrNJX1qtb_h7DffaZ74uPM42ulTUJVosSjdJb5NmG0xshvCg7La7rVm3y5CdjlcYC2GanBbUhks2DGtQwoBEX1TxZ7cGXKvx9BdplTkj8LxXla_g-KOGpozsJF00i4JXmEyEqOigSWCqh');"></div>
+<div class="absolute bottom-8 right-8 z-30 p-6 glass-panel border-l-4 border-l-accent max-w-xs transform transition-all duration-500 group-hover:translate-x-0 group-hover:translate-y-0 translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+<div class="text-accent text-xs font-mono mb-1 flex items-center justify-between">
+                            CURRENT STATUS
+                            <span class="material-symbols-outlined text-[10px] animate-spin">settings</span>
+</div>
+<div class="text-white font-bold text-lg mb-2">Development Mode</div>
+<div class="flex gap-1">
+<span class="h-1 w-4 bg-primary rounded-full animate-pulse"></span>
+<span class="h-1 w-4 bg-primary rounded-full animate-pulse" style="animation-delay: 0.2s"></span>
+<span class="h-1 w-4 bg-primary/30 rounded-full animate-pulse" style="animation-delay: 0.4s"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-10 border-y border-white/5 relative bg-white/[0.02] backdrop-blur-sm z-20">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 group hover:bg-white/5 transition-colors cursor-default">
+<span class="text-3xl font-bold text-white group-hover:text-primary transition-colors duration-300">2+</span>
+<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Years Experience</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 md:border-r group hover:bg-white/5 transition-colors cursor-default">
+<span class="text-3xl font-bold text-white group-hover:text-accent transition-colors duration-300">20+</span>
+<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Projects</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 group hover:bg-white/5 transition-colors cursor-default">
+<span class="text-3xl font-bold text-white group-hover:text-secondary transition-colors duration-300">100%</span>
+<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Satisfaction</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 group hover:bg-white/5 transition-colors cursor-default">
+<span class="text-3xl font-bold text-white group-hover:text-green-500 transition-colors duration-300">Freelance</span>
+<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Available</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-secondary/50 to-transparent"></div>
+</div>
+<section class="py-24 relative scroll-reveal" id="skills">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="relative">
+<div class="absolute -left-8 top-2 w-2 h-2 bg-accent rounded-full animate-ping opacity-75"></div>
+<h2 class="text-accent font-mono text-sm mb-4 tracking-widest flex items-center gap-2">
+<span class="w-8 h-[1px] bg-accent"></span> SKILLS_MATRIX
+                </h2>
+<h3 class="text-4xl md:text-5xl font-bold text-white relative inline-block">
+                    Technical Arsenal
+                    <span class="absolute -top-6 -right-6 text-6xl text-white/5 font-display font-black -z-10 select-none">SKILLS</span>
+</h3>
+</div>
+<div class="hidden md:block opacity-60 hover:opacity-100 transition-opacity">
+<svg height="40" viewBox="0 0 100 40" width="100">
+<line stroke="rgba(255,255,255,0.2)" stroke-width="2" x1="0" x2="100" y1="20" y2="20"></line>
+<rect class="animate-[dash_2s_ease-in-out_infinite]" fill="transparent" height="20" stroke="#3b82f6" stroke-width="2" width="20" x="20" y="10"></rect>
+<circle class="animate-[bounce_2s_infinite]" cx="80" cy="20" fill="transparent" r="10" stroke="#8b5cf6" stroke-width="2"></circle>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 scroll-reveal">
+<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-primary hover:-translate-y-2 shadow-lg hover:shadow-primary/10">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl text-primary">code_blocks</span>
+</div>
+                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Frontend</h4>
+                    <p class="text-slate-400 text-sm mb-6 relative z-10">Building responsive and interactive user interfaces with modern frameworks and styling.</p>
+                    <div class="flex flex-wrap gap-2 relative z-10">
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">React</span>
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">TypeScript</span>
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">JavaScript</span>
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">Vue</span>
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">Tailwind</span>
+                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">Vite</span>
+                    </div>
+</div>
+<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-accent hover:-translate-y-2 shadow-lg hover:shadow-accent/10">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl text-accent">data_object</span>
+</div>
+                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">Backend</h4>
+                    <p class="text-slate-400 text-sm mb-6 relative z-10">Server-side development and database management with robust architectures.</p>
+                    <div class="flex flex-wrap gap-2 relative z-10">
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Laravel</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">PHP</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Blade</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Node.js</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Express.js</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">PostgreSQL</span>
+                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">MySQL</span>
+                    </div>
+</div>
+<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-secondary hover:-translate-y-2 shadow-lg hover:shadow-secondary/10">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl text-secondary">design_services</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-2 group-hover:text-secondary transition-colors">Design</h4>
+<p class="text-slate-400 text-sm mb-6 relative z-10">Creating intuitive UI/UX with Figma and adhering to design systems.</p>
+<div class="flex flex-wrap gap-2 relative z-10">
+<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">Figma</span>
+<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">UI/UX</span>
+</div>
+</div>
+<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-green-500 hover:-translate-y-2 shadow-lg hover:shadow-green-500/10">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl text-green-500">terminal</span>
+</div>
+                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-green-500 transition-colors">DevOps & Tools</h4>
+                    <p class="text-slate-400 text-sm mb-6 relative z-10">Development tools, cloud infrastructure, and deployment workflows.</p>
+                    <div class="flex flex-wrap gap-2 relative z-10">
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Git</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Docker</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Vercel</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Nginx</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">PM2</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">AWS</span>
+                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">VS Code</span>
+                    </div>
+</div>
+</div>
+</section>
+<section class="py-20 scroll-reveal" id="projects">
+<div class="flex flex-col items-center text-center mb-20 relative">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full bg-gradient-to-r from-transparent via-primary/5 to-transparent blur-3xl -z-10 animate-pulse-glow"></div>
+<h2 class="text-accent font-mono text-sm mb-4 tracking-widest border border-accent/30 px-4 py-1 rounded-full backdrop-blur-sm bg-black/20">SELECTED WORKS</h2>
+<h3 class="text-4xl md:text-6xl font-bold mb-6 text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-slate-400 transition-all">Featured Projects</h3>
+<div class="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"></div>
+</div>
+<div class="space-y-32">
+                <article class="relative group perspective-container scroll-reveal">
+                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 -z-10 hidden lg:block group-hover:bg-primary/20 transition-colors duration-500"></div>
+                    <div class="flex flex-col lg:flex-row items-center gap-16">
+                        <div class="lg:w-1/2 z-10">
+                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:-rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-primary/20">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="aspect-video bg-gray-900 relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("imgs/mantra.png");'></div>
+                                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div class="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300 delay-100">
+                                            <span class="material-symbols-outlined text-white">visibility</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 flex flex-col items-start lg:pl-10 relative">
+                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -right-10 select-none group-hover:text-primary/10 transition-colors duration-500">01</span>
+                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Mantra Website</h4>
+                            <p class="text-primary font-mono text-sm mb-6 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                                Company Profile / Corporate Website
+                            </p>
+                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
+                                A modern company profile website built with Laravel framework. Provides a platform for booking mentors similar to ADPlist, featuring responsive design and user-friendly interface for connecting professionals.
+                            </p>
+                            <ul class="flex flex-wrap gap-4 mb-8">
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Laravel</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Blade</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Tailwind</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Vite</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Docker</li>
+                            </ul>
+                            <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-primary transition-all duration-300" href="https://github.com/aldohardiansyah/mantra-website" target="_blank" rel="noopener noreferrer">
+                                <div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
+                                <span class="relative z-10">View on GitHub</span>
+                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="relative group perspective-container scroll-reveal">
+                    <div class="flex flex-col lg:flex-row-reverse items-center gap-16">
+                        <div class="lg:w-1/2 z-10">
+                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-accent/20">
+                                <div class="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-accent to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="aspect-video bg-gray-900 relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("imgs/landingpage.png");'></div>
+                                    <div class="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div class="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300 delay-100">
+                                            <span class="material-symbols-outlined text-white">visibility</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 flex flex-col items-end text-right lg:pr-10 relative">
+                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -left-10 select-none group-hover:text-accent/10 transition-colors duration-500">02</span>
+                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-accent transition-colors">Professional Landing Page</h4>
+                            <p class="text-accent font-mono text-sm mb-6 flex items-center gap-2 flex-row-reverse">
+                                <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+                                Personal Branding / Portfolio Website
+                            </p>
+                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
+                                Professional landing page for a Career and Self-Development Practitioner. Features optimized performance with PurgeCSS, responsive design, and modern UI/UX with Flowbite components.
+                            </p>
+                            <ul class="flex flex-wrap justify-end gap-4 mb-8">
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">Vanilla JS</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">Tailwind</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">Vercel</li>
+                            </ul>
+                            <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-accent transition-all duration-300" href="https://landing-page-dinni.vercel.app" target="_blank" rel="noopener noreferrer">
+                                <div class="absolute inset-0 bg-accent translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
+                                <span class="relative z-10 text-white group-hover/btn:text-black transition-colors">Visit Live Site</span>
+                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10 group-hover/btn:text-black">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                <article class="relative group perspective-container scroll-reveal">
+                    <div class="flex flex-col lg:flex-row items-center gap-16">
+                        <div class="lg:w-1/2 z-10">
+                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:-rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-secondary/20">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-secondary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
+                                <div class="aspect-video bg-gray-900 relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("imgs/albioncalc.png");'></div>
+                                    <div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div class="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300 delay-100">
+                                            <span class="material-symbols-outlined text-white">visibility</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 flex flex-col items-start lg:pl-10 relative">
+                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -right-10 select-none group-hover:text-secondary/10 transition-colors duration-500">03</span>
+                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-secondary transition-colors">Albion Refining Calculator</h4>
+                            <p class="text-secondary font-mono text-sm mb-6 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                                Gaming Utility Tool / Web App
+                            </p>
+                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
+                                Interactive profit calculator for Albion Online's refining system. Helps players make better economic decisions with real-time calculations of return rates, resource requirements, and profit margins.
+                            </p>
+                            <ul class="flex flex-wrap gap-4 mb-8">
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-secondary hover:text-secondary transition-colors cursor-default">React 19</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-secondary hover:text-secondary transition-colors cursor-default">TypeScript</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-secondary hover:text-secondary transition-colors cursor-default">Vite</li>
+                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-secondary hover:text-secondary transition-colors cursor-default">Express.js</li>
+                            </ul>
+                            <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-secondary transition-all duration-300" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer">
+                                <div class="absolute inset-0 bg-secondary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
+                                <span class="relative z-10">View on GitHub</span>
+                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+</div>
+</section>
+<section class="py-24 border-t border-white/5" id="contact">
+<div class="bg-surface border border-white/5 p-8 md:p-16 relative overflow-hidden clip-geo-card hover:border-white/10 transition-colors duration-500 group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none group-hover:bg-secondary/20 transition-all duration-700"></div>
+<div class="flex flex-col lg:flex-row gap-16 relative z-10">
+<div class="flex-1">
+<h2 class="text-accent font-mono text-sm mb-4 tracking-widest uppercase flex items-center gap-2">
+<span class="w-2 h-2 bg-accent animate-pulse"></span>
+                        Initiate Protocol
+                    </h2>
+<h3 class="text-4xl md:text-5xl font-bold mb-6 text-white group-hover:translate-x-1 transition-transform">Let's Build Together</h3>
+<p class="text-slate-400 mb-10 text-lg leading-relaxed">
+                        Ready to transform your digital presence? Send me a signal, and let's discuss how we can engineer your vision into reality.
+                    </p>
+<div class="space-y-6">
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 flex items-center justify-center border border-white/10 bg-white/5 group-hover/item:border-primary group-hover/item:bg-primary/10 transition-all duration-300 group-hover/item:rotate-12">
+<span class="material-symbols-outlined text-primary">mail</span>
+</div>
+<div>
+<div class="text-xs uppercase tracking-widest text-slate-500 mb-1">Email Address</div>
+<a class="text-xl font-bold text-white hover:text-primary transition-colors hover:underline decoration-primary/50 underline-offset-4" href="mailto:imannugraha@example.com">imannugraha@example.com</a>
+</div>
+</div>
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 flex items-center justify-center border border-white/10 bg-white/5 group-hover/item:border-primary group-hover/item:bg-primary/10 transition-all duration-300 group-hover/item:-rotate-12">
+<span class="material-symbols-outlined text-primary">hub</span>
+</div>
+<div>
+<div class="text-xs uppercase tracking-widest text-slate-500 mb-1">Social Network</div>
+<div class="flex gap-4">
+<a class="text-white hover:text-primary transition-colors font-bold hover:scale-105 inline-block" href="#">LinkedIn</a>
+<span class="text-slate-600">/</span>
+<a class="text-white hover:text-primary transition-colors font-bold hover:scale-105 inline-block" href="#">GitHub</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1">
+<form class="space-y-6">
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2 group/input">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors">Name</label>
+<input class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-2 group/input">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors">Email</label>
+<input class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="john@example.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2 group/input">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors">Subject</label>
+<input class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="Project Inquiry" type="text"/>
+</div>
+<div class="space-y-2 group/input">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors">Message</label>
+<textarea class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary h-32 resize-none transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="Tell me about your project..."></textarea>
+</div>
+<button class="w-full relative overflow-hidden bg-white text-black font-bold py-4 px-6 uppercase tracking-wider transition-all clip-geo-button group/btn shadow-[4px_4px_0_0_rgba(255,255,255,0.1)] hover:shadow-[6px_6px_0_0_rgba(59,130,246,0.5)] hover:translate-x-[-2px] hover:translate-y-[-2px]" type="button">
+<span class="relative z-10 group-hover/btn:text-white transition-colors duration-300">Transmit Message</span>
+<div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
+</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-[#0b0d10] border-t border-white/5 py-12 relative z-10">
+<div class="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3 group">
+<div class="w-8 h-8 bg-primary/20 flex items-center justify-center clip-hexagon group-hover:rotate-180 transition-transform duration-700">
+<span class="material-symbols-outlined text-primary text-sm">terminal</span>
+</div>
+<span class="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">IMANDEV</span>
+</div>
+<p class="text-slate-600 text-sm font-mono flex items-center gap-2">
+            CRAFTED WITH CODE & COFFEE 
+            <span class="inline-block w-1.5 h-1.5 bg-slate-600 rounded-full animate-pulse"></span>
+            © 2025
+        </p>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="#">GH</a>
+<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="#">TW</a>
+<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="#">LI</a>
+</div>
+</div>
+</footer>
+</body></html>
