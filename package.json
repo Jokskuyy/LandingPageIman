@@ -1,0 +1,13 @@
+{
+  "name": "landing-page-iman",
+  "version": "1.0.0",
+  "description": "Static portfolio for Muhammad Iman Nugraha. Deterministic DOM assertion tests over index.html.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.js\""
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}
