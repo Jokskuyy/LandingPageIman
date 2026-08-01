@@ -57,14 +57,13 @@ test("Hero displays the professional title (R1.2)", () => {
   );
 });
 
-test("Hero displays the exact headline (R1.3)", () => {
+test("Hero displays the redesigned full-stack headline (R1.3)", () => {
   const { document } = loadIndexHtml();
   const hero = document.querySelector("#hero");
-  const headline =
-    "From a UPNVJ profile dashboard secured with Supabase RLS to MQTT-powered home controls, I build the interface and the system behind it.";
+  const headline = "I build the interface, the API, and the path between them.";
 
-  const match = [...hero.querySelectorAll("p")].some(
-    (p) => normalize(p.textContent) === headline
+  const match = [...hero.querySelectorAll("h1")].some(
+    (heading) => normalize(heading.textContent) === headline
   );
   assert.ok(match, `Hero should contain the exact headline: "${headline}"`);
 });

@@ -55,8 +55,8 @@ const NON_WEB_SKILLS = new Set([
 /**
  * Select the rendered skill-category cards within #skills.
  *
- * Each category card holds exactly one <h4> label and a flex-wrap container of
- * <span> skill chips. We treat any element inside #skills that has an <h4> and a
+ * Each category card holds exactly one <h3> label and a flex-wrap container of
+ * <span> skill chips. We treat any element inside #skills that has an <h3> and a
  * chip container as a category card, ignoring the section heading (an <h2>/<h3>
  * pair that has no chip container).
  */
@@ -68,12 +68,12 @@ function getSkillCards() {
   assert.ok(grid, "the #skills section should contain a grid of category cards");
 
   // Direct children of the grid are the category cards.
-  return Array.from(grid.children).filter((card) => card.querySelector("h4"));
+  return Array.from(grid.children).filter((card) => card.querySelector("h3"));
 }
 
 /** Read a card's label and its ordered list of skill-token strings. */
 function readCard(card) {
-  const label = card.querySelector("h4").textContent.trim();
+  const label = card.querySelector("h3").textContent.trim();
   // The chip container is the flex-wrap div; its <span> children are the tokens.
   const chipContainer = card.querySelector("div.flex.flex-wrap");
   const tokens = chipContainer
@@ -86,7 +86,7 @@ function readCard(card) {
 
 test("Skills: exactly four labeled categories in the expected order", () => {
   const cards = getSkillCards();
-  const labels = cards.map((c) => c.querySelector("h4").textContent.trim());
+  const labels = cards.map((c) => c.querySelector("h3").textContent.trim());
   assert.equal(cards.length, 4, "there should be exactly four skill categories");
   assert.deepEqual(
     labels,

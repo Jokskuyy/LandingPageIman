@@ -37,7 +37,7 @@ const NON_WEB_PROJECT = "Recehin";
 
 /**
  * Collect the rendered project articles from the #projects section in document
- * order. Each project is an <article>; its name is the <h4>, its description is
+ * order. Each project is an <article>; its name is the <h3>, its description is
  * the long body <p> (`.leading-relaxed`), and its tech tokens are the <li> items
  * in the article's tech <ul>.
  *
@@ -50,7 +50,7 @@ function getRenderedProjects(document) {
 
   const articles = section.querySelectorAll("article");
   return Array.from(articles).map((article) => {
-    const heading = article.querySelector("h4");
+    const heading = article.querySelector("h3");
     const descParagraph = article.querySelector("p.leading-relaxed");
     const techList = article.querySelector("ul");
     const techTokens = techList
@@ -201,13 +201,13 @@ function getProjectLinks(article) {
   }));
 }
 
-/** Helper: find the article whose h4 matches the given project name. */
+/** Helper: find the article whose h3 matches the given project name. */
 function findArticle(document, name) {
   const section = document.querySelector("#projects");
   const articles = section.querySelectorAll("article");
   for (const article of articles) {
-    const h4 = article.querySelector("h4");
-    if (h4 && h4.textContent.trim() === name) return article;
+    const h3 = article.querySelector("h3");
+    if (h3 && h3.textContent.trim() === name) return article;
   }
   return null;
 }
@@ -312,11 +312,11 @@ test("Property 3.5: No project card references imgs/landingpage.png or imgs/mant
     const html = article.innerHTML;
     assert.ok(
       !html.includes("imgs/landingpage.png"),
-      `Project "${article.querySelector("h4")?.textContent}" should not reference imgs/landingpage.png`
+      `Project "${article.querySelector("h3")?.textContent}" should not reference imgs/landingpage.png`
     );
     assert.ok(
       !html.includes("imgs/mantra.png"),
-      `Project "${article.querySelector("h4")?.textContent}" should not reference imgs/mantra.png`
+      `Project "${article.querySelector("h3")?.textContent}" should not reference imgs/mantra.png`
     );
   }
 });

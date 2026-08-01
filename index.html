@@ -1,502 +1,987 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior: smooth;">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Muhammad Iman Nugraha - Fullstack Web Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          "paper":   "#f7f3ee",
-          "paper-2": "#ede8e0",
-          "charcoal":"#1c1c1a",
-          "ink":     "#2e2c29",
-          "rust":    "#b85c38",
-          "rust-lt": "#d4704a",
-          "olive":   "#6b7256",
-        },
-        fontFamily: {
-          "serif":  ["Lora", "Georgia", "serif"],
-          "sans":   ["Space Grotesk", "sans-serif"],
-        },
-      },
-    },
-  }
-</script>
-<style>
-  /* ── Base ── */
-  body { font-family: "Space Grotesk", sans-serif; }
-  h1, h2.display { font-family: "Lora", Georgia, serif; }
-
-  /* ── Ruled lines ── */
-  .ruled { border-bottom: 1px solid rgba(44,40,35,0.15); }
-  .ruled-top { border-top: 1px solid rgba(44,40,35,0.15); }
-
-  /* ── Focus visible ── */
-  :where(a, button, input, textarea, summary):focus-visible {
-    outline: 2px solid #b85c38;
-    outline-offset: 4px;
-  }
-
-  /* ── Reduced motion ── */
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto !important; }
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#3457FF" />
+  <meta
+    name="description"
+    content="Muhammad Iman Nugraha is a frontend, backend, and full-stack web developer building clear interfaces and reliable systems."
+  />
+  <title>Muhammad Iman Nugraha — Fullstack Web Developer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233457FF'/%3E%3Cpath d='M8 8h16v16H8z' fill='%23B8FF3D' stroke='%23101114' stroke-width='3'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#101114',
+            paper: '#F5F1E8',
+            lime: '#B8FF3D',
+            cobalt: '#3457FF',
+            steel: '#AAB2C0',
+            signal: '#FF6B4A'
+          },
+          fontFamily: {
+            display: ['Bricolage Grotesque', 'Arial Black', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'Consolas', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --ink: #101114;
+      --paper: #f5f1e8;
+      --lime: #b8ff3d;
+      --cobalt: #3457ff;
+      --steel: #aab2c0;
+      --signal: #ff6b4a;
+      --line: 2px solid var(--ink);
     }
-  }
 
-  /* ── Print / no-js fallback ── */
-  .reveal { opacity: 1; }
-</style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { background: var(--ink); }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "Bricolage Grotesque", sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: rgba(184, 255, 61, 0.18);
+    }
+
+    a, button, summary { touch-action: manipulation; }
+
+    a, button {
+      transition-property: color, background-color, border-color, box-shadow, transform;
+      transition-duration: 150ms;
+      transition-timing-function: ease-out;
+    }
+
+    :where(a, button, summary):focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 4px;
+    }
+
+    ::selection { background: var(--lime); color: var(--ink); }
+
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+
+    section[id], article[id] { scroll-margin-top: 5rem; }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 100;
+      transform: translateY(-180%);
+      border: var(--line);
+      background: var(--lime);
+      color: var(--ink);
+      padding: 0.65rem 1rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    header summary:hover {
+      background: var(--lime);
+      transform: translate(-1px, -1px);
+    }
+
+    .page-shell {
+      width: min(100% - 2rem, 1180px);
+      margin-inline: auto;
+    }
+
+    .mono-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.11em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .mono-label::before {
+      width: 0.65rem;
+      height: 0.65rem;
+      border: 2px solid currentColor;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .section-title {
+      max-width: 13ch;
+      font-size: clamp(2.45rem, 7vw, 5.7rem);
+      font-weight: 800;
+      letter-spacing: -0.065em;
+      line-height: 0.9;
+    }
+
+    .comic-frame {
+      position: relative;
+      border: var(--line);
+      background: var(--paper);
+      box-shadow: 9px 9px 0 var(--ink);
+    }
+
+    .comic-frame::after {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-bottom: var(--line);
+      border-left: var(--line);
+      background: var(--cobalt);
+      content: "";
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+    }
+
+    .halftone {
+      background-image: radial-gradient(circle, rgba(16, 17, 20, 0.18) 1.1px, transparent 1.25px);
+      background-size: 8px 8px;
+    }
+
+    .action {
+      display: inline-flex;
+      min-height: 3rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      border: var(--line);
+      padding: 0.7rem 1rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .action-primary {
+      background: var(--lime);
+      color: var(--ink);
+      box-shadow: 5px 5px 0 var(--cobalt);
+    }
+
+    .action-secondary {
+      border-color: rgba(245, 241, 232, 0.45);
+      background: transparent;
+      color: var(--paper);
+    }
+
+    .action:hover { transform: translate(-2px, -2px); }
+    .action-primary:hover { box-shadow: 7px 7px 0 var(--cobalt); }
+    .action-secondary:hover { border-color: var(--lime); color: var(--lime); }
+
+    .nav-link[aria-current="location"] { color: var(--lime); }
+
+    .hero-grid {
+      display: grid;
+      align-items: center;
+      gap: clamp(2rem, 6vw, 5.5rem);
+      grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
+    }
+
+    .hero-title {
+      max-width: 11ch;
+      font-size: clamp(3.25rem, 7.2vw, 6.8rem);
+      font-weight: 800;
+      letter-spacing: -0.075em;
+      line-height: 0.87;
+    }
+
+    .hero-title .interface-word {
+      color: var(--lime);
+      text-decoration: underline;
+      text-decoration-color: var(--cobalt);
+      text-decoration-thickness: 0.12em;
+      text-underline-offset: 0.08em;
+    }
+
+    .hero-visual {
+      position: relative;
+      isolation: isolate;
+      min-width: 0;
+      padding: 1.25rem 1.25rem 0;
+    }
+
+    .hero-visual::before {
+      position: absolute;
+      inset: 9% 2% 4% 12%;
+      z-index: -2;
+      border: var(--line);
+      background: var(--lime);
+      box-shadow: 12px 12px 0 var(--cobalt);
+      content: "";
+      transform: rotate(-2deg);
+    }
+
+    .hero-visual::after {
+      position: absolute;
+      inset: 14% 8% 8% 6%;
+      z-index: -1;
+      background-image: radial-gradient(circle, rgba(16, 17, 20, 0.25) 1.2px, transparent 1.35px);
+      background-size: 9px 9px;
+      content: "";
+      clip-path: polygon(7% 0, 100% 4%, 94% 100%, 0 92%);
+    }
+
+    .hero-avatar {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(10px 8px 0 rgba(16, 17, 20, 0.9));
+    }
+
+    .layer-tag {
+      position: absolute;
+      z-index: 2;
+      border: var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 0.55rem 0.7rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .layer-tag-ui { top: 22%; left: -1.25rem; transform: rotate(-4deg); }
+    .layer-tag-api { top: 49%; right: -0.5rem; transform: rotate(3deg); }
+    .layer-tag-data { bottom: 8%; left: 1rem; transform: rotate(2deg); }
+
+    .signal-strip {
+      border-block: var(--line);
+      background: var(--lime);
+      color: var(--ink);
+    }
+
+    .signal-strip-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .signal-item {
+      min-width: 0;
+      padding: 1.1rem 1.5rem;
+    }
+
+    .signal-item + .signal-item { border-left: var(--line); }
+
+    .signal-value {
+      display: block;
+      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+    }
+
+    .signal-key {
+      display: block;
+      margin-top: 0.25rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      text-transform: uppercase;
+    }
+
+    .route-line {
+      display: grid;
+      border: var(--line);
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .route-step {
+      position: relative;
+      min-width: 0;
+      padding: 1.2rem;
+    }
+
+    .route-step + .route-step { border-left: var(--line); }
+
+    .route-step::before {
+      display: block;
+      width: 0.8rem;
+      height: 0.8rem;
+      margin-bottom: 1rem;
+      border: 2px solid var(--ink);
+      background: var(--lime);
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .route-step.is-current::before { background: var(--signal); }
+
+    .capability-card {
+      position: relative;
+      min-height: 15rem;
+      overflow: hidden;
+      border: var(--line);
+      background: var(--paper);
+      padding: 1.4rem;
+      box-shadow: 6px 6px 0 var(--cobalt);
+    }
+
+    .capability-card::after {
+      position: absolute;
+      right: -2.5rem;
+      bottom: -2.5rem;
+      width: 6rem;
+      height: 6rem;
+      border: 2px solid var(--ink);
+      background: var(--lime);
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .skill-token {
+      border: 1.5px solid var(--ink);
+      background: transparent;
+      padding: 0.32rem 0.48rem;
+      color: var(--ink);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      line-height: 1;
+    }
+
+    .project-layout {
+      display: grid;
+      align-items: start;
+      gap: clamp(2rem, 5vw, 5rem);
+      grid-template-columns: minmax(13rem, 0.32fr) minmax(0, 1fr);
+    }
+
+    .build-selector {
+      position: sticky;
+      top: 5.75rem;
+      border: 2px solid rgba(245, 241, 232, 0.22);
+    }
+
+    .build-link {
+      display: grid;
+      min-height: 4.25rem;
+      align-items: center;
+      gap: 0.7rem;
+      grid-template-columns: auto 1fr auto;
+      padding: 0.85rem 1rem;
+      color: rgba(245, 241, 232, 0.62);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      line-height: 1.3;
+    }
+
+    .build-link + .build-link { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+
+    .build-link::after {
+      width: 0.6rem;
+      height: 0.6rem;
+      border: 1.5px solid currentColor;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .build-link:hover { background: rgba(184, 255, 61, 0.08); color: var(--paper); }
+
+    .build-link[aria-current="true"] {
+      background: var(--lime);
+      color: var(--ink);
+      box-shadow: inset 6px 0 0 var(--cobalt);
+    }
+
+    .build-link[aria-current="true"]::after { background: var(--cobalt); }
+
+    .project-card {
+      overflow: hidden;
+      border: 2px solid rgba(245, 241, 232, 0.3);
+      background: #17191f;
+    }
+
+    .project-card + .project-card { margin-top: 3rem; }
+
+    .project-media {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid rgba(245, 241, 232, 0.3);
+      background: var(--paper);
+    }
+
+    .project-media img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 280ms ease-out;
+    }
+
+    .project-card:hover .project-media img { transform: scale(1.015); }
+
+    .project-media-label {
+      position: absolute;
+      right: 0.75rem;
+      bottom: 0.75rem;
+      border: 2px solid var(--ink);
+      background: var(--lime);
+      color: var(--ink);
+      padding: 0.42rem 0.6rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.63rem;
+      font-weight: 600;
+    }
+
+    .concept-stage {
+      display: grid;
+      min-height: 19rem;
+      place-items: center;
+      background: var(--cobalt);
+      color: var(--paper);
+    }
+
+    .concept-stage svg {
+      width: min(65%, 25rem);
+      height: auto;
+      filter: drop-shadow(8px 8px 0 rgba(16, 17, 20, 0.8));
+    }
+
+    .project-body { padding: clamp(1.25rem, 3vw, 2rem); }
+
+    .project-index {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--lime);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .project-title {
+      margin-top: 0.5rem;
+      color: var(--paper);
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.055em;
+      line-height: 0.95;
+    }
+
+    .project-link {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      border-bottom: 2px solid currentColor;
+      color: var(--paper);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .project-link:hover { color: var(--lime); transform: translateY(-2px); }
+
+    .contact-panel {
+      border: var(--line);
+      background: var(--cobalt);
+      color: var(--paper);
+      box-shadow: 12px 12px 0 var(--lime);
+    }
+
+    .email-address { overflow-wrap: anywhere; user-select: all; }
+
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    .js .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 380ms ease-out, transform 380ms ease-out;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-copy { max-width: 46rem; }
+      .hero-visual { width: min(100%, 37rem); margin-inline: auto; }
+      .project-layout { grid-template-columns: 1fr; }
+      .build-selector {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .build-link + .build-link { border-top: 0; }
+      .build-link:nth-child(even) { border-left: 1px solid rgba(245, 241, 232, 0.18); }
+      .build-link:nth-child(n+3) { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell { width: min(100% - 1.25rem, 1180px); }
+      .signal-strip-inner, .route-line { grid-template-columns: 1fr; }
+      .signal-item + .signal-item, .route-step + .route-step {
+        border-top: var(--line);
+        border-left: 0;
+      }
+      .layer-tag { font-size: 0.58rem; padding: 0.4rem 0.5rem; }
+      .layer-tag-ui { left: 0; }
+      .layer-tag-api { right: 0; }
+      .build-selector { grid-template-columns: 1fr; }
+      .build-link:nth-child(even) { border-left: 0; }
+      .build-link + .build-link { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+      .concept-stage { min-height: 14rem; }
+      .contact-panel { box-shadow: 7px 7px 0 var(--lime); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+      .js .reveal { opacity: 1; transform: none; }
+      .hero-avatar { filter: drop-shadow(6px 5px 0 rgba(16, 17, 20, 0.9)); }
+    }
+  </style>
 </head>
-<body class="bg-charcoal text-ink selection:bg-rust selection:text-paper overflow-x-hidden">
+<body>
+  <a class="skip-link" href="#main-content">Skip to Main Content</a>
 
-<!-- ══════════════════════════════════════════════════════
-     HEADER
-══════════════════════════════════════════════════════ -->
-<header class="fixed top-0 z-50 w-full bg-charcoal/95 border-b border-white/10 backdrop-blur-sm">
-  <div class="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-    <a href="#hero" class="font-serif text-paper text-lg font-semibold tracking-tight" aria-label="Go to top">Iman</a>
-    <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
-      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#about">About</a>
-      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#experience">Experience</a>
-      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#skills">Skills</a>
-      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#projects">Projects</a>
-      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#contact">Contact</a>
-    </nav>
-    <details class="md:hidden relative">
-      <summary class="list-none cursor-pointer text-paper/70 hover:text-paper min-w-11 min-h-11 inline-flex items-center justify-center [&::-webkit-details-marker]:hidden" aria-label="Menu">☰</summary>
-      <nav class="absolute right-0 mt-2 w-44 flex flex-col bg-charcoal border border-white/10 shadow-xl z-50">
-        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#about">About</a>
-        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#experience">Experience</a>
-        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#skills">Skills</a>
-        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#projects">Projects</a>
-        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#contact">Contact</a>
+  <header class="fixed inset-x-0 top-0 z-50 border-b-2 border-ink bg-cobalt text-paper">
+    <div class="page-shell flex h-[4.75rem] items-center justify-between gap-6">
+      <a href="#hero" class="group inline-flex items-center gap-2 font-mono text-xs font-semibold" aria-label="Go to top">
+        <span class="grid size-7 place-items-center border-2 border-ink bg-lime text-ink shadow-[3px_3px_0_#101114] group-hover:-translate-y-0.5">MI</span>
+        <span>Muhammad Iman</span>
+      </a>
+
+      <nav class="hidden items-center gap-6 md:flex" aria-label="Main navigation">
+        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#about">About</a>
+        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#experience">Experience</a>
+        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#skills">Skills</a>
+        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#projects">Projects</a>
+        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#contact">Contact</a>
       </nav>
-    </details>
-  </div>
-</header>
 
-<main class="pt-16">
+      <details class="relative md:hidden">
+        <summary class="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center border-2 border-ink bg-paper font-mono text-ink shadow-[3px_3px_0_#101114] [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu">Menu</summary>
+        <nav class="absolute right-0 mt-3 flex w-52 flex-col border-2 border-ink bg-paper p-2 text-ink shadow-[6px_6px_0_#101114]" aria-label="Mobile navigation">
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#about">About</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#experience">Experience</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#skills">Skills</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#projects">Projects</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#contact">Contact</a>
+        </nav>
+      </details>
+    </div>
+  </header>
 
-<!-- ══════════════════════════════════════════════════════
-     HERO
-══════════════════════════════════════════════════════ -->
-<section id="hero" class="py-16 md:py-24 scroll-mt-16">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
-
-      <!-- Left: identity -->
-      <div class="flex-1 flex flex-col gap-6">
-        <p class="font-sans text-xs tracking-[0.25em] uppercase text-rust font-semibold">Field Note / 01</p>
-        <h1 class="font-serif text-paper text-4xl md:text-5xl leading-tight">
-          Muhammad Iman <br/> Nugraha
-        </h1>
-        <p class="font-sans text-paper/50 text-sm uppercase tracking-widest">Frontend-leaning Fullstack Web Developer</p>
-        <p class="font-sans text-paper/80 leading-relaxed max-w-sm">
-          From a UPNVJ profile dashboard secured with Supabase RLS to MQTT-powered home controls, I build the interface and the system behind it.
-        </p>
-        <p class="font-sans text-paper/60 text-sm leading-relaxed max-w-sm border-l-2 border-rust/40 pl-4">
-          Final-year Informatics student at UPN Veteran Jakarta, focused on frontend interfaces,
-          backend APIs, and database-backed systems. Previously completed a Front-End Internship at Mantra (Teman Transisi), 03/2025–10/2025.
-        </p>
-        <div class="flex flex-wrap gap-4 pt-2">
-          <a href="#projects" class="font-sans text-xs uppercase tracking-widest px-5 py-2.5 bg-rust text-paper hover:bg-rust-lt transition-colors">View projects</a>
-          <a href="#contact" class="font-sans text-xs uppercase tracking-widest px-5 py-2.5 border border-paper/20 text-paper/70 hover:text-paper hover:border-paper/50 transition-colors">Get in touch</a>
+  <main id="main-content" class="pt-[4.75rem]">
+    <section id="hero" class="relative overflow-hidden bg-ink py-16 text-paper md:py-24">
+      <div class="page-shell hero-grid">
+        <div class="hero-copy reveal">
+          <p class="mono-label text-lime">Frontend / Backend / Fullstack Web Developer</p>
+          <h1 class="hero-title mt-7">
+            I build the <span class="interface-word">interface</span>, the API, and the path between them.
+          </h1>
+          <p class="mt-7 max-w-2xl text-lg leading-relaxed text-paper/75">
+            I’m Muhammad Iman Nugraha, a final-year Informatics student at UPN Veteran Jakarta. I turn product requirements into responsive frontend interfaces, then connect them to backend APIs and database-backed systems.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="action action-primary" href="#projects">Explore My Builds <span aria-hidden="true">↓</span></a>
+            <a class="action action-secondary" href="mailto:imannnnugraha@gmail.com">Email Me <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 font-mono text-xs text-paper/60">
+            <a class="hover:text-lime" href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub ↗</a>
+            <a class="hover:text-lime" href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn ↗</a>
+            <span class="inline-flex items-center gap-2 text-paper/80"><span class="size-2 bg-lime" aria-hidden="true"></span>Open to developer roles</span>
+          </div>
         </div>
-        <div class="flex items-center gap-5 pt-1">
-          <a href="https://github.com/Jokskuyy" aria-label="GitHub profile" title="GitHub" target="_blank" rel="noopener noreferrer" class="text-paper/50 hover:text-paper transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" aria-label="LinkedIn profile" title="LinkedIn" target="_blank" rel="noopener noreferrer" class="text-paper/50 hover:text-paper transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
-          </a>
-          <a href="mailto:imannnnugraha@gmail.com" aria-label="Email Muhammad Iman Nugraha" title="Email" class="text-paper/50 hover:text-paper transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25H4.5a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5H4.5a2.25 2.25 0 0 0-2.25 2.25m19.5 0-9.75 6.75L2.25 6.75"/></svg>
-          </a>
-        </div>
-      </div>
 
-      <!-- Right: dashboard screenshot evidence -->
-      <div class="flex-1 w-full max-w-lg">
-        <figure class="bg-paper-2 p-3 border border-paper-2 shadow-lg">
+        <figure class="hero-visual reveal" aria-labelledby="avatar-caption">
           <img
-            src="imgs/dashboard-upnvj.png"
-            alt="Dashboard Profile UPNVJ — fullstack admin dashboard built with React, TypeScript, Supabase RLS, and Express.js"
-            class="w-full h-auto block"
+            class="hero-avatar"
+            src="imgs/iman-avatar-comic.webp"
+            width="1086"
+            height="1448"
+            fetchpriority="high"
+            alt="Cel-shaded illustration of Muhammad Iman Nugraha in a cobalt tech-casual jacket"
           />
-          <figcaption class="mt-2 text-xs text-ink/50 font-sans leading-snug">
-            Dashboard Profile UPNVJ — Supabase Row Level Security + Express.js APIs, React + TypeScript frontend.
-            <a href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline ml-1">Live ↗</a>
-          </figcaption>
+          <span class="layer-tag layer-tag-ui" aria-hidden="true">UI / REACT</span>
+          <span class="layer-tag layer-tag-api" aria-hidden="true">API / EXPRESS</span>
+          <span class="layer-tag layer-tag-data" aria-hidden="true">DATA / SQL</span>
+          <figcaption id="avatar-caption" class="sr-only">A personalized comic portrait representing the frontend, API, and database layers Muhammad works across.</figcaption>
         </figure>
       </div>
+    </section>
 
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════
-     EVIDENCE STRIP
-══════════════════════════════════════════════════════ -->
-<div class="bg-paper ruled ruled-top">
-  <div class="max-w-5xl mx-auto px-6 md:px-10 py-6 flex flex-wrap gap-6 md:gap-12 text-sm text-ink/70 font-sans">
-    <span><span class="font-semibold text-ink">UPN Veteran Jakarta</span> — Informatics, final year</span>
-    <span class="border-l border-ink/15 pl-6"><span class="font-semibold text-ink">GPA 3.75 / 4.0</span></span>
-    <span class="border-l border-ink/15 pl-6"><span class="font-semibold text-ink">Mantra (Teman Transisi)</span> — Front-End Intern, 03/2025–10/2025</span>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     ABOUT
-══════════════════════════════════════════════════════ -->
-<section id="about" class="py-16 md:py-20 scroll-mt-16 bg-paper">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-6">About</p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Web content panel (2 cols) -->
-      <div class="md:col-span-2 flex flex-col gap-4">
-        <p class="font-sans text-ink/80 leading-relaxed">
-          I'm a <strong>final-year Informatics student at UPN Veteran Jakarta</strong> with a
-          <strong>GPA of 3.75 / 4.0</strong>, building production-grade web applications across the full stack.
-        </p>
-        <p class="font-sans text-ink/70 leading-relaxed text-sm">
-          My focus spans <strong>frontend web development</strong>, <strong>backend web development</strong>,
-          <strong>API integration</strong>, and <strong>database management</strong> — translating designs
-          into responsive UIs and wiring them to reliable server-side systems.
-        </p>
-        <p class="font-sans text-ink/70 leading-relaxed text-sm">
-          I've built admin dashboards with Supabase Row Level Security and custom Express APIs
-          (Dashboard Profile UPNVJ), orchestrated Node/Express microservices with Docker and MQTT over MySQL
-          (Smart Home IoT), shipped a TypeScript open-source web app (Albion Refining Calculator),
-          and integrated REST APIs end-to-end (Recehin).
-        </p>
-      </div>
-      <!-- Non-web aside -->
-      <div class="flex flex-col gap-3 border-l border-ink/10 pl-6">
-        <p class="text-xs uppercase tracking-widest text-olive font-sans font-semibold">How I work</p>
-        <p class="font-sans text-ink/60 text-sm leading-relaxed">
-          I prefer collaborative problem-solving: I ask clarifying questions early,
-          keep team members informed of blockers, and treat code review as a learning
-          opportunity rather than a formality.
-        </p>
-        <div class="flex flex-wrap gap-2 mt-1">
-          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Teamwork</span>
-          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Problem Solving</span>
-          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Curiosity</span>
+    <div class="signal-strip" aria-label="Profile highlights">
+      <div class="page-shell signal-strip-inner">
+        <div class="signal-item">
+          <span class="signal-value">UPN Veteran Jakarta</span>
+          <span class="signal-key">Informatics · Final Year</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-value">3.75 / 4.0</span>
+          <span class="signal-key">Current GPA</span>
+        </div>
+        <div class="signal-item">
+          <span class="signal-value">Frontend ↔ Backend</span>
+          <span class="signal-key">Primary Build Range</span>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ══════════════════════════════════════════════════════
-     EXPERIENCE
-══════════════════════════════════════════════════════ -->
-<section id="experience" class="py-16 md:py-20 scroll-mt-16 bg-charcoal">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Experience</p>
-    <article class="border-l-2 border-rust/40 pl-6">
-      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-5">
-        <div>
-          <h4 class="font-serif text-paper text-xl">Front-End Intern</h4>
-          <p class="font-sans text-rust text-sm mt-0.5">Mantra (Teman Transisi)</p>
-        </div>
-        <span class="font-sans text-xs text-paper/40 tracking-wide pt-1">03/2025 – 10/2025</span>
-      </div>
-      <ul class="flex flex-col gap-3">
-        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
-          – <span>Responsive web platform front-end development</span>
-        </li>
-        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
-          – <span>Responsive admin dashboard UI implementation</span>
-        </li>
-        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
-          – <span>Front-end data validation for CRUD operations</span>
-        </li>
-        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
-          – <span>Collaboration with back-end developers for API integration within a Laravel framework</span>
-        </li>
-      </ul>
-    </article>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════
-     SKILLS
-══════════════════════════════════════════════════════ -->
-<section id="skills" class="py-16 md:py-20 scroll-mt-16 bg-paper">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Skills Index</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <!-- Frontend -->
-      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
-        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Frontend</h4>
-        <div class="flex flex-wrap gap-1.5">
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">React.js</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">TypeScript</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">JavaScript</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">HTML</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">CSS</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Tailwind CSS</span>
-        </div>
-      </div>
-
-      <!-- Backend -->
-      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
-        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Backend</h4>
-        <div class="flex flex-wrap gap-1.5">
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Python</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">PHP</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Node.js</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Express.js</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Laravel</span>
-        </div>
-      </div>
-
-      <!-- Databases -->
-      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
-        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Databases</h4>
-        <div class="flex flex-wrap gap-1.5">
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">MySQL</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">PostgreSQL</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Supabase</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Firebase</span>
-        </div>
-      </div>
-
-      <!-- Architecture & Tools -->
-      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
-        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Architecture &amp; Tools</h4>
-        <div class="flex flex-wrap gap-1.5">
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Git</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Docker</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">REST API</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">MVC</span>
-          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Microservices</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════
-     PROJECTS
-══════════════════════════════════════════════════════ -->
-<section id="projects" class="py-16 md:py-20 scroll-mt-16 bg-charcoal">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-10">Projects</p>
-    <div class="flex flex-col gap-14">
-
-      <!-- 01 Dashboard Profile UPNVJ -->
-      <article class="flex flex-col md:flex-row gap-8">
-        <div class="md:w-5/12 shrink-0">
-          <div class="bg-paper-2 p-2">
-            <img
-              src="imgs/dashboard-upnvj.png"
-              alt="Dashboard Profile UPNVJ screenshot"
-              class="w-full h-auto block"
-              loading="lazy"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 flex-1">
-          <p class="text-xs font-sans text-rust/70 tracking-widest">01</p>
-          <h4 class="font-serif text-paper text-xl leading-snug">Dashboard Profile UPNVJ</h4>
-          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Fullstack Web Application</p>
-          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
-            A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized through dynamic code splitting and memoized React context.
-          </p>
-          <ul class="flex flex-wrap gap-2 mt-1">
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">React.js</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TypeScript</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Vite</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TailwindCSS</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Supabase</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Express.js</li>
-          </ul>
-          <div class="flex gap-4 flex-wrap mt-1">
-            <a href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ" class="text-xs font-sans text-rust hover:underline">Live Demo ↗</a>
-            <a href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-white/5"/>
-
-      <!-- 02 Smart Home IoT -->
-      <article class="flex flex-col md:flex-row gap-8">
-        <div class="md:w-5/12 shrink-0">
-          <div class="bg-paper-2/10 border border-paper/5 aspect-video flex items-center justify-center">
-            <p class="font-sans text-paper/30 text-xs text-center px-4">No screenshot available<br/>Live demo not available</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 flex-1">
-          <p class="text-xs font-sans text-rust/70 tracking-widest">02</p>
-          <h4 class="font-serif text-paper text-xl leading-snug">Smart Home IoT</h4>
-          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Fullstack IoT Platform</p>
-          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
-            A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL.
-          </p>
-          <ul class="flex flex-wrap gap-2 mt-1">
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">HTML</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">CSS</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">JavaScript</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Express.js</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">MySQL</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">MQTT</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Docker</li>
-          </ul>
-          <p class="font-sans text-paper/30 text-xs mt-1">Live demo not available</p>
-          <div class="flex gap-4 flex-wrap">
-            <a href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-white/5"/>
-
-      <!-- 03 Albion Refining Calculator -->
-      <article class="flex flex-col md:flex-row gap-8">
-        <div class="md:w-5/12 shrink-0">
-          <div class="bg-paper-2 p-2">
-            <img
-              src="imgs/albioncalc.png"
-              alt="Albion Refining Calculator screenshot"
-              class="w-full aspect-video object-cover object-top block"
-              loading="lazy"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 flex-1">
-          <p class="text-xs font-sans text-rust/70 tracking-widest">03</p>
-          <h4 class="font-serif text-paper text-xl leading-snug">Albion Refining Calculator</h4>
-          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Open-Source Web App</p>
-          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
-            An open-source game economy calculator for Albion Online's refining system, helping players model refining returns and profit margins. Written in TypeScript and deployed on Vercel.
-          </p>
-          <ul class="flex flex-wrap gap-2 mt-1">
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TypeScript</li>
-          </ul>
-          <div class="flex gap-4 flex-wrap mt-1">
-            <a href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator" class="text-xs font-sans text-rust hover:underline">Live Demo ↗</a>
-            <a href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
-          </div>
-        </div>
-      </article>
-
-      <hr class="border-white/5"/>
-
-      <!-- 04 Recehin -->
-      <article class="flex flex-col md:flex-row gap-8">
-        <div class="md:w-5/12 shrink-0">
-          <div class="bg-paper-2/10 border border-paper/5 aspect-video flex items-center justify-center">
-            <p class="font-sans text-paper/30 text-xs text-center px-4">No screenshot available<br/>Live demo not available</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 flex-1">
-          <p class="text-xs font-sans text-rust/70 tracking-widest">04</p>
-          <h4 class="font-serif text-paper text-xl leading-snug">Recehin</h4>
-          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">REST API Integration</p>
-          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
-            A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
-          </p>
-          <ul class="flex flex-wrap gap-2 mt-1">
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Android Studio</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Java/Kotlin</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Retrofit</li>
-            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">REST API</li>
-          </ul>
-          <p class="font-sans text-paper/30 text-xs mt-1">Live demo not available</p>
-          <div class="flex gap-4 flex-wrap">
-            <a href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════
-     CONTACT
-══════════════════════════════════════════════════════ -->
-<section id="contact" class="py-16 md:py-20 scroll-mt-16 bg-paper">
-  <div class="max-w-5xl mx-auto px-6 md:px-10">
-    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Contact</p>
-    <div class="flex flex-col md:flex-row gap-12">
-      <!-- Direct links -->
-      <div class="flex flex-col gap-5 flex-1">
-        <p class="font-sans text-ink/70 text-sm leading-relaxed max-w-xs">
-          Seeking a frontend or backend developer role. Reach out directly to discuss an opportunity.
-        </p>
-        <div class="flex flex-col gap-3 text-sm font-sans">
-          <div>
-            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">Email</p>
-            <a href="mailto:imannnnugraha@gmail.com" class="text-rust hover:underline">imannnnugraha@gmail.com</a>
-            <p class="text-ink/50 text-xs mt-0.5 select-all">imannnnugraha@gmail.com</p>
-          </div>
-          <div>
-            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">GitHub</p>
-            <a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline">github.com/Jokskuyy</a>
-          </div>
-          <div>
-            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">LinkedIn</p>
-            <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline">LinkedIn</a>
-          </div>
-        </div>
-      </div>
-      <!-- Email form -->
-      <div class="flex-1">
-        <form class="flex flex-col gap-4" action="mailto:imannnnugraha@gmail.com" method="post" enctype="text/plain">
-          <p class="text-xs font-sans text-ink/40 border border-ink/10 bg-ink/5 p-3 leading-relaxed">This static page has no backend. Submitting opens your email app with the message details.</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="flex flex-col gap-1">
-              <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-name">Name</label>
-              <input id="contact-name" name="name" type="text" placeholder="Your name" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
+    <section id="about" class="bg-paper py-20 text-ink md:py-28">
+      <div class="page-shell">
+        <p class="mono-label text-cobalt">Profile</p>
+        <div class="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,0.7fr)] lg:gap-14">
+          <div class="min-w-0">
+            <h2 class="section-title">Both sides of the request.</h2>
+            <div class="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-ink/75 md:text-lg">
+              <p>
+                I’m a <strong class="text-ink">final-year Informatics student at UPN Veteran Jakarta</strong> with a <strong class="text-ink">GPA of 3.75 / 4.0</strong>. My work sits across <strong class="text-ink">frontend web development</strong>, <strong class="text-ink">backend web development</strong>, <strong class="text-ink">API integration</strong>, and <strong class="text-ink">database management</strong>.
+              </p>
+              <p>
+                I’ve worked with React and TypeScript interfaces, Express APIs, Supabase Row Level Security, Dockerized services, MQTT device communication, and relational databases. I like understanding the full path a request takes—not only the screen where it starts.
+              </p>
+              <p>
+                The projects below show that range: a secure UPNVJ dashboard, an IoT control platform, an open-source game-economy calculator, and a mobile REST API integration.
+              </p>
             </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-email">Email</label>
-              <input id="contact-email" name="email" type="email" placeholder="your@email.com" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
+            <figure class="comic-frame halftone mt-10 overflow-hidden p-4 md:p-7">
+              <img
+                class="block h-auto w-full"
+                src="imgs/fullstack-prop-rig.webp"
+                width="1774"
+                height="887"
+                loading="lazy"
+                alt="Comic illustration connecting a browser interface, API nodes, database, and smart-home sensor"
+              />
+              <figcaption class="mt-3 font-mono text-[0.67rem] uppercase tracking-[0.08em] text-ink/60">A request moving from interface to API, data, and connected device.</figcaption>
+            </figure>
+          </div>
+
+          <aside class="border-l-2 border-ink pl-6 lg:mt-24">
+            <p class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-cobalt">How I Build</p>
+            <p class="mt-5 leading-relaxed text-ink/70">
+              I clarify the problem early, keep blockers visible, and use code review as a way to sharpen the implementation—not as a final ceremony.
+            </p>
+            <div class="mt-7 space-y-3 font-mono text-xs">
+              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">01</span> Ask before assuming</p>
+              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">02</span> Trace the whole request</p>
+              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">03</span> Share the blocker early</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="border-y-2 border-ink bg-cobalt py-20 text-ink md:py-28">
+      <div class="page-shell">
+        <p class="mono-label text-ink">Career Route</p>
+        <div class="mt-8 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <div>
+            <h2 class="section-title text-paper">Learning, then shipping.</h2>
+            <div class="route-line mt-10 bg-paper">
+              <div class="route-step">
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Foundation</p>
+                <p class="mt-2 font-bold">UPN Veteran Jakarta</p>
+                <p class="mt-1 text-sm text-ink/65">Informatics · Final year</p>
+              </div>
+              <div class="route-step">
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Industry</p>
+                <p class="mt-2 font-bold">Mantra</p>
+                <p class="mt-1 text-sm text-ink/65">Front-End Internship</p>
+              </div>
+              <div class="route-step is-current">
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Now</p>
+                <p class="mt-2 font-bold">Next Team</p>
+                <p class="mt-1 text-sm text-ink/65">Frontend · Backend · Full-stack</p>
+              </div>
             </div>
           </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-subject">Subject</label>
-            <input id="contact-subject" name="subject" type="text" placeholder="Opportunity / Role" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-message">Message</label>
-            <textarea id="contact-message" name="message" rows="4" placeholder="Tell me about the role or opportunity..." class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none resize-none placeholder:text-ink/30"></textarea>
-          </div>
-          <button type="submit" class="font-sans text-xs uppercase tracking-widest px-5 py-3 bg-rust text-paper hover:bg-rust-lt transition-colors w-fit">Open Email Draft</button>
-        </form>
+
+          <article class="comic-frame self-end p-6 md:p-8">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p class="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-cobalt">Mantra (Teman Transisi)</p>
+                <h3 class="mt-2 text-3xl font-extrabold tracking-[-0.045em]">Front-End Intern</h3>
+              </div>
+              <span class="whitespace-nowrap font-mono text-xs font-semibold">03/2025 – 10/2025</span>
+            </div>
+            <ul class="mt-7 grid gap-3 text-sm leading-relaxed text-ink/75">
+              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Responsive web platform front-end development</span></li>
+              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Responsive admin dashboard UI implementation</span></li>
+              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Front-end data validation for CRUD operations</span></li>
+              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Collaboration with back-end developers for API integration within a Laravel framework</span></li>
+            </ul>
+          </article>
+        </div>
       </div>
+    </section>
+
+    <section id="skills" class="bg-paper py-20 text-ink md:py-28">
+      <div class="page-shell">
+        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="mono-label text-cobalt">Capabilities</p>
+            <h2 class="section-title mt-7">The working stack.</h2>
+          </div>
+          <p class="max-w-md text-base leading-relaxed text-ink/65">Tools are useful when they help the request move cleanly from interaction to application logic and persistent data.</p>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="capability-card flex flex-col gap-5">
+            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Frontend</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="skill-token">React.js</span>
+              <span class="skill-token">TypeScript</span>
+              <span class="skill-token">JavaScript</span>
+              <span class="skill-token">HTML</span>
+              <span class="skill-token">CSS</span>
+              <span class="skill-token">Tailwind CSS</span>
+            </div>
+          </div>
+          <div class="capability-card flex flex-col gap-5">
+            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Backend</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="skill-token">Python</span>
+              <span class="skill-token">PHP</span>
+              <span class="skill-token">Node.js</span>
+              <span class="skill-token">Express.js</span>
+              <span class="skill-token">Laravel</span>
+            </div>
+          </div>
+          <div class="capability-card flex flex-col gap-5">
+            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Databases</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="skill-token">MySQL</span>
+              <span class="skill-token">PostgreSQL</span>
+              <span class="skill-token">Supabase</span>
+              <span class="skill-token">Firebase</span>
+            </div>
+          </div>
+          <div class="capability-card flex flex-col gap-5">
+            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Architecture &amp; Tools</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="skill-token">Git</span>
+              <span class="skill-token">Docker</span>
+              <span class="skill-token">REST API</span>
+              <span class="skill-token">MVC</span>
+              <span class="skill-token">Microservices</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="border-t-2 border-paper/20 bg-ink py-20 text-paper md:py-28">
+      <div class="page-shell">
+        <p class="mono-label text-lime">Build Select</p>
+        <div class="mt-7 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <h2 class="section-title">Choose a build. See the system.</h2>
+          <p class="max-w-md text-base leading-relaxed text-paper/60">Four builds, ordered from full-stack web systems to a focused mobile API integration. Every project keeps its real evidence and constraints visible.</p>
+        </div>
+
+        <div class="project-layout mt-14">
+          <nav class="build-selector" aria-label="Featured project selector">
+            <a class="build-link" href="#project-dashboard" data-build-link="project-dashboard" aria-current="true"><span>01</span><span>Dashboard UPNVJ</span></a>
+            <a class="build-link" href="#project-smarthome" data-build-link="project-smarthome"><span>02</span><span>Smart Home IoT</span></a>
+            <a class="build-link" href="#project-albion" data-build-link="project-albion"><span>03</span><span>Albion Calculator</span></a>
+            <a class="build-link" href="#project-recehin" data-build-link="project-recehin"><span>04</span><span>Recehin</span></a>
+          </nav>
+
+          <div class="min-w-0">
+            <article id="project-dashboard" class="project-card reveal" data-build="project-dashboard">
+              <figure class="project-media">
+                <img
+                  src="imgs/dashboard-upnvj.png"
+                  width="1264"
+                  height="711"
+                  loading="lazy"
+                  alt="Dashboard Profile UPNVJ showing profile content management and analytics"
+                />
+                <figcaption class="project-media-label">REAL PROJECT SCREEN</figcaption>
+              </figure>
+              <div class="project-body">
+                <p class="project-index">Fullstack Web Application · Build 01</p>
+                <h3 class="project-title">Dashboard Profile UPNVJ</h3>
+                <p class="mt-5 text-base leading-relaxed text-paper/68">
+                  A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized through dynamic code splitting and memoized React context.
+                </p>
+                <ul class="mt-6 flex flex-wrap gap-2">
+                  <li class="skill-token !border-paper/35 !text-paper">React.js</li>
+                  <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Vite</li>
+                  <li class="skill-token !border-paper/35 !text-paper">TailwindCSS</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Supabase</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Express.js</li>
+                </ul>
+                <div class="mt-7 flex flex-wrap gap-6">
+                  <a class="project-link" href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ">Open Live Demo ↗</a>
+                  <a class="project-link" href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ">View Source ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article id="project-smarthome" class="project-card reveal" data-build="project-smarthome">
+              <figure class="project-media concept-stage">
+                <svg viewBox="0 0 420 250" role="img" aria-labelledby="smarthome-title smarthome-desc">
+                  <title id="smarthome-title">Smart Home IoT concept illustration</title>
+                  <desc id="smarthome-desc">A home node connected to a server, database, and wireless device signal.</desc>
+                  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
+                    <path d="M55 120 135 55l80 65v90H75v-90" fill="#F5F1E8" stroke="#101114" />
+                    <path d="M125 210v-55h40v55" fill="#B8FF3D" stroke="#101114" />
+                    <path d="M220 135h48" stroke="#B8FF3D" />
+                    <rect x="270" y="90" width="85" height="90" fill="#F5F1E8" stroke="#101114" />
+                    <circle cx="312" cy="135" r="17" fill="#B8FF3D" stroke="#101114" />
+                    <path d="M365 112c22 8 34 25 34 46M367 82c39 11 63 40 63 76" stroke="#B8FF3D" />
+                  </g>
+                </svg>
+                <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
+              </figure>
+              <div class="project-body">
+                <p class="project-index">Fullstack IoT Platform · Build 02</p>
+                <h3 class="project-title">Smart Home IoT</h3>
+                <p class="mt-5 text-base leading-relaxed text-paper/68">
+                  A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL.
+                </p>
+                <ul class="mt-6 flex flex-wrap gap-2">
+                  <li class="skill-token !border-paper/35 !text-paper">HTML</li>
+                  <li class="skill-token !border-paper/35 !text-paper">CSS</li>
+                  <li class="skill-token !border-paper/35 !text-paper">JavaScript</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Express.js</li>
+                  <li class="skill-token !border-paper/35 !text-paper">MySQL</li>
+                  <li class="skill-token !border-paper/35 !text-paper">MQTT</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Docker</li>
+                </ul>
+                <p class="mt-5 font-mono text-xs text-paper/45">Live demo not available</p>
+                <div class="mt-4 flex flex-wrap gap-6">
+                  <a class="project-link" href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT">View Source ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article id="project-albion" class="project-card reveal" data-build="project-albion">
+              <figure class="project-media">
+                <img
+                  src="imgs/albioncalc.png"
+                  width="2560"
+                  height="1069"
+                  loading="lazy"
+                  alt="Albion Refining Calculator showing material inputs and refining profit calculations"
+                />
+                <figcaption class="project-media-label">REAL PROJECT SCREEN</figcaption>
+              </figure>
+              <div class="project-body">
+                <p class="project-index">Open-Source Web App · Build 03</p>
+                <h3 class="project-title">Albion Refining Calculator</h3>
+                <p class="mt-5 text-base leading-relaxed text-paper/68">
+                  An open-source game economy calculator for Albion Online’s refining system, helping players model refining returns and profit margins. Written in TypeScript and deployed on Vercel.
+                </p>
+                <ul class="mt-6 flex flex-wrap gap-2">
+                  <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
+                </ul>
+                <div class="mt-7 flex flex-wrap gap-6">
+                  <a class="project-link" href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator">Open Live Demo ↗</a>
+                  <a class="project-link" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator">View Source ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article id="project-recehin" class="project-card reveal" data-build="project-recehin">
+              <figure class="project-media concept-stage">
+                <svg viewBox="0 0 420 250" role="img" aria-labelledby="recehin-title recehin-desc">
+                  <title id="recehin-title">Recehin concept illustration</title>
+                  <desc id="recehin-desc">A phone displaying transaction blocks connected to an API endpoint.</desc>
+                  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
+                    <rect x="80" y="25" width="145" height="205" rx="12" fill="#F5F1E8" stroke="#101114" />
+                    <path d="M118 77h70M118 115h70M118 153h45" stroke="#3457FF" />
+                    <circle cx="190" cy="184" r="15" fill="#B8FF3D" stroke="#101114" />
+                    <path d="M235 125h58" stroke="#B8FF3D" />
+                    <path d="m282 104 28 21-28 21" stroke="#B8FF3D" />
+                    <rect x="312" y="82" width="70" height="86" fill="#B8FF3D" stroke="#101114" />
+                    <circle cx="347" cy="125" r="11" fill="#3457FF" stroke="#101114" />
+                  </g>
+                </svg>
+                <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
+              </figure>
+              <div class="project-body">
+                <p class="project-index">REST API Integration · Build 04</p>
+                <h3 class="project-title">Recehin</h3>
+                <p class="mt-5 text-base leading-relaxed text-paper/68">
+                  A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
+                </p>
+                <ul class="mt-6 flex flex-wrap gap-2">
+                  <li class="skill-token !border-paper/35 !text-paper">Android Studio</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Java/Kotlin</li>
+                  <li class="skill-token !border-paper/35 !text-paper">Retrofit</li>
+                  <li class="skill-token !border-paper/35 !text-paper">REST API</li>
+                </ul>
+                <p class="mt-5 font-mono text-xs text-paper/45">Live demo not available</p>
+                <div class="mt-4 flex flex-wrap gap-6">
+                  <a class="project-link" href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin">View Source ↗</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="bg-paper py-20 text-ink md:py-28">
+      <div class="page-shell">
+        <div class="contact-panel p-6 md:p-10 lg:p-14">
+          <div class="grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+            <div>
+              <p class="mono-label text-lime">Contact</p>
+              <h2 class="mt-7 max-w-[11ch] text-[clamp(3rem,8vw,7rem)] font-extrabold leading-[0.86] tracking-[-0.075em]">Let’s trace the next request together.</h2>
+              <p class="mt-7 max-w-xl text-lg leading-relaxed text-paper/72">I’m looking for a frontend, backend, or full-stack developer role where I can keep improving across both product interfaces and the systems behind them.</p>
+            </div>
+
+            <div class="border-t-2 border-paper/30 pt-7 lg:border-l-2 lg:border-t-0 lg:pl-8 lg:pt-0">
+              <p class="font-mono text-[0.68rem] uppercase tracking-[0.1em] text-lime">Direct Line</p>
+              <p class="email-address mt-3 text-xl font-bold md:text-2xl">imannnnugraha@gmail.com</p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <a class="action action-primary" href="mailto:imannnnugraha@gmail.com">Write an Email ↗</a>
+                <button id="copy-email" class="action action-secondary" type="button" data-email="imannnnugraha@gmail.com" aria-describedby="copy-status">Copy Address</button>
+              </div>
+              <p id="copy-status" class="mt-3 min-h-5 font-mono text-xs text-paper/65" role="status" aria-live="polite"></p>
+              <div class="mt-7 flex flex-wrap gap-5 font-mono text-xs">
+                <a class="border-b-2 border-paper/40 pb-1 hover:border-lime hover:text-lime" href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a class="border-b-2 border-paper/40 pb-1 hover:border-lime hover:text-lime" href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t-2 border-paper/20 bg-ink py-8 text-paper">
+    <div class="page-shell flex flex-col gap-3 font-mono text-[0.68rem] text-paper/55 sm:flex-row sm:items-center sm:justify-between">
+      <p>Built across the interface and the system.</p>
+      <p>Jakarta, Indonesia · 2026</p>
     </div>
-  </div>
-</section>
+  </footer>
 
-</main>
-
-<footer class="bg-charcoal border-t border-white/5 py-8">
-  <div class="max-w-5xl mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-sans text-paper/30">
-    <span>Iman</span>
-    <span>© <script>document.write(new Date().getFullYear())</script> Muhammad Iman Nugraha</span>
-    <div class="flex gap-5">
-      <a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" class="hover:text-paper transition-colors">GitHub</a>
-      <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" class="hover:text-paper transition-colors">LinkedIn</a>
-      <a href="mailto:imannnnugraha@gmail.com" aria-label="Email" class="hover:text-paper transition-colors">Email</a>
-    </div>
-  </div>
-</footer>
-
+  <script src="parallax.js" defer></script>
 </body>
 </html>

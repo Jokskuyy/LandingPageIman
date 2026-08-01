@@ -62,8 +62,8 @@ test("experience role renders as its own element with the populated value", () =
   const { document } = loadIndexHtml();
   const section = getExperienceSection(document);
 
-  const role = section.querySelector("h4");
-  assert.ok(role, "the role should render as an <h4> element");
+  const role = section.querySelector("h3");
+  assert.ok(role, "the role should render as an <h3> element");
   assert.equal(normalize(role.textContent), EXPECTED_ROLE);
 });
 
@@ -139,7 +139,7 @@ test("no empty or blank field elements are rendered in the entry", () => {
 
   // The populated role/company/duration fields are non-empty (omit-only-missing:
   // since all are populated here, none should render as a blank element).
-  const role = section.querySelector("h4");
+  const role = section.querySelector("h3");
   assert.ok(normalize(role.textContent).length > 0, "role element should not be blank");
 
   const responsibilityTexts = getResponsibilityTexts(section);
