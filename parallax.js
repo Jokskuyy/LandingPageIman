@@ -67,8 +67,40 @@ onReady(() => {
   const sections = sectionLinks
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
+  const observedSections = [document.querySelector("#hero"), ...sections].filter(
+    Boolean,
+  );
+  const scrollCompanion = document.querySelector("[data-scroll-companion]");
+  const companionStatus = document.querySelector("[data-companion-status]");
+  const companionLabels = {
+    hero: "ONLINE",
+    about: "PROFILE",
+    experience: "ROUTE",
+    skills: "STACK",
+    projects: "BUILDS",
+    contact: "PING",
+  };
+  let companionTimer;
 
-  if ("IntersectionObserver" in window && sections.length > 0) {
+  const setCompanionState = (sectionId) => {
+    const label = companionLabels[sectionId];
+    if (!label || !scrollCompanion || !companionStatus) return;
+
+    scrollCompanion.dataset.state = label;
+    if (companionStatus.textContent === label) return;
+
+    companionStatus.textContent = label;
+    if (prefersReducedMotion) return;
+
+    scrollCompanion.classList.remove("is-switching");
+    scrollCompanion.classList.add("is-switching");
+    window.clearTimeout(companionTimer);
+    companionTimer = window.setTimeout(() => {
+      scrollCompanion.classList.remove("is-switching");
+    }, 180);
+  };
+
+  if ("IntersectionObserver" in window && observedSections.length > 0) {
     const sectionObserver = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -76,6 +108,7 @@ onReady(() => {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
         if (!visible) return;
+        setCompanionState(visible.target.id);
         sectionLinks.forEach((link) => {
           if (link.getAttribute("href") === `#${visible.target.id}`) {
             link.setAttribute("aria-current", "location");
@@ -84,10 +117,10 @@ onReady(() => {
           }
         });
       },
-      { threshold: [0.18, 0.4], rootMargin: "-20% 0px -58% 0px" },
+      { threshold: 0, rootMargin: "-20% 0px -70% 0px" },
     );
 
-    sections.forEach((section) => sectionObserver.observe(section));
+    observedSections.forEach((section) => sectionObserver.observe(section));
   }
 
   const mobileMenu = document.querySelector("header details");

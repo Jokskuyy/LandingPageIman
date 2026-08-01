@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { loadIndexHtml, html } from "./harness.js";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { loadIndexHtml, html, INDEX_HTML_PATH } from "./harness.js";
+
+const PROJECT_ROOT = dirname(INDEX_HTML_PATH);
 
 test("Digital arcade: legacy field-note and theatrical labels are absent", () => {
   const { document } = loadIndexHtml();
@@ -11,19 +15,30 @@ test("Digital arcade: legacy field-note and theatrical labels are absent", () =>
   assert.doesNotMatch(text, /initiate\s+protocol/i);
 });
 
-test("Digital arcade: exact ink, lime, cobalt, and off-white tokens are defined", () => {
-  for (const color of ["#101114", "#B8FF3D", "#3457FF", "#F5F1E8"]) {
+test("Muted arcade: exact dark, surface, blue, sage, and warm tokens are defined", () => {
+  for (const color of [
+    "#161A22",
+    "#1D2430",
+    "#242C3A",
+    "#F2EEE6",
+    "#AAB2C0",
+    "#5267A6",
+    "#B5C98B",
+    "#CC826A",
+  ]) {
     assert.ok(
       html.toUpperCase().includes(color),
       `redesign should define the ${color} color token`,
     );
   }
+
+  assert.ok(!html.toUpperCase().includes("#B8FF3D"), "neon lime should be absent");
 });
 
 test("Digital arcade: hero uses the generated comic avatar, not the raw photo", () => {
   const { document } = loadIndexHtml();
   const heroImage = document.querySelector(
-    '#hero img[src="imgs/iman-avatar-comic.webp"]',
+    '#hero img[src="imgs/iman-avatar-comic-sage.webp"]',
   );
 
   assert.ok(heroImage, "hero should reference the generated comic avatar");
@@ -36,13 +51,57 @@ test("Digital arcade: hero uses the generated comic avatar, not the raw photo", 
 test("Digital arcade: supporting prop rig is lazy-loaded and dimensioned", () => {
   const { document } = loadIndexHtml();
   const propRig = document.querySelector(
-    'img[src="imgs/fullstack-prop-rig.webp"]',
+    'img[src="imgs/fullstack-prop-rig-sage.webp"]',
   );
 
   assert.ok(propRig, "supporting comic prop rig should be rendered");
   assert.equal(propRig.getAttribute("loading"), "lazy");
   assert.equal(propRig.getAttribute("width"), "1774");
   assert.equal(propRig.getAttribute("height"), "887");
+});
+
+test("Muted arcade: supporting props and scroll companion are wired progressively", () => {
+  const { document } = loadIndexHtml();
+  const iotProp = document.querySelector('img[src="imgs/iot-node-sage.webp"]');
+  const buildRack = document.querySelector(
+    'img[src="imgs/build-cartridge-rack-sage.webp"]',
+  );
+  const companion = document.querySelector("[data-scroll-companion]");
+  const companionStatus = companion?.querySelector("[data-companion-status]");
+
+  assert.ok(iotProp, "Skills should render the IoT prop");
+  assert.equal(iotProp.getAttribute("loading"), "lazy");
+  assert.equal(iotProp.getAttribute("width"), "1641");
+  assert.equal(iotProp.getAttribute("height"), "958");
+
+  assert.ok(buildRack, "Projects should render the build cartridge rack");
+  assert.equal(buildRack.getAttribute("loading"), "lazy");
+  assert.equal(buildRack.getAttribute("width"), "1254");
+  assert.equal(buildRack.getAttribute("height"), "1254");
+
+  assert.ok(companion, "the decorative scroll companion should exist");
+  assert.equal(companion.getAttribute("aria-hidden"), "true");
+  assert.equal(companion.dataset.state, "ONLINE");
+  assert.equal(companionStatus?.textContent.trim(), "ONLINE");
+  assert.match(html, /imgs\/scroll-workstation-sage\.webp/);
+
+  for (const asset of [
+    "imgs/iman-avatar-comic-sage.webp",
+    "imgs/fullstack-prop-rig-sage.webp",
+    "imgs/scroll-workstation-sage.webp",
+    "imgs/iot-node-sage.webp",
+    "imgs/build-cartridge-rack-sage.webp",
+  ]) {
+    assert.ok(existsSync(join(PROJECT_ROOT, asset)), `${asset} should exist`);
+    assert.ok(html.includes(asset), `${asset} should be referenced by the page`);
+  }
+});
+
+test("Muted arcade: the header uses the candidate's full name", () => {
+  const { document } = loadIndexHtml();
+  const homeLink = document.querySelector('header a[href="#hero"]');
+
+  assert.match(homeLink?.textContent || "", /Muhammad Iman Nugraha/);
 });
 
 test("Digital arcade: hero avoids fixed viewport-height sections", () => {
@@ -71,7 +130,8 @@ test("Accessibility: skip link, reduced-motion fallback, and theme color exist",
   const themeColor = document.querySelector('meta[name="theme-color"]');
 
   assert.ok(skipLink, "page should provide a skip link to main content");
-  assert.equal(themeColor?.getAttribute("content"), "#3457FF");
+  assert.equal(themeColor?.getAttribute("content"), "#161A22");
+  assert.match(html, /color-scheme\s*:\s*dark/i);
   assert.match(html, /prefers-reduced-motion\s*:\s*reduce/i);
 });
 

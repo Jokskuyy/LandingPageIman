@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#3457FF" />
+  <meta name="theme-color" content="#161A22" />
   <meta
     name="description"
     content="Muhammad Iman Nugraha is a frontend, backend, and full-stack web developer building clear interfaces and reliable systems."
   />
   <title>Muhammad Iman Nugraha — Fullstack Web Developer</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%233457FF'/%3E%3Cpath d='M8 8h16v16H8z' fill='%23B8FF3D' stroke='%23101114' stroke-width='3'/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%235267A6'/%3E%3Cpath d='M8 8h16v16H8z' fill='%23B5C98B' stroke='%23161A22' stroke-width='3'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -23,12 +23,14 @@
       theme: {
         extend: {
           colors: {
-            ink: '#101114',
-            paper: '#F5F1E8',
-            lime: '#B8FF3D',
-            cobalt: '#3457FF',
+            ink: '#161A22',
+            surface: '#1D2430',
+            raised: '#242C3A',
+            paper: '#F2EEE6',
+            lime: '#B5C98B',
+            cobalt: '#5267A6',
             steel: '#AAB2C0',
-            signal: '#FF6B4A'
+            signal: '#CC826A'
           },
           fontFamily: {
             display: ['Bricolage Grotesque', 'Arial Black', 'sans-serif'],
@@ -40,18 +42,21 @@
   </script>
   <style>
     :root {
-      --ink: #101114;
-      --paper: #f5f1e8;
-      --lime: #b8ff3d;
-      --cobalt: #3457ff;
+      color-scheme: dark;
+      --ink: #161a22;
+      --surface: #1d2430;
+      --raised: #242c3a;
+      --paper: #f2eee6;
+      --lime: #b5c98b;
+      --cobalt: #5267a6;
       --steel: #aab2c0;
-      --signal: #ff6b4a;
-      --line: 2px solid var(--ink);
+      --signal: #cc826a;
+      --line: 2px solid rgba(242, 238, 230, 0.18);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
-    html { background: var(--ink); }
+    html { background: var(--ink); color-scheme: dark; }
 
     body {
       margin: 0;
@@ -62,7 +67,7 @@
       font-family: "Bricolage Grotesque", sans-serif;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
-      -webkit-tap-highlight-color: rgba(184, 255, 61, 0.18);
+      -webkit-tap-highlight-color: rgba(181, 201, 139, 0.18);
     }
 
     a, button, summary { touch-action: manipulation; }
@@ -104,6 +109,7 @@
 
     header summary:hover {
       background: var(--lime);
+      color: var(--ink);
       transform: translate(-1px, -1px);
     }
 
@@ -136,15 +142,16 @@
       max-width: 13ch;
       font-size: clamp(2.45rem, 7vw, 5.7rem);
       font-weight: 800;
-      letter-spacing: -0.065em;
-      line-height: 0.9;
+      letter-spacing: -0.035em;
+      line-height: 0.96;
     }
 
     .comic-frame {
       position: relative;
       border: var(--line);
-      background: var(--paper);
-      box-shadow: 9px 9px 0 var(--ink);
+      background: var(--raised);
+      color: var(--paper);
+      box-shadow: 9px 9px 0 var(--cobalt);
     }
 
     .comic-frame::after {
@@ -161,7 +168,7 @@
     }
 
     .halftone {
-      background-image: radial-gradient(circle, rgba(16, 17, 20, 0.18) 1.1px, transparent 1.25px);
+      background-image: radial-gradient(circle, rgba(242, 238, 230, 0.1) 1.1px, transparent 1.25px);
       background-size: 8px 8px;
     }
 
@@ -181,19 +188,19 @@
     }
 
     .action-primary {
-      background: var(--lime);
-      color: var(--ink);
-      box-shadow: 5px 5px 0 var(--cobalt);
+      background: var(--cobalt);
+      color: var(--paper);
+      box-shadow: 5px 5px 0 var(--lime);
     }
 
     .action-secondary {
-      border-color: rgba(245, 241, 232, 0.45);
+      border-color: rgba(242, 238, 230, 0.45);
       background: transparent;
       color: var(--paper);
     }
 
     .action:hover { transform: translate(-2px, -2px); }
-    .action-primary:hover { box-shadow: 7px 7px 0 var(--cobalt); }
+    .action-primary:hover { box-shadow: 7px 7px 0 var(--lime); }
     .action-secondary:hover { border-color: var(--lime); color: var(--lime); }
 
     .nav-link[aria-current="location"] { color: var(--lime); }
@@ -207,18 +214,15 @@
 
     .hero-title {
       max-width: 11ch;
-      font-size: clamp(3.25rem, 7.2vw, 6.8rem);
-      font-weight: 800;
-      letter-spacing: -0.075em;
-      line-height: 0.87;
+      font-size: clamp(3.25rem, 7vw, 6.25rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 0.94;
+      text-wrap: balance;
     }
 
     .hero-title .interface-word {
       color: var(--lime);
-      text-decoration: underline;
-      text-decoration-color: var(--cobalt);
-      text-decoration-thickness: 0.12em;
-      text-underline-offset: 0.08em;
     }
 
     .hero-visual {
@@ -233,7 +237,7 @@
       inset: 9% 2% 4% 12%;
       z-index: -2;
       border: var(--line);
-      background: var(--lime);
+      background: var(--raised);
       box-shadow: 12px 12px 0 var(--cobalt);
       content: "";
       transform: rotate(-2deg);
@@ -243,7 +247,7 @@
       position: absolute;
       inset: 14% 8% 8% 6%;
       z-index: -1;
-      background-image: radial-gradient(circle, rgba(16, 17, 20, 0.25) 1.2px, transparent 1.35px);
+      background-image: radial-gradient(circle, rgba(181, 201, 139, 0.24) 1.2px, transparent 1.35px);
       background-size: 9px 9px;
       content: "";
       clip-path: polygon(7% 0, 100% 4%, 94% 100%, 0 92%);
@@ -260,13 +264,14 @@
       position: absolute;
       z-index: 2;
       border: var(--line);
-      background: var(--paper);
-      color: var(--ink);
+      border-color: rgba(242, 238, 230, 0.25);
+      background: var(--surface);
+      color: var(--paper);
       padding: 0.55rem 0.7rem;
       font-family: "IBM Plex Mono", monospace;
       font-size: 0.68rem;
       font-weight: 600;
-      box-shadow: 4px 4px 0 var(--ink);
+      box-shadow: 4px 4px 0 var(--cobalt);
     }
 
     .layer-tag-ui { top: 22%; left: -1.25rem; transform: rotate(-4deg); }
@@ -274,9 +279,9 @@
     .layer-tag-data { bottom: 8%; left: 1rem; transform: rotate(2deg); }
 
     .signal-strip {
-      border-block: var(--line);
-      background: var(--lime);
-      color: var(--ink);
+      border-block: 1px solid rgba(181, 201, 139, 0.55);
+      background: var(--raised);
+      color: var(--paper);
     }
 
     .signal-strip-inner {
@@ -289,7 +294,7 @@
       padding: 1.1rem 1.5rem;
     }
 
-    .signal-item + .signal-item { border-left: var(--line); }
+    .signal-item + .signal-item { border-left: 1px solid rgba(242, 238, 230, 0.15); }
 
     .signal-value {
       display: block;
@@ -327,7 +332,7 @@
       width: 0.8rem;
       height: 0.8rem;
       margin-bottom: 1rem;
-      border: 2px solid var(--ink);
+      border: 2px solid var(--paper);
       background: var(--lime);
       content: "";
       transform: rotate(45deg);
@@ -340,9 +345,10 @@
       min-height: 15rem;
       overflow: hidden;
       border: var(--line);
-      background: var(--paper);
+      background: var(--surface);
+      color: var(--paper);
       padding: 1.4rem;
-      box-shadow: 6px 6px 0 var(--cobalt);
+      box-shadow: 6px 6px 0 rgba(82, 103, 166, 0.78);
     }
 
     .capability-card::after {
@@ -351,17 +357,17 @@
       bottom: -2.5rem;
       width: 6rem;
       height: 6rem;
-      border: 2px solid var(--ink);
+      border: 2px solid rgba(242, 238, 230, 0.2);
       background: var(--lime);
       content: "";
       transform: rotate(45deg);
     }
 
     .skill-token {
-      border: 1.5px solid var(--ink);
+      border: 1.5px solid rgba(242, 238, 230, 0.32);
       background: transparent;
       padding: 0.32rem 0.48rem;
-      color: var(--ink);
+      color: var(--paper);
       font-family: "IBM Plex Mono", monospace;
       font-size: 0.68rem;
       line-height: 1;
@@ -377,7 +383,7 @@
     .build-selector {
       position: sticky;
       top: 5.75rem;
-      border: 2px solid rgba(245, 241, 232, 0.22);
+      border: 2px solid rgba(242, 238, 230, 0.22);
     }
 
     .build-link {
@@ -387,13 +393,13 @@
       gap: 0.7rem;
       grid-template-columns: auto 1fr auto;
       padding: 0.85rem 1rem;
-      color: rgba(245, 241, 232, 0.62);
+      color: rgba(242, 238, 230, 0.62);
       font-family: "IBM Plex Mono", monospace;
       font-size: 0.72rem;
       line-height: 1.3;
     }
 
-    .build-link + .build-link { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+    .build-link + .build-link { border-top: 1px solid rgba(242, 238, 230, 0.18); }
 
     .build-link::after {
       width: 0.6rem;
@@ -403,7 +409,7 @@
       transform: rotate(45deg);
     }
 
-    .build-link:hover { background: rgba(184, 255, 61, 0.08); color: var(--paper); }
+    .build-link:hover { background: rgba(181, 201, 139, 0.08); color: var(--paper); }
 
     .build-link[aria-current="true"] {
       background: var(--lime);
@@ -415,8 +421,8 @@
 
     .project-card {
       overflow: hidden;
-      border: 2px solid rgba(245, 241, 232, 0.3);
-      background: #17191f;
+      border: 2px solid rgba(242, 238, 230, 0.24);
+      background: var(--surface);
     }
 
     .project-card + .project-card { margin-top: 3rem; }
@@ -424,7 +430,7 @@
     .project-media {
       position: relative;
       overflow: hidden;
-      border-bottom: 2px solid rgba(245, 241, 232, 0.3);
+      border-bottom: 2px solid rgba(242, 238, 230, 0.24);
       background: var(--paper);
     }
 
@@ -454,7 +460,7 @@
       display: grid;
       min-height: 19rem;
       place-items: center;
-      background: var(--cobalt);
+      background: var(--raised);
       color: var(--paper);
     }
 
@@ -498,12 +504,91 @@
 
     .contact-panel {
       border: var(--line);
-      background: var(--cobalt);
+      background: var(--raised);
       color: var(--paper);
-      box-shadow: 12px 12px 0 var(--lime);
+      box-shadow: 12px 12px 0 var(--signal);
     }
 
     .email-address { overflow-wrap: anywhere; user-select: all; }
+
+    .skills-intro {
+      display: grid;
+      align-items: end;
+      gap: clamp(1.5rem, 4vw, 3rem);
+      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.52fr) minmax(9rem, 0.3fr);
+    }
+
+    .skills-prop {
+      display: block;
+      width: min(100%, 13rem);
+      height: auto;
+      justify-self: end;
+      filter: drop-shadow(7px 7px 0 rgba(22, 26, 34, 0.65));
+    }
+
+    .projects-heading {
+      display: grid;
+      align-items: end;
+      gap: clamp(1.5rem, 4vw, 3rem);
+      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.48fr) minmax(9rem, 0.26fr);
+    }
+
+    .build-rack-prop {
+      display: block;
+      width: min(100%, 12rem);
+      height: auto;
+      justify-self: end;
+      filter: drop-shadow(7px 7px 0 rgba(22, 26, 34, 0.72));
+    }
+
+    .scroll-companion { display: none; }
+
+    @keyframes companion-switch {
+      0% { transform: translateY(0); opacity: 1; }
+      45% { transform: translateY(-3px); opacity: 0.72; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (min-width: 1440px) {
+      .scroll-companion {
+        position: fixed;
+        top: 52%;
+        right: 1rem;
+        z-index: 30;
+        display: grid;
+        width: 6.5rem;
+        transform: translateY(-50%);
+        place-items: center;
+        pointer-events: none;
+      }
+
+      .scroll-companion-art {
+        width: 6.5rem;
+        aspect-ratio: 2 / 3;
+        background: url("imgs/scroll-workstation-sage.webp") center / contain no-repeat;
+        filter: drop-shadow(5px 5px 0 rgba(22, 26, 34, 0.72));
+        transform-origin: center bottom;
+      }
+
+      .scroll-companion-status {
+        margin-top: -0.1rem;
+        border: 1px solid rgba(181, 201, 139, 0.48);
+        background: var(--surface);
+        color: var(--lime);
+        padding: 0.38rem 0.5rem;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        line-height: 1;
+        transform-origin: center;
+      }
+
+      .scroll-companion.is-switching .scroll-companion-art,
+      .scroll-companion.is-switching .scroll-companion-status {
+        animation: companion-switch 180ms steps(2, end);
+      }
+    }
 
     .js .reveal {
       opacity: 0;
@@ -520,6 +605,9 @@
       .hero-grid { grid-template-columns: 1fr; }
       .hero-copy { max-width: 46rem; }
       .hero-visual { width: min(100%, 37rem); margin-inline: auto; }
+      .skills-intro, .projects-heading { grid-template-columns: minmax(0, 1fr) auto; }
+      .skills-intro > p, .projects-heading > p { grid-column: 1; }
+      .skills-prop, .build-rack-prop { grid-column: 2; grid-row: 1 / span 2; width: 10rem; }
       .project-layout { grid-template-columns: 1fr; }
       .build-selector {
         position: static;
@@ -527,8 +615,8 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .build-link + .build-link { border-top: 0; }
-      .build-link:nth-child(even) { border-left: 1px solid rgba(245, 241, 232, 0.18); }
-      .build-link:nth-child(n+3) { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+      .build-link:nth-child(even) { border-left: 1px solid rgba(242, 238, 230, 0.18); }
+      .build-link:nth-child(n+3) { border-top: 1px solid rgba(242, 238, 230, 0.18); }
     }
 
     @media (max-width: 640px) {
@@ -541,11 +629,17 @@
       .layer-tag { font-size: 0.58rem; padding: 0.4rem 0.5rem; }
       .layer-tag-ui { left: 0; }
       .layer-tag-api { right: 0; }
+      .skills-intro { grid-template-columns: 1fr; }
+      .skills-intro > p, .skills-prop { grid-column: 1; grid-row: auto; }
+      .skills-prop { width: 8.75rem; margin-top: -0.75rem; }
+      .projects-heading { grid-template-columns: 1fr; }
+      .projects-heading > p { grid-column: 1; }
+      .build-rack-prop { display: none; }
       .build-selector { grid-template-columns: 1fr; }
       .build-link:nth-child(even) { border-left: 0; }
-      .build-link + .build-link { border-top: 1px solid rgba(245, 241, 232, 0.18); }
+      .build-link + .build-link { border-top: 1px solid rgba(242, 238, 230, 0.18); }
       .concept-stage { min-height: 14rem; }
-      .contact-panel { box-shadow: 7px 7px 0 var(--lime); }
+      .contact-panel { box-shadow: 7px 7px 0 var(--signal); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -557,18 +651,20 @@
         transition-duration: 0.01ms !important;
       }
       .js .reveal { opacity: 1; transform: none; }
-      .hero-avatar { filter: drop-shadow(6px 5px 0 rgba(16, 17, 20, 0.9)); }
+      .hero-avatar { filter: drop-shadow(6px 5px 0 rgba(22, 26, 34, 0.9)); }
+      .scroll-companion.is-switching .scroll-companion-art,
+      .scroll-companion.is-switching .scroll-companion-status { animation: none; }
     }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to Main Content</a>
 
-  <header class="fixed inset-x-0 top-0 z-50 border-b-2 border-ink bg-cobalt text-paper">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-paper/15 bg-surface text-paper">
     <div class="page-shell flex h-[4.75rem] items-center justify-between gap-6">
       <a href="#hero" class="group inline-flex items-center gap-2 font-mono text-xs font-semibold" aria-label="Go to top">
-        <span class="grid size-7 place-items-center border-2 border-ink bg-lime text-ink shadow-[3px_3px_0_#101114] group-hover:-translate-y-0.5">MI</span>
-        <span>Muhammad Iman</span>
+        <span class="grid size-7 place-items-center border-2 border-ink bg-lime text-ink shadow-[3px_3px_0_#161A22] group-hover:-translate-y-0.5">MI</span>
+        <span>Muhammad Iman Nugraha</span>
       </a>
 
       <nav class="hidden items-center gap-6 md:flex" aria-label="Main navigation">
@@ -580,17 +676,22 @@
       </nav>
 
       <details class="relative md:hidden">
-        <summary class="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center border-2 border-ink bg-paper font-mono text-ink shadow-[3px_3px_0_#101114] [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu">Menu</summary>
-        <nav class="absolute right-0 mt-3 flex w-52 flex-col border-2 border-ink bg-paper p-2 text-ink shadow-[6px_6px_0_#101114]" aria-label="Mobile navigation">
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#about">About</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#experience">Experience</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#skills">Skills</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#projects">Projects</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime" href="#contact">Contact</a>
+        <summary class="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center border border-paper/20 bg-raised font-mono text-paper shadow-[3px_3px_0_#161A22] [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu">Menu</summary>
+        <nav class="absolute right-0 mt-3 flex w-52 flex-col border border-paper/20 bg-raised p-2 text-paper shadow-[6px_6px_0_#161A22]" aria-label="Mobile navigation">
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#about">About</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#experience">Experience</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#skills">Skills</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#projects">Projects</a>
+          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#contact">Contact</a>
         </nav>
       </details>
     </div>
   </header>
+
+  <aside class="scroll-companion" data-scroll-companion data-state="ONLINE" aria-hidden="true">
+    <div class="scroll-companion-art"></div>
+    <span class="scroll-companion-status" data-companion-status>ONLINE</span>
+  </aside>
 
   <main id="main-content" class="pt-[4.75rem]">
     <section id="hero" class="relative overflow-hidden bg-ink py-16 text-paper md:py-24">
@@ -617,7 +718,7 @@
         <figure class="hero-visual reveal" aria-labelledby="avatar-caption">
           <img
             class="hero-avatar"
-            src="imgs/iman-avatar-comic.webp"
+            src="imgs/iman-avatar-comic-sage.webp"
             width="1086"
             height="1448"
             fetchpriority="high"
@@ -648,15 +749,15 @@
       </div>
     </div>
 
-    <section id="about" class="bg-paper py-20 text-ink md:py-28">
+    <section id="about" class="bg-ink py-20 text-paper md:py-28">
       <div class="page-shell">
-        <p class="mono-label text-cobalt">Profile</p>
+        <p class="mono-label text-lime">Profile</p>
         <div class="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,0.7fr)] lg:gap-14">
           <div class="min-w-0">
             <h2 class="section-title">Both sides of the request.</h2>
-            <div class="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-ink/75 md:text-lg">
+            <div class="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-paper/75 md:text-lg">
               <p>
-                I’m a <strong class="text-ink">final-year Informatics student at UPN Veteran Jakarta</strong> with a <strong class="text-ink">GPA of 3.75 / 4.0</strong>. My work sits across <strong class="text-ink">frontend web development</strong>, <strong class="text-ink">backend web development</strong>, <strong class="text-ink">API integration</strong>, and <strong class="text-ink">database management</strong>.
+                I’m a <strong class="text-paper">final-year Informatics student at UPN Veteran Jakarta</strong> with a <strong class="text-paper">GPA of 3.75 / 4.0</strong>. My work sits across <strong class="text-paper">frontend web development</strong>, <strong class="text-paper">backend web development</strong>, <strong class="text-paper">API integration</strong>, and <strong class="text-paper">database management</strong>.
               </p>
               <p>
                 I’ve worked with React and TypeScript interfaces, Express APIs, Supabase Row Level Security, Dockerized services, MQTT device communication, and relational databases. I like understanding the full path a request takes—not only the screen where it starts.
@@ -668,52 +769,52 @@
             <figure class="comic-frame halftone mt-10 overflow-hidden p-4 md:p-7">
               <img
                 class="block h-auto w-full"
-                src="imgs/fullstack-prop-rig.webp"
+                src="imgs/fullstack-prop-rig-sage.webp"
                 width="1774"
                 height="887"
                 loading="lazy"
                 alt="Comic illustration connecting a browser interface, API nodes, database, and smart-home sensor"
               />
-              <figcaption class="mt-3 font-mono text-[0.67rem] uppercase tracking-[0.08em] text-ink/60">A request moving from interface to API, data, and connected device.</figcaption>
+              <figcaption class="mt-3 font-mono text-[0.67rem] uppercase tracking-[0.08em] text-paper/60">A request moving from interface to API, data, and connected device.</figcaption>
             </figure>
           </div>
 
-          <aside class="border-l-2 border-ink pl-6 lg:mt-24">
-            <p class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-cobalt">How I Build</p>
-            <p class="mt-5 leading-relaxed text-ink/70">
+          <aside class="border-l-2 border-paper/20 pl-6 lg:mt-24">
+            <p class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-lime">How I Build</p>
+            <p class="mt-5 leading-relaxed text-paper/70">
               I clarify the problem early, keep blockers visible, and use code review as a way to sharpen the implementation—not as a final ceremony.
             </p>
             <div class="mt-7 space-y-3 font-mono text-xs">
-              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">01</span> Ask before assuming</p>
-              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">02</span> Trace the whole request</p>
-              <p class="border-b border-ink/20 pb-3"><span class="text-cobalt">03</span> Share the blocker early</p>
+              <p class="border-b border-paper/15 pb-3"><span class="text-lime">01</span> Ask before assuming</p>
+              <p class="border-b border-paper/15 pb-3"><span class="text-lime">02</span> Trace the whole request</p>
+              <p class="border-b border-paper/15 pb-3"><span class="text-lime">03</span> Share the blocker early</p>
             </div>
           </aside>
         </div>
       </div>
     </section>
 
-    <section id="experience" class="border-y-2 border-ink bg-cobalt py-20 text-ink md:py-28">
+    <section id="experience" class="border-y border-paper/15 bg-surface py-20 text-paper md:py-28">
       <div class="page-shell">
-        <p class="mono-label text-ink">Career Route</p>
+        <p class="mono-label text-lime">Career Route</p>
         <div class="mt-8 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           <div>
             <h2 class="section-title text-paper">Learning, then shipping.</h2>
-            <div class="route-line mt-10 bg-paper">
+            <div class="route-line mt-10 bg-raised text-paper">
               <div class="route-step">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Foundation</p>
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Foundation</p>
                 <p class="mt-2 font-bold">UPN Veteran Jakarta</p>
-                <p class="mt-1 text-sm text-ink/65">Informatics · Final year</p>
+                <p class="mt-1 text-sm text-paper/65">Informatics · Final year</p>
               </div>
               <div class="route-step">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Industry</p>
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Industry</p>
                 <p class="mt-2 font-bold">Mantra</p>
-                <p class="mt-1 text-sm text-ink/65">Front-End Internship</p>
+                <p class="mt-1 text-sm text-paper/65">Front-End Internship</p>
               </div>
               <div class="route-step is-current">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-cobalt">Now</p>
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Now</p>
                 <p class="mt-2 font-bold">Next Team</p>
-                <p class="mt-1 text-sm text-ink/65">Frontend · Backend · Full-stack</p>
+                <p class="mt-1 text-sm text-paper/65">Frontend · Backend · Full-stack</p>
               </div>
             </div>
           </div>
@@ -721,36 +822,37 @@
           <article class="comic-frame self-end p-6 md:p-8">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p class="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-cobalt">Mantra (Teman Transisi)</p>
+                <p class="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-lime">Mantra (Teman Transisi)</p>
                 <h3 class="mt-2 text-3xl font-extrabold tracking-[-0.045em]">Front-End Intern</h3>
               </div>
               <span class="whitespace-nowrap font-mono text-xs font-semibold">03/2025 – 10/2025</span>
             </div>
-            <ul class="mt-7 grid gap-3 text-sm leading-relaxed text-ink/75">
-              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Responsive web platform front-end development</span></li>
-              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Responsive admin dashboard UI implementation</span></li>
-              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Front-end data validation for CRUD operations</span></li>
-              <li class="flex gap-3"><b class="font-mono text-cobalt" aria-hidden="true">→</b><span>Collaboration with back-end developers for API integration within a Laravel framework</span></li>
+            <ul class="mt-7 grid gap-3 text-sm leading-relaxed text-paper/75">
+              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Responsive web platform front-end development</span></li>
+              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Responsive admin dashboard UI implementation</span></li>
+              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Front-end data validation for CRUD operations</span></li>
+              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Collaboration with back-end developers for API integration within a Laravel framework</span></li>
             </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="skills" class="bg-paper py-20 text-ink md:py-28">
+    <section id="skills" class="bg-ink py-20 text-paper md:py-28">
       <div class="page-shell">
-        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div class="skills-intro">
           <div>
-            <p class="mono-label text-cobalt">Capabilities</p>
+            <p class="mono-label text-lime">Capabilities</p>
             <h2 class="section-title mt-7">The working stack.</h2>
           </div>
-          <p class="max-w-md text-base leading-relaxed text-ink/65">Tools are useful when they help the request move cleanly from interaction to application logic and persistent data.</p>
+          <p class="max-w-md text-base leading-relaxed text-paper/65">Tools are useful when they help the request move cleanly from interaction to application logic and persistent data.</p>
+          <img class="skills-prop" src="imgs/iot-node-sage.webp" width="1641" height="958" loading="lazy" alt="" aria-hidden="true" />
         </div>
 
         <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div class="capability-card flex flex-col gap-5">
             <h3 class="text-xl font-extrabold tracking-[-0.035em]">Frontend</h3>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2" translate="no">
               <span class="skill-token">React.js</span>
               <span class="skill-token">TypeScript</span>
               <span class="skill-token">JavaScript</span>
@@ -761,7 +863,7 @@
           </div>
           <div class="capability-card flex flex-col gap-5">
             <h3 class="text-xl font-extrabold tracking-[-0.035em]">Backend</h3>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2" translate="no">
               <span class="skill-token">Python</span>
               <span class="skill-token">PHP</span>
               <span class="skill-token">Node.js</span>
@@ -771,7 +873,7 @@
           </div>
           <div class="capability-card flex flex-col gap-5">
             <h3 class="text-xl font-extrabold tracking-[-0.035em]">Databases</h3>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2" translate="no">
               <span class="skill-token">MySQL</span>
               <span class="skill-token">PostgreSQL</span>
               <span class="skill-token">Supabase</span>
@@ -780,7 +882,7 @@
           </div>
           <div class="capability-card flex flex-col gap-5">
             <h3 class="text-xl font-extrabold tracking-[-0.035em]">Architecture &amp; Tools</h3>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2" translate="no">
               <span class="skill-token">Git</span>
               <span class="skill-token">Docker</span>
               <span class="skill-token">REST API</span>
@@ -795,9 +897,10 @@
     <section id="projects" class="border-t-2 border-paper/20 bg-ink py-20 text-paper md:py-28">
       <div class="page-shell">
         <p class="mono-label text-lime">Build Select</p>
-        <div class="mt-7 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div class="projects-heading mt-7">
           <h2 class="section-title">Choose a build. See the system.</h2>
           <p class="max-w-md text-base leading-relaxed text-paper/60">Four builds, ordered from full-stack web systems to a focused mobile API integration. Every project keeps its real evidence and constraints visible.</p>
+          <img class="build-rack-prop" src="imgs/build-cartridge-rack-sage.webp" width="1254" height="1254" loading="lazy" alt="" aria-hidden="true" />
         </div>
 
         <div class="project-layout mt-14">
@@ -826,7 +929,7 @@
                 <p class="mt-5 text-base leading-relaxed text-paper/68">
                   A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized through dynamic code splitting and memoized React context.
                 </p>
-                <ul class="mt-6 flex flex-wrap gap-2">
+                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
                   <li class="skill-token !border-paper/35 !text-paper">React.js</li>
                   <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
                   <li class="skill-token !border-paper/35 !text-paper">Vite</li>
@@ -847,12 +950,12 @@
                   <title id="smarthome-title">Smart Home IoT concept illustration</title>
                   <desc id="smarthome-desc">A home node connected to a server, database, and wireless device signal.</desc>
                   <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-                    <path d="M55 120 135 55l80 65v90H75v-90" fill="#F5F1E8" stroke="#101114" />
-                    <path d="M125 210v-55h40v55" fill="#B8FF3D" stroke="#101114" />
-                    <path d="M220 135h48" stroke="#B8FF3D" />
-                    <rect x="270" y="90" width="85" height="90" fill="#F5F1E8" stroke="#101114" />
-                    <circle cx="312" cy="135" r="17" fill="#B8FF3D" stroke="#101114" />
-                    <path d="M365 112c22 8 34 25 34 46M367 82c39 11 63 40 63 76" stroke="#B8FF3D" />
+                    <path d="M55 120 135 55l80 65v90H75v-90" fill="#F2EEE6" stroke="#161A22" />
+                    <path d="M125 210v-55h40v55" fill="#B5C98B" stroke="#161A22" />
+                    <path d="M220 135h48" stroke="#B5C98B" />
+                    <rect x="270" y="90" width="85" height="90" fill="#F2EEE6" stroke="#161A22" />
+                    <circle cx="312" cy="135" r="17" fill="#B5C98B" stroke="#161A22" />
+                    <path d="M365 112c22 8 34 25 34 46M367 82c39 11 63 40 63 76" stroke="#B5C98B" />
                   </g>
                 </svg>
                 <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
@@ -863,7 +966,7 @@
                 <p class="mt-5 text-base leading-relaxed text-paper/68">
                   A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL.
                 </p>
-                <ul class="mt-6 flex flex-wrap gap-2">
+                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
                   <li class="skill-token !border-paper/35 !text-paper">HTML</li>
                   <li class="skill-token !border-paper/35 !text-paper">CSS</li>
                   <li class="skill-token !border-paper/35 !text-paper">JavaScript</li>
@@ -896,7 +999,7 @@
                 <p class="mt-5 text-base leading-relaxed text-paper/68">
                   An open-source game economy calculator for Albion Online’s refining system, helping players model refining returns and profit margins. Written in TypeScript and deployed on Vercel.
                 </p>
-                <ul class="mt-6 flex flex-wrap gap-2">
+                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
                   <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
                 </ul>
                 <div class="mt-7 flex flex-wrap gap-6">
@@ -912,13 +1015,13 @@
                   <title id="recehin-title">Recehin concept illustration</title>
                   <desc id="recehin-desc">A phone displaying transaction blocks connected to an API endpoint.</desc>
                   <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-                    <rect x="80" y="25" width="145" height="205" rx="12" fill="#F5F1E8" stroke="#101114" />
-                    <path d="M118 77h70M118 115h70M118 153h45" stroke="#3457FF" />
-                    <circle cx="190" cy="184" r="15" fill="#B8FF3D" stroke="#101114" />
-                    <path d="M235 125h58" stroke="#B8FF3D" />
-                    <path d="m282 104 28 21-28 21" stroke="#B8FF3D" />
-                    <rect x="312" y="82" width="70" height="86" fill="#B8FF3D" stroke="#101114" />
-                    <circle cx="347" cy="125" r="11" fill="#3457FF" stroke="#101114" />
+                    <rect x="80" y="25" width="145" height="205" rx="12" fill="#F2EEE6" stroke="#161A22" />
+                    <path d="M118 77h70M118 115h70M118 153h45" stroke="#5267A6" />
+                    <circle cx="190" cy="184" r="15" fill="#B5C98B" stroke="#161A22" />
+                    <path d="M235 125h58" stroke="#B5C98B" />
+                    <path d="m282 104 28 21-28 21" stroke="#B5C98B" />
+                    <rect x="312" y="82" width="70" height="86" fill="#B5C98B" stroke="#161A22" />
+                    <circle cx="347" cy="125" r="11" fill="#5267A6" stroke="#161A22" />
                   </g>
                 </svg>
                 <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
@@ -929,7 +1032,7 @@
                 <p class="mt-5 text-base leading-relaxed text-paper/68">
                   A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
                 </p>
-                <ul class="mt-6 flex flex-wrap gap-2">
+                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
                   <li class="skill-token !border-paper/35 !text-paper">Android Studio</li>
                   <li class="skill-token !border-paper/35 !text-paper">Java/Kotlin</li>
                   <li class="skill-token !border-paper/35 !text-paper">Retrofit</li>
@@ -946,13 +1049,13 @@
       </div>
     </section>
 
-    <section id="contact" class="bg-paper py-20 text-ink md:py-28">
+    <section id="contact" class="bg-surface py-20 text-paper md:py-28">
       <div class="page-shell">
         <div class="contact-panel p-6 md:p-10 lg:p-14">
           <div class="grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
               <p class="mono-label text-lime">Contact</p>
-              <h2 class="mt-7 max-w-[11ch] text-[clamp(3rem,8vw,7rem)] font-extrabold leading-[0.86] tracking-[-0.075em]">Let’s trace the next request together.</h2>
+              <h2 class="mt-7 max-w-[11ch] text-[clamp(3rem,8vw,6.25rem)] font-bold leading-[0.94] tracking-[-0.035em]">Let’s trace the next request together.</h2>
               <p class="mt-7 max-w-xl text-lg leading-relaxed text-paper/72">I’m looking for a frontend, backend, or full-stack developer role where I can keep improving across both product interfaces and the systems behind them.</p>
             </div>
 
