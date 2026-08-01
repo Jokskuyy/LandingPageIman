@@ -9,7 +9,7 @@
     content="Muhammad Iman Nugraha is a frontend, backend, and full-stack web developer building clear interfaces and reliable systems."
   />
   <title>Muhammad Iman Nugraha — Fullstack Web Developer</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%235267A6'/%3E%3Cpath d='M8 8h16v16H8z' fill='%23B5C98B' stroke='%23161A22' stroke-width='3'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -457,17 +457,14 @@
     }
 
     .concept-stage {
-      display: grid;
-      min-height: 19rem;
-      place-items: center;
       background: var(--raised);
       color: var(--paper);
     }
 
-    .concept-stage svg {
-      width: min(65%, 25rem);
-      height: auto;
-      filter: drop-shadow(8px 8px 0 rgba(16, 17, 20, 0.8));
+    .concept-stage > img {
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      object-position: center;
     }
 
     .project-body { padding: clamp(1.25rem, 3vw, 2rem); }
@@ -638,7 +635,6 @@
       .build-selector { grid-template-columns: 1fr; }
       .build-link:nth-child(even) { border-left: 0; }
       .build-link + .build-link { border-top: 1px solid rgba(242, 238, 230, 0.18); }
-      .concept-stage { min-height: 14rem; }
       .contact-panel { box-shadow: 7px 7px 0 var(--signal); }
     }
 
@@ -946,18 +942,13 @@
 
             <article id="project-smarthome" class="project-card reveal" data-build="project-smarthome">
               <figure class="project-media concept-stage">
-                <svg viewBox="0 0 420 250" role="img" aria-labelledby="smarthome-title smarthome-desc">
-                  <title id="smarthome-title">Smart Home IoT concept illustration</title>
-                  <desc id="smarthome-desc">A home node connected to a server, database, and wireless device signal.</desc>
-                  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-                    <path d="M55 120 135 55l80 65v90H75v-90" fill="#F2EEE6" stroke="#161A22" />
-                    <path d="M125 210v-55h40v55" fill="#B5C98B" stroke="#161A22" />
-                    <path d="M220 135h48" stroke="#B5C98B" />
-                    <rect x="270" y="90" width="85" height="90" fill="#F2EEE6" stroke="#161A22" />
-                    <circle cx="312" cy="135" r="17" fill="#B5C98B" stroke="#161A22" />
-                    <path d="M365 112c22 8 34 25 34 46M367 82c39 11 63 40 63 76" stroke="#B5C98B" />
-                  </g>
-                </svg>
+                <img
+                  src="imgs/smarthome-concept-sage.webp"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                  alt="Cel-shaded Smart Home IoT concept showing a dashboard, MQTT devices, an API controller, and a database"
+                />
                 <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
               </figure>
               <div class="project-body">
@@ -1011,19 +1002,13 @@
 
             <article id="project-recehin" class="project-card reveal" data-build="project-recehin">
               <figure class="project-media concept-stage">
-                <svg viewBox="0 0 420 250" role="img" aria-labelledby="recehin-title recehin-desc">
-                  <title id="recehin-title">Recehin concept illustration</title>
-                  <desc id="recehin-desc">A phone displaying transaction blocks connected to an API endpoint.</desc>
-                  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter">
-                    <rect x="80" y="25" width="145" height="205" rx="12" fill="#F2EEE6" stroke="#161A22" />
-                    <path d="M118 77h70M118 115h70M118 153h45" stroke="#5267A6" />
-                    <circle cx="190" cy="184" r="15" fill="#B5C98B" stroke="#161A22" />
-                    <path d="M235 125h58" stroke="#B5C98B" />
-                    <path d="m282 104 28 21-28 21" stroke="#B5C98B" />
-                    <rect x="312" y="82" width="70" height="86" fill="#B5C98B" stroke="#161A22" />
-                    <circle cx="347" cy="125" r="11" fill="#5267A6" stroke="#161A22" />
-                  </g>
-                </svg>
+                <img
+                  src="imgs/recehin-concept-sage.webp"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                  alt="Cel-shaded Recehin concept showing a mobile finance client connected through an API to a transaction ledger"
+                />
                 <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
               </figure>
               <div class="project-body">

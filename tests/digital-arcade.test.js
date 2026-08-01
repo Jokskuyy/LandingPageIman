@@ -97,11 +97,52 @@ test("Muted arcade: supporting props and scroll companion are wired progressivel
   }
 });
 
+test("Project showcase: IoT and Recehin use coordinated honest concept art", () => {
+  const { document } = loadIndexHtml();
+  const concepts = [
+    {
+      project: "#project-smarthome",
+      asset: "imgs/smarthome-concept-sage.webp",
+      altPattern: /Smart Home IoT concept/i,
+    },
+    {
+      project: "#project-recehin",
+      asset: "imgs/recehin-concept-sage.webp",
+      altPattern: /Recehin concept/i,
+    },
+  ];
+
+  for (const concept of concepts) {
+    const card = document.querySelector(concept.project);
+    const image = card?.querySelector(`.concept-stage > img[src="${concept.asset}"]`);
+    const label = card?.querySelector(".project-media-label");
+
+    assert.ok(image, `${concept.project} should use its generated concept art`);
+    assert.equal(image.getAttribute("width"), "1536");
+    assert.equal(image.getAttribute("height"), "1024");
+    assert.equal(image.getAttribute("loading"), "lazy");
+    assert.match(image.getAttribute("alt") || "", concept.altPattern);
+    assert.match(label?.textContent || "", /CONCEPT ILLUSTRATION/);
+    assert.match(label?.textContent || "", /SCREENSHOT UNAVAILABLE/);
+    assert.equal(card?.querySelector(".concept-stage svg"), null);
+    assert.ok(existsSync(join(PROJECT_ROOT, concept.asset)));
+  }
+});
+
 test("Muted arcade: the header uses the candidate's full name", () => {
   const { document } = loadIndexHtml();
   const homeLink = document.querySelector('header a[href="#hero"]');
 
   assert.match(homeLink?.textContent || "", /Muhammad Iman Nugraha/);
+});
+
+test("Muted arcade: the custom monogram favicon is installed", () => {
+  const { document } = loadIndexHtml();
+  const favicon = document.querySelector('link[rel="icon"]');
+
+  assert.equal(favicon?.getAttribute("href"), "favicon.svg");
+  assert.equal(favicon?.getAttribute("type"), "image/svg+xml");
+  assert.ok(existsSync(join(PROJECT_ROOT, "favicon.svg")));
 });
 
 test("Digital arcade: hero avoids fixed viewport-height sections", () => {
