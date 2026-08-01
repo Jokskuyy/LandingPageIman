@@ -14,7 +14,7 @@ import { loadIndexHtml } from "./harness.js";
 const EMAIL = "imannnnugraha@gmail.com";
 const MAILTO = `mailto:${EMAIL}`;
 const GITHUB_URL = "https://github.com/Jokskuyy";
-const LINKEDIN_PLACEHOLDER = "[LINKEDIN_URL_PLACEHOLDER]";
+const LINKEDIN_URL = "https://www.linkedin.com/in/muhammad-nugraha-9bb016286/";
 
 // Collapse all runs of whitespace to a single space and trim, so assertions are
 // robust against the source markup's newlines/indentation.
@@ -23,9 +23,9 @@ function normalize(text) {
 }
 
 // A hero "contact link" is an anchor pointing at the email or one of the two
-// profile placeholders (as opposed to the in-page CTA anchors like #projects).
+// profile URLs (as opposed to the in-page CTA anchors like #projects).
 function isContactHref(href) {
-  return href === MAILTO || href === GITHUB_URL || href === LINKEDIN_PLACEHOLDER;
+  return href === MAILTO || href === GITHUB_URL || href === LINKEDIN_URL;
 }
 
 // Locate the desktop navigation: the header <nav> that is shown on md+ screens
@@ -61,7 +61,7 @@ test("Hero displays the exact headline (R1.3)", () => {
   const { document } = loadIndexHtml();
   const hero = document.querySelector("#hero");
   const headline =
-    "Building responsive web platforms, dynamic UIs, and robust backend systems.";
+    "From a UPNVJ profile dashboard secured with Supabase RLS to MQTT-powered home controls, I build the interface and the system behind it.";
 
   const match = [...hero.querySelectorAll("p")].some(
     (p) => normalize(p.textContent) === headline
@@ -69,7 +69,7 @@ test("Hero displays the exact headline (R1.3)", () => {
   assert.ok(match, `Hero should contain the exact headline: "${headline}"`);
 });
 
-test("Hero provides exactly three contact links: email + two profile placeholders (R1.5, R1.6)", () => {
+test("Hero provides exactly three contact links: email + two profiles (R1.5, R1.6)", () => {
   const { document } = loadIndexHtml();
   const hero = document.querySelector("#hero");
 
@@ -97,11 +97,11 @@ test("Hero provides exactly three contact links: email + two profile placeholder
     1,
     `Hero should have exactly one GitHub link using ${GITHUB_URL}`
   );
-  // Exactly one LinkedIn placeholder profile link (R1.5).
+  // Exactly one LinkedIn profile link (R1.5).
   assert.equal(
-    hrefs.filter((h) => h === LINKEDIN_PLACEHOLDER).length,
+    hrefs.filter((h) => h === LINKEDIN_URL).length,
     1,
-    `Hero should have exactly one LinkedIn link using ${LINKEDIN_PLACEHOLDER}`
+    `Hero should have exactly one LinkedIn link using ${LINKEDIN_URL}`
   );
 });
 
@@ -146,8 +146,8 @@ test("Contact section provides GitHub and LinkedIn links (R6.3)", () => {
     `Contact section should link to GitHub via ${GITHUB_URL}`
   );
   assert.ok(
-    hrefs.includes(LINKEDIN_PLACEHOLDER),
-    `Contact section should link to LinkedIn via ${LINKEDIN_PLACEHOLDER}`
+    hrefs.includes(LINKEDIN_URL),
+    `Contact section should link to LinkedIn via ${LINKEDIN_URL}`
   );
 });
 

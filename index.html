@@ -1,830 +1,502 @@
 <!DOCTYPE html>
-<html class="dark" lang="en" style="scroll-behavior: smooth;"><head>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Muhammad Iman Nugraha - Fullstack Web Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#3b82f6", // Brighter blue
-                    "secondary": "#8b5cf6", // Purple
-                    "accent": "#06b6d4", // Cyan
-                    "background-dark": "#0f1115",
-                    "surface": "#181b21",
-                },
-                fontFamily: {
-                    "display": ["Space Grotesk", "sans-serif"]
-                },
-                backgroundImage: {
-                    'grid-pattern': "linear-gradient(to right, #1f2937 1px, transparent 1px), linear-gradient(to bottom, #1f2937 1px, transparent 1px)",
-                },
-                animation: {
-                    'float-slow': 'float 8s ease-in-out infinite',
-                    'float-medium': 'float 6s ease-in-out infinite',
-                    'float-fast': 'float 4s ease-in-out infinite',
-                    'pulse-glow': 'pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    'spin-slow': 'spin 15s linear infinite',
-                    'spin-reverse-slow': 'spin-reverse 20s linear infinite',
-                    'slide-up': 'slideUp 0.8s ease-out forwards',
-                    'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
-                },
-                keyframes: {
-                    float: {
-                        '0%, 100%': { transform: 'translateY(0)' },
-                        '50%': { transform: 'translateY(-20px)' },
-                    },
-                    'pulse-glow': {
-                        '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
-                        '50%': { opacity: '0.8', transform: 'scale(1.05)' },
-                    },
-                    'spin-reverse': {
-                        '0%': { transform: 'rotate(360deg)' },
-                        '100%': { transform: 'rotate(0deg)' },
-                    },
-                    slideUp: {
-                        '0%': { opacity: '0', transform: 'translateY(20px)' },
-                        '100%': { opacity: '1', transform: 'translateY(0)' },
-                    }
-                }
-            },
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          "paper":   "#f7f3ee",
+          "paper-2": "#ede8e0",
+          "charcoal":"#1c1c1a",
+          "ink":     "#2e2c29",
+          "rust":    "#b85c38",
+          "rust-lt": "#d4704a",
+          "olive":   "#6b7256",
         },
-    }
+        fontFamily: {
+          "serif":  ["Lora", "Georgia", "serif"],
+          "sans":   ["Space Grotesk", "sans-serif"],
+        },
+      },
+    },
+  }
 </script>
 <style>
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #0f1115; }
-    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
-    .geo-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        overflow: hidden;
-        background-color: #0f1115;
+  /* ── Base ── */
+  body { font-family: "Space Grotesk", sans-serif; }
+  h1, h2.display { font-family: "Lora", Georgia, serif; }
+
+  /* ── Ruled lines ── */
+  .ruled { border-bottom: 1px solid rgba(44,40,35,0.15); }
+  .ruled-top { border-top: 1px solid rgba(44,40,35,0.15); }
+
+  /* ── Focus visible ── */
+  :where(a, button, input, textarea, summary):focus-visible {
+    outline: 2px solid #b85c38;
+    outline-offset: 4px;
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto !important; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
-    .geo-shape {
-        position: absolute;
-        opacity: 0.4;
-    }
-    .shape-blob-1 {
-        top: -10%;
-        left: -10%;
-        width: 60vw;
-        height: 60vw;
-        background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%);
-        border-radius: 50%;
-        filter: blur(80px);
-        animation: pulse-glow 8s infinite alternate;
-    }
-    .shape-blob-2 {
-        bottom: -20%;
-        right: -10%;
-        width: 50vw;
-        height: 50vw;
-        background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%);
-        border-radius: 50%;
-        filter: blur(80px);
-        animation: pulse-glow 10s infinite alternate-reverse;
-    }
-    .grid-lines {
-        position: absolute;
-        inset: 0;
-        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-    }
-    .floating-square {
-        position: absolute;
-        border: 1px solid rgba(255,255,255,0.05);
-        transform: rotate(45deg);
-        transition: all 0.5s ease;
-    }
-    .clip-geo-card {
-        clip-path: polygon(
-            0 0, 
-            100% 0, 
-            100% calc(100% - 20px), 
-            calc(100% - 20px) 100%, 
-            0 100%
-        );
-    }
-    .clip-geo-button {
-        clip-path: polygon(
-            10px 0, 
-            100% 0, 
-            100% calc(100% - 10px), 
-            calc(100% - 10px) 100%, 
-            0 100%, 
-            0 10px
-        );
-    }
-    .clip-hexagon {
-        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    }
-    .clip-triangle {
-        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    }
-    .clip-trapezoid {
-        clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-    }
-    .glass-panel {
-        background: rgba(24, 27, 33, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    }
-    .text-outline {
-        -webkit-text-stroke: 1px rgba(255,255,255,0.1);
-        color: transparent;
-    }.hover-glitch:hover {
-        animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-        color: var(--primary);
-    }
-    @keyframes glitch-skew {
-        0% { transform: skew(0deg); }
-        20% { transform: skew(-2deg); }
-        40% { transform: skew(2deg); }
-        60% { transform: skew(-1deg); }
-        80% { transform: skew(1deg); }
-        100% { transform: skew(0deg); }
-    }
-    .card-shine {
-        position: relative;
-        overflow: hidden;
-    }
-    .card-shine::after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-            to bottom right,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0) 40%,
-            rgba(255, 255, 255, 0.05) 50%,
-            rgba(255, 255, 255, 0) 60%,
-            rgba(255, 255, 255, 0) 100%
-        );
-        transform: rotate(30deg);
-        transition: transform 0.5s;
-        pointer-events: none;
-    }
-    .card-shine:hover::after {
-        transform: rotate(30deg) translate(10%, 10%);
-    }.perspective-container {
-        perspective: 1000px;
-    }
-    .tilt-card {
-        transition: transform 0.1s ease;
-        transform-style: preserve-3d;
-    }
-    
-    /* Scroll Reveal Animation */
-    .scroll-reveal {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .scroll-reveal.revealed {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    :where(a, button, input, textarea, summary):focus-visible {
-        outline: 2px solid #06b6d4;
-        outline-offset: 4px;
-        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.18);
-    }
-    @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto !important; }
-        *, *::before, *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-            scroll-behavior: auto !important;
-        }
-        .scroll-reveal {
-            opacity: 1 !important;
-            transform: none !important;
-        }
-        [data-parallax] { transform: none !important; }
-    }
+  }
+
+  /* ── Print / no-js fallback ── */
+  .reveal { opacity: 1; }
 </style>
-<noscript>
-<style>
-    /* No-JS fallback: parallax.js adds .revealed to animate sections in.
-       If the script does not run, force scroll-reveal content to its
-       visible/revealed state so every section stays readable. */
-    .scroll-reveal {
-        opacity: 1 !important;
-        transform: none !important;
-    }
-</style>
-</noscript>
-<script src="parallax.js" defer></script>
 </head>
-<body class="bg-background-dark text-white font-display overflow-x-hidden min-h-screen flex flex-col selection:bg-primary selection:text-white">
-<div class="geo-bg" aria-hidden="true">
-<div class="grid-lines opacity-30"></div>
-<div class="shape-blob-1" data-parallax="0.12" data-parallax-direction="down"></div>
-<div class="shape-blob-2" data-parallax="0.1" data-parallax-direction="up"></div>
-<div class="absolute inset-x-0 top-1/3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-<div class="absolute inset-0 z-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:28px_28px]"></div>
-</div>
-<header class="fixed top-0 z-50 w-full border-b border-white/5 bg-[#0f1115]/80 backdrop-blur-md transition-all duration-300">
-<div class="px-6 md:px-12 h-20 flex items-center justify-between max-w-[1400px] mx-auto w-full">
-<div class="flex items-center gap-3 group cursor-pointer">
-<div class="w-10 h-10 bg-primary/20 flex items-center justify-center clip-geo-button group-hover:bg-primary transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-<span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">deployed_code</span>
-</div>
-<h2 class="text-xl font-bold tracking-tight uppercase group-hover:text-white transition-colors">Iman<span class="text-primary group-hover:text-accent transition-colors">Dev</span></h2>
-</div>
-<nav class="hidden md:flex items-center gap-10">
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#about">
-                About
-                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#experience">
-                Experience
-                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#skills">
-                Skills
-                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#projects">
-                Projects
-                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white transition-colors relative group py-2" href="#contact">
-                Contact
-                <span class="absolute -bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-</a>
-</nav>
-<details class="md:hidden relative">
-<summary class="text-white p-2 list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden">
-<span class="material-symbols-outlined">menu_open</span>
-</summary>
-<nav class="absolute right-0 mt-2 w-48 flex flex-col bg-[#0f1115]/95 border border-white/10 backdrop-blur-md clip-geo-button shadow-lg z-50">
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-colors px-5 py-3" href="#about">About</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-colors px-5 py-3" href="#experience">Experience</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-colors px-5 py-3" href="#skills">Skills</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-colors px-5 py-3" href="#projects">Projects</a>
-<a class="text-sm uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 transition-colors px-5 py-3" href="#contact">Contact</a>
-</nav>
-</details>
-</div>
+<body class="bg-charcoal text-ink selection:bg-rust selection:text-paper overflow-x-hidden">
+
+<!-- ══════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════ -->
+<header class="fixed top-0 z-50 w-full bg-charcoal/95 border-b border-white/10 backdrop-blur-sm">
+  <div class="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
+    <a href="#hero" class="font-serif text-paper text-lg font-semibold tracking-tight" aria-label="Go to top">Iman</a>
+    <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#about">About</a>
+      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#experience">Experience</a>
+      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#skills">Skills</a>
+      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#projects">Projects</a>
+      <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper transition-colors" href="#contact">Contact</a>
+    </nav>
+    <details class="md:hidden relative">
+      <summary class="list-none cursor-pointer text-paper/70 hover:text-paper min-w-11 min-h-11 inline-flex items-center justify-center [&::-webkit-details-marker]:hidden" aria-label="Menu">☰</summary>
+      <nav class="absolute right-0 mt-2 w-44 flex flex-col bg-charcoal border border-white/10 shadow-xl z-50">
+        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#about">About</a>
+        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#experience">Experience</a>
+        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#skills">Skills</a>
+        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#projects">Projects</a>
+        <a class="text-xs uppercase tracking-widest text-paper/60 hover:text-paper px-5 py-3 hover:bg-white/5" href="#contact">Contact</a>
+      </nav>
+    </details>
+  </div>
 </header>
-<main class="flex-grow flex flex-col w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10 pt-20">
-<section class="min-h-[85vh] flex flex-col lg:flex-row items-center justify-center gap-12 py-10 relative" id="hero">
-<div class="flex-1 flex flex-col gap-8 relative z-10 animate-slide-up">
-<div class="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 w-fit backdrop-blur-sm clip-geo-button cursor-default">
-<span class="w-2 h-2 bg-accent shadow-[0_0_10px_#06b6d4] rounded-full"></span>
-<span class="text-xs font-bold tracking-[0.2em] text-accent uppercase">Frontend / Backend Developer</span>
-</div>
-<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tight cursor-default">
-                MUHAMMAD <br/>
-<span class="text-primary">IMAN</span> <br/>
-                NUGRAHA
-</h1>
-<div class="flex items-center gap-3">
-<span class="w-8 h-[1px] bg-primary"></span>
-<span class="text-xl md:text-2xl font-bold tracking-wide text-white uppercase">Fullstack Web Developer</span>
-</div>
-<p class="text-slate-300 text-xl md:text-2xl font-medium max-w-lg leading-snug">
-                Building responsive web platforms, dynamic UIs, and robust backend systems.
-            </p>
-<p class="text-slate-400 text-lg max-w-lg leading-relaxed border-l-2 border-primary/50 pl-6 backdrop-blur-sm bg-black/10 p-2 rounded-r-lg">
-                Final-year Informatics student seeking a full-time role as a frontend or backend developer, where I can build production-grade web applications and grow within an engineering team.
-            </p>
-<div class="flex flex-wrap gap-6 pt-4">
-<a class="flex items-center justify-center px-8 py-4 bg-primary hover:bg-blue-600 text-white font-bold uppercase tracking-wider clip-geo-button transition-all duration-300 hover:-translate-y-1 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] group" href="#projects">
-                    View Projects
-                    <span class="material-symbols-outlined ml-2 group-hover:rotate-45 transition-transform">arrow_outward</span>
-</a>
-<a class="flex items-center justify-center px-8 py-4 bg-transparent border border-white/20 hover:border-white text-white font-bold uppercase tracking-wider clip-geo-button transition-all hover:bg-white/5" href="#contact">
-                    Let's Connect
-                </a>
-</div>
-<div class="flex items-center gap-5 pt-2">
-<a class="group flex items-center justify-center w-12 h-12 bg-white/5 border border-white/10 clip-geo-button hover:bg-primary hover:border-primary transition-all duration-300 hover:-translate-y-1" href="https://github.com/Jokskuyy" aria-label="GitHub profile" title="GitHub" target="_blank" rel="noopener noreferrer">
-<svg class="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
-</a>
-<a class="group flex items-center justify-center w-12 h-12 bg-white/5 border border-white/10 clip-geo-button hover:bg-primary hover:border-primary transition-all duration-300 hover:-translate-y-1" href="[LINKEDIN_URL_PLACEHOLDER]" aria-label="LinkedIn profile" title="LinkedIn">
-<svg class="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
-</a>
-<a class="group flex items-center justify-center w-12 h-12 bg-white/5 border border-white/10 clip-geo-button hover:bg-primary hover:border-primary transition-all duration-300 hover:-translate-y-1" href="mailto:imannnnugraha@gmail.com" aria-label="Email Muhammad Iman Nugraha" title="Email">
-<span class="material-symbols-outlined text-[20px] text-slate-300 group-hover:text-white transition-colors">mail</span>
-</a>
-</div>
-</div>
-<div class="flex-1 w-full relative">
-<div class="relative max-w-[560px] mx-auto clip-geo-card bg-surface/90 border border-white/10 p-8 md:p-10 shadow-2xl">
-<div class="flex items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
-<div>
-<div class="text-accent text-xs font-mono tracking-[0.2em] uppercase mb-2">Recruiter Snapshot</div>
-<h2 class="text-2xl md:text-3xl font-bold text-white">Web developer focused on usable full-stack products.</h2>
-</div>
-<span class="material-symbols-outlined text-primary text-4xl" aria-hidden="true">deployed_code</span>
-</div>
-<dl class="grid grid-cols-2 gap-4 text-sm">
-<div class="bg-white/[0.03] border border-white/10 p-4">
-<dt class="text-slate-500 uppercase tracking-widest text-xs">Education</dt>
-<dd class="text-white font-semibold mt-1">UPN Veteran Jakarta</dd>
-</div>
-<div class="bg-white/[0.03] border border-white/10 p-4">
-<dt class="text-slate-500 uppercase tracking-widest text-xs">GPA</dt>
-<dd class="text-white font-semibold mt-1">3.75 / 4.0</dd>
-</div>
-<div class="bg-white/[0.03] border border-white/10 p-4">
-<dt class="text-slate-500 uppercase tracking-widest text-xs">Experience</dt>
-<dd class="text-white font-semibold mt-1">8 mo internship</dd>
-</div>
-<div class="bg-white/[0.03] border border-white/10 p-4">
-<dt class="text-slate-500 uppercase tracking-widest text-xs">Target</dt>
-<dd class="text-white font-semibold mt-1">Frontend or backend role</dd>
-</div>
-</dl>
-<div class="mt-6 border-l-2 border-primary/60 pl-5 text-slate-300 leading-relaxed">
-Strongest evidence: responsive UIs, API integration, database-backed apps, and maintainable MVC/microservices work across portfolio projects.
-</div>
-</div>
-</div>
-</section>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-10 border-y border-white/5 relative bg-white/[0.02] backdrop-blur-sm z-20">
-<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
-<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 group hover:bg-white/5 transition-colors cursor-default">
-<span class="text-3xl font-bold text-white group-hover:text-primary transition-colors duration-300">3.75</span>
-<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">GPA / 4.0</span>
-</div>
-<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 md:border-r group hover:bg-white/5 transition-colors cursor-default">
-<span class="text-3xl font-bold text-white group-hover:text-accent transition-colors duration-300">Final Year</span>
-<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Informatics Student</span>
-</div>
-<div class="flex flex-col items-center justify-center p-6 border-r border-white/5 group hover:bg-white/5 transition-colors cursor-default">
-<span class="text-3xl font-bold text-white group-hover:text-secondary transition-colors duration-300">8 mo</span>
-<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">Internship Experience</span>
-</div>
-<div class="flex flex-col items-center justify-center p-6 group hover:bg-white/5 transition-colors cursor-default">
-<span class="text-3xl font-bold text-white group-hover:text-green-500 transition-colors duration-300">5★</span>
-<span class="text-xs uppercase tracking-widest text-slate-500 mt-2 group-hover:text-slate-300">GitHub Stars</span>
-</div>
-<div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-secondary/50 to-transparent"></div>
-</div>
-<section class="py-24 relative scroll-reveal" id="about">
-<div class="absolute -top-10 right-0 text-[10rem] leading-none font-display font-black text-white/5 select-none -z-10 hidden lg:block">ABOUT</div>
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-<div class="relative">
-<div class="absolute -left-8 top-2 w-2 h-2 bg-primary rounded-full animate-ping opacity-75"></div>
-<h2 class="text-primary font-mono text-sm mb-4 tracking-widest flex items-center gap-2">
-<span class="w-8 h-[1px] bg-primary"></span> WHO_AM_I
-                </h2>
-<h3 class="text-4xl md:text-5xl font-bold text-white relative inline-block">
-                    Profile Summary
-                </h3>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div class="lg:col-span-2 glass-panel clip-geo-card p-8 md:p-10 border-l-2 border-l-primary relative">
-<div class="absolute top-0 right-0 p-5 opacity-10">
-<span class="material-symbols-outlined text-6xl text-primary">terminal</span>
-</div>
-<p class="text-slate-300 text-lg md:text-xl leading-relaxed relative z-10">
-                    I'm a <span class="text-white font-semibold">final-year Informatics student at UPN Veteran Jakarta</span> with a <span class="text-white font-semibold">GPA of 3.75 / 4.0</span>, focused on building production-grade web applications across the full stack.
-                </p>
-<p class="text-slate-400 text-base md:text-lg leading-relaxed mt-5 relative z-10">
-                    My focus spans <span class="text-primary font-medium">frontend web development</span>, <span class="text-primary font-medium">backend web development</span>, <span class="text-primary font-medium">API integration</span>, and <span class="text-primary font-medium">database management</span> &mdash; turning interface designs into responsive UIs and wiring them to reliable server-side systems.
-                </p>
-<p class="text-slate-400 text-base md:text-lg leading-relaxed mt-5 relative z-10">
-                    I bring proven, hands-on experience <span class="text-white">designing admin dashboards</span>, <span class="text-white">building modern MVC architectures</span>, and <span class="text-white">integrating microservices</span>, delivering maintainable code that holds up in real engineering teams.
-                </p>
-</div>
-<div class="glass-panel clip-geo-card p-8 border-l-2 border-l-secondary flex flex-col justify-center gap-5">
-<div class="text-secondary font-mono text-xs tracking-widest mb-1">BEYOND_THE_CODE</div>
-<p class="text-slate-400 text-sm leading-relaxed">
-                    Away from web development, I stay curious about the wider technology landscape and enjoy collaborative, problem-solving teamwork.
-                </p>
-<div class="flex flex-wrap gap-2">
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded">Teamwork</span>
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded">Problem Solving</span>
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded">Curiosity</span>
-</div>
-</div>
-</div>
-</section>
-<section class="py-24 relative scroll-reveal" id="experience">
-<div class="absolute -top-10 left-0 text-[10rem] leading-none font-display font-black text-white/5 select-none -z-10 hidden lg:block">WORK</div>
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-<div class="relative">
-<div class="absolute -left-8 top-2 w-2 h-2 bg-secondary rounded-full animate-ping opacity-75"></div>
-<h2 class="text-secondary font-mono text-sm mb-4 tracking-widest flex items-center gap-2">
-<span class="w-8 h-[1px] bg-secondary"></span> CAREER_LOG
-                </h2>
-<h3 class="text-4xl md:text-5xl font-bold text-white relative inline-block">
-                    Experience
-                </h3>
-</div>
-</div>
-<div class="relative">
-<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-secondary/60 via-primary/30 to-transparent hidden md:block"></div>
-<article class="relative md:pl-12">
-<div class="absolute left-[-7px] top-2 w-4 h-4 bg-secondary clip-geo-button shadow-[0_0_12px_rgba(139,92,246,0.6)] hidden md:block"></div>
-<div class="glass-panel clip-geo-card p-8 md:p-10 border-l-2 border-l-secondary relative">
-<div class="absolute top-0 right-0 p-5 opacity-10">
-<span class="material-symbols-outlined text-6xl text-secondary">work</span>
-</div>
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6 relative z-10">
-<div>
-<h4 class="text-2xl md:text-3xl font-bold text-white">Front-End Intern</h4>
-<p class="text-primary font-medium text-lg mt-1">Mantra (Teman Transisi)</p>
-</div>
-<span class="inline-flex items-center gap-2 text-sm font-mono text-slate-300 bg-white/5 border border-white/10 px-4 py-2 clip-geo-button w-fit">
-<span class="material-symbols-outlined text-[16px] text-accent">calendar_month</span>
-                            03/2025 – 10/2025
-                        </span>
-</div>
-<ul class="flex flex-col gap-4 relative z-10">
-<li class="flex items-start gap-3 text-slate-300 text-base md:text-lg leading-relaxed">
-<span class="material-symbols-outlined text-primary text-[20px] mt-1 shrink-0">chevron_right</span>
-<span>Responsive web platform front-end development</span>
-</li>
-<li class="flex items-start gap-3 text-slate-300 text-base md:text-lg leading-relaxed">
-<span class="material-symbols-outlined text-primary text-[20px] mt-1 shrink-0">chevron_right</span>
-<span>Responsive admin dashboard UI implementation</span>
-</li>
-<li class="flex items-start gap-3 text-slate-300 text-base md:text-lg leading-relaxed">
-<span class="material-symbols-outlined text-primary text-[20px] mt-1 shrink-0">chevron_right</span>
-<span>Front-end data validation for CRUD operations</span>
-</li>
-<li class="flex items-start gap-3 text-slate-300 text-base md:text-lg leading-relaxed">
-<span class="material-symbols-outlined text-primary text-[20px] mt-1 shrink-0">chevron_right</span>
-<span>Collaboration with back-end developers for API integration within a Laravel framework</span>
-</li>
-</ul>
-</div>
-</article>
-</div>
-</section>
-<section class="py-24 relative scroll-reveal" id="skills">
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-<div class="relative">
-<div class="absolute -left-8 top-2 w-2 h-2 bg-accent rounded-full animate-ping opacity-75"></div>
-<h2 class="text-accent font-mono text-sm mb-4 tracking-widest flex items-center gap-2">
-<span class="w-8 h-[1px] bg-accent"></span> SKILLS_MATRIX
-                </h2>
-<h3 class="text-4xl md:text-5xl font-bold text-white relative inline-block">
-                    Technical Arsenal
-                    <span class="absolute -top-6 -right-6 text-6xl text-white/5 font-display font-black -z-10 select-none">SKILLS</span>
-</h3>
-</div>
-<div class="hidden md:block opacity-60 hover:opacity-100 transition-opacity">
-<svg height="40" viewBox="0 0 100 40" width="100">
-<line stroke="rgba(255,255,255,0.2)" stroke-width="2" x1="0" x2="100" y1="20" y2="20"></line>
-<rect class="animate-[dash_2s_ease-in-out_infinite]" fill="transparent" height="20" stroke="#3b82f6" stroke-width="2" width="20" x="20" y="10"></rect>
-<circle class="animate-[bounce_2s_infinite]" cx="80" cy="20" fill="transparent" r="10" stroke="#8b5cf6" stroke-width="2"></circle>
-</svg>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 scroll-reveal">
-<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-primary hover:-translate-y-2 shadow-lg hover:shadow-primary/10">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
-<span class="material-symbols-outlined text-5xl text-primary">code_blocks</span>
-</div>
-                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Frontend</h4>
-                    <p class="text-slate-400 text-sm mb-6 relative z-10">Building responsive and interactive user interfaces with modern frameworks and styling.</p>
-                    <div class="flex flex-wrap gap-2 relative z-10">
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">React.js</span>
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">TypeScript</span>
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">JavaScript</span>
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">HTML</span>
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">CSS</span>
-                        <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary hover:text-white transition-colors cursor-default">Tailwind CSS</span>
-                    </div>
-</div>
-<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-accent hover:-translate-y-2 shadow-lg hover:shadow-accent/10">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
-<span class="material-symbols-outlined text-5xl text-accent">data_object</span>
-</div>
-                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">Backend</h4>
-                    <p class="text-slate-400 text-sm mb-6 relative z-10">Server-side development with robust, scalable application architectures.</p>
-                    <div class="flex flex-wrap gap-2 relative z-10">
-                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Python</span>
-                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">PHP</span>
-                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Node.js</span>
-                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Express.js</span>
-                        <span class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded hover:bg-accent hover:text-black transition-colors cursor-default">Laravel</span>
-                    </div>
-</div>
-<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-secondary hover:-translate-y-2 shadow-lg hover:shadow-secondary/10">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
-<span class="material-symbols-outlined text-5xl text-secondary">database</span>
-</div>
-<h4 class="text-xl font-bold text-white mb-2 group-hover:text-secondary transition-colors">Databases</h4>
-<p class="text-slate-400 text-sm mb-6 relative z-10">Designing and managing relational and cloud-based data stores.</p>
-<div class="flex flex-wrap gap-2 relative z-10">
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">MySQL</span>
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">PostgreSQL</span>
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">Supabase</span>
-<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-1 rounded hover:bg-secondary hover:text-white transition-colors cursor-default">Firebase</span>
-</div>
-</div>
-<div class="group relative bg-surface card-shine hover:bg-[#1f232b] transition-all duration-300 p-8 clip-geo-button border-l-2 border-transparent hover:border-green-500 hover:-translate-y-2 shadow-lg hover:shadow-green-500/10">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
-<span class="material-symbols-outlined text-5xl text-green-500">account_tree</span>
-</div>
-                    <h4 class="text-xl font-bold text-white mb-2 group-hover:text-green-500 transition-colors">Architecture &amp; Tools</h4>
-                    <p class="text-slate-400 text-sm mb-6 relative z-10">Architecture patterns, version control, and containerized workflows.</p>
-                    <div class="flex flex-wrap gap-2 relative z-10">
-                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Git</span>
-                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Docker</span>
-                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">REST API</span>
-                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">MVC</span>
-                        <span class="text-xs font-mono text-green-500 bg-green-500/10 px-2 py-1 rounded hover:bg-green-500 hover:text-black transition-colors cursor-default">Microservices</span>
-                    </div>
-</div>
-</div>
-</section>
-<section class="py-20 scroll-reveal" id="projects">
-<div class="flex flex-col items-center text-center mb-14 relative">
-<h2 class="text-accent font-mono text-sm mb-4 tracking-widest border border-accent/30 px-4 py-1 rounded-full backdrop-blur-sm bg-black/20">SELECTED WORKS</h2>
-<h3 class="text-4xl md:text-6xl font-bold mb-5 text-white">Featured Projects</h3>
-<p class="text-slate-400 max-w-2xl leading-relaxed">Projects are ordered to show web-development fit first: full-stack dashboards, API-backed systems, and a TypeScript open-source web app before the mobile REST API project.</p>
-</div>
-<div class="space-y-20">
-                <article class="relative group perspective-container scroll-reveal">
-                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 -z-10 hidden lg:block group-hover:bg-primary/20 transition-colors duration-500"></div>
-                    <div class="flex flex-col lg:flex-row items-center gap-16">
-                        <div class="lg:w-1/2 z-10">
-                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:-rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-primary/20">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="aspect-video bg-gray-900 relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("imgs/dashboard-upnvj.png");'></div>
-                                    <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div class="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300 delay-100">
-                                            <span class="material-symbols-outlined text-white">visibility</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 flex flex-col items-start lg:pl-10 relative">
-                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -right-10 select-none group-hover:text-primary/10 transition-colors duration-500">01</span>
-                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Dashboard Profile UPNVJ</h4>
-                            <p class="text-primary font-mono text-sm mb-6 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                                Fullstack Web Application
-                            </p>
-                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
-                                A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized for performance through dynamic code splitting and memoized React context to minimize re-renders.
-                            </p>
-                            <ul class="flex flex-wrap gap-4 mb-8">
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">React.js</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">TypeScript</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Vite</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">TailwindCSS</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Supabase</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Express.js</li>
-                            </ul>
-                            <div class="flex gap-4 flex-wrap">
-                                <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-primary transition-all duration-300" href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ">
-                                    <div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                    <span class="relative z-10">Live Demo</span>
-                                    <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">open_in_new</span>
-                                </a>
-                                <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-primary transition-all duration-300" href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ">
-                                    <div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                    <span class="relative z-10">View on GitHub</span>
-                                    <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article class="relative group perspective-container scroll-reveal">
-                    <div class="flex flex-col lg:flex-row-reverse items-center gap-16">
-                        <div class="lg:w-1/2 z-10">
-                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-accent/20">
-                                <div class="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-accent to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="aspect-video bg-gray-900 flex items-center justify-center">
-                                    <p class="text-slate-500 text-sm font-mono">Smart Home IoT</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 flex flex-col items-end text-right lg:pr-10 relative">
-                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -left-10 select-none group-hover:text-accent/10 transition-colors duration-500">02</span>
-                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-accent transition-colors">Smart Home IoT</h4>
-                            <p class="text-accent font-mono text-sm mb-6 flex items-center gap-2 flex-row-reverse">
-                                <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
-                                Fullstack IoT Platform
-                            </p>
-                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
-                                A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL, exposing APIs consumed by the web front-end.
-                            </p>
-                            <ul class="flex flex-wrap justify-end gap-4 mb-8">
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">HTML</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">CSS</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">JavaScript</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">Express.js</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">MySQL</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">MQTT</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-accent hover:text-accent transition-colors cursor-default">Docker</li>
-                            </ul>
-                            <p class="text-slate-500 text-sm mb-4 font-mono">Live demo not available</p>
-                            <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-accent transition-all duration-300" href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT">
-                                <div class="absolute inset-0 bg-accent translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                <span class="relative z-10">View on GitHub</span>
-                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
-                            </a>
-                        </div>
-                    </div>
-                </article>
-                <article class="relative group perspective-container scroll-reveal">
-                    <div class="flex flex-col lg:flex-row items-center gap-16">
-                        <div class="lg:w-1/2 z-10">
-                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:-rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-secondary/20">
-                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-secondary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="aspect-video bg-gray-900 relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style='background-image: url("imgs/albioncalc.png");'></div>
-                                    <div class="absolute inset-0 bg-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div class="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300 delay-100">
-                                            <span class="material-symbols-outlined text-white">visibility</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 flex flex-col items-start lg:pl-10 relative">
-                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -right-10 select-none group-hover:text-secondary/10 transition-colors duration-500">03</span>
-                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-secondary transition-colors">Albion Refining Calculator</h4>
-                            <p class="text-secondary font-mono text-sm mb-6 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
-                                Open-Source Web App
-                            </p>
-                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
-                                An open-source game economy calculator for Albion Online's refining system, helping players model refining returns and profit margins. The project has earned 5 GitHub stars from the community.
-                            </p>
-                            <ul class="flex flex-wrap gap-4 mb-8">
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-secondary hover:text-secondary transition-colors cursor-default">TypeScript</li>
-                            </ul>
-                            <div class="flex gap-4 flex-wrap">
-                                <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-secondary transition-all duration-300" href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator">
-                                    <div class="absolute inset-0 bg-secondary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                    <span class="relative z-10">Live Demo</span>
-                                    <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">open_in_new</span>
-                                </a>
-                                <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-secondary transition-all duration-300" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator">
-                                    <div class="absolute inset-0 bg-secondary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                    <span class="relative z-10">View on GitHub</span>
-                                    <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article class="relative group perspective-container scroll-reveal">
-                    <div class="flex flex-col lg:flex-row-reverse items-center gap-16">
-                        <div class="lg:w-1/2 z-10">
-                            <div class="relative rounded-sm overflow-hidden border border-white/10 p-2 bg-surface transform transition-transform duration-500 group-hover:rotate-2 group-hover:scale-105 shadow-2xl group-hover:shadow-primary/20">
-                                <div class="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent z-20 group-hover:h-1.5 transition-all"></div>
-                                <div class="aspect-video bg-gray-900 flex items-center justify-center">
-                                    <p class="text-slate-500 text-sm font-mono">Recehin</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 flex flex-col items-end text-right lg:pr-10 relative">
-                            <span class="text-9xl font-bold text-white/5 absolute -top-20 -left-10 select-none group-hover:text-primary/10 transition-colors duration-500">04</span>
-                            <h4 class="text-3xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Recehin</h4>
-                            <p class="text-primary font-mono text-sm mb-6 flex items-center gap-2 flex-row-reverse">
-                                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                                REST API Integration
-                            </p>
-                            <p class="text-slate-400 mb-8 leading-relaxed group-hover:text-slate-300 transition-colors">
-                                A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
-                            </p>
-                            <ul class="flex flex-wrap justify-end gap-4 mb-8">
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Android Studio</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Java/Kotlin</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">Retrofit</li>
-                                <li class="text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700 px-3 py-1 hover:border-primary hover:text-primary transition-colors cursor-default">REST API</li>
-                            </ul>
-                            <p class="text-slate-500 text-sm mb-4 font-mono">Live demo not available</p>
-                            <a class="group/btn relative overflow-hidden px-6 py-3 bg-white/5 border border-white/10 flex items-center gap-3 text-white font-bold hover:border-primary transition-all duration-300" href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin">
-                                <div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                                <span class="relative z-10">View on GitHub</span>
-                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform relative z-10">arrow_forward</span>
-                            </a>
-                        </div>
-                    </div>
-                </article>
-</div>
-</section>
-<section class="py-24 border-t border-white/5" id="contact">
-<div class="bg-surface border border-white/5 p-8 md:p-16 relative overflow-hidden clip-geo-card hover:border-white/10 transition-colors duration-500 group">
-<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
-<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none group-hover:bg-secondary/20 transition-all duration-700"></div>
-<div class="flex flex-col lg:flex-row gap-16 relative z-10">
-<div class="flex-1">
-<h2 class="text-accent font-mono text-sm mb-4 tracking-widest uppercase flex items-center gap-2">
-<span class="w-2 h-2 bg-accent animate-pulse"></span>
-                        Initiate Protocol
-                    </h2>
-<h3 class="text-4xl md:text-5xl font-bold mb-6 text-white group-hover:translate-x-1 transition-transform">Let's Connect</h3>
-<p class="text-slate-400 mb-10 text-lg leading-relaxed">
-                        I'm seeking a frontend or backend developer role and would love to hear about open opportunities. Reach out and let's talk about how I can contribute to your team.
-                    </p>
-<div class="space-y-6">
-<div class="flex items-center gap-4 group/item">
-<div class="w-12 h-12 flex items-center justify-center border border-white/10 bg-white/5 group-hover/item:border-primary group-hover/item:bg-primary/10 transition-all duration-300 group-hover/item:rotate-12">
-<span class="material-symbols-outlined text-primary">mail</span>
-</div>
-<div>
-<div class="text-xs uppercase tracking-widest text-slate-500 mb-1">Email Address</div>
-<a class="text-xl font-bold text-white hover:text-primary transition-colors hover:underline decoration-primary/50 underline-offset-4" href="mailto:imannnnugraha@gmail.com">imannnnugraha@gmail.com</a>
-<p class="text-sm text-slate-500 mt-1 select-all">imannnnugraha@gmail.com</p>
-</div>
-</div>
-<div class="flex items-center gap-4 group/item">
-<div class="w-12 h-12 flex items-center justify-center border border-white/10 bg-white/5 group-hover/item:border-primary group-hover/item:bg-primary/10 transition-all duration-300 group-hover/item:-rotate-12">
-<span class="material-symbols-outlined text-primary">hub</span>
-</div>
-<div>
-<div class="text-xs uppercase tracking-widest text-slate-500 mb-1">Social Network</div>
-<div class="flex gap-4">
-<a class="text-white hover:text-primary transition-colors font-bold hover:scale-105 inline-block" href="[LINKEDIN_URL_PLACEHOLDER]">LinkedIn</a>
-<span class="text-slate-600">/</span>
-<a class="text-white hover:text-primary transition-colors font-bold hover:scale-105 inline-block" href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer">GitHub</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="flex-1">
-<form class="space-y-6" action="mailto:imannnnugraha@gmail.com" method="post" enctype="text/plain">
-<p class="text-sm text-slate-500 leading-relaxed border border-white/10 bg-white/[0.03] p-4">This static page has no backend. Submitting opens your email app with the message details.</p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-<div class="space-y-2 group/input">
-<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors" for="contact-name">Name</label>
-<input id="contact-name" name="name" class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="John Doe" type="text"/>
-</div>
-<div class="space-y-2 group/input">
-<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors" for="contact-email">Email</label>
-<input id="contact-email" name="email" class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="john@example.com" type="email"/>
-</div>
-</div>
-<div class="space-y-2 group/input">
-<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors" for="contact-subject">Subject</label>
-<input id="contact-subject" name="subject" class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="Opportunity / Role" type="text"/>
-</div>
-<div class="space-y-2 group/input">
-<label class="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover/input:text-primary transition-colors" for="contact-message">Message</label>
-<textarea id="contact-message" name="message" class="w-full bg-[#0f1115] border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary h-32 resize-none transition-all rounded-none placeholder:text-slate-700 hover:border-white/20" placeholder="Tell me about the role or opportunity..."></textarea>
-</div>
-<button class="w-full relative overflow-hidden bg-white text-black font-bold py-4 px-6 uppercase tracking-wider transition-all clip-geo-button group/btn shadow-[4px_4px_0_0_rgba(255,255,255,0.1)] hover:translate-y-[-2px]" type="submit">
-<span class="relative z-10 group-hover/btn:text-white transition-colors duration-300">Open Email Draft</span>
-<div class="absolute inset-0 bg-primary translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-</button>
-</form>
-</div>
-</div>
-</div>
-</section>
-</main>
-<footer class="bg-[#0b0d10] border-t border-white/5 py-12 relative z-10">
-<div class="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
-<div class="flex items-center gap-3 group">
-<div class="w-8 h-8 bg-primary/20 flex items-center justify-center clip-hexagon group-hover:rotate-180 transition-transform duration-700">
-<span class="material-symbols-outlined text-primary text-sm">terminal</span>
-</div>
-<span class="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">IMANDEV</span>
-</div>
-<p class="text-slate-600 text-sm font-mono flex items-center gap-2">
-            CRAFTED WITH CODE & COFFEE 
-            <span class="inline-block w-1.5 h-1.5 bg-slate-600 rounded-full animate-pulse"></span>
-            © 2025
+
+<main class="pt-16">
+
+<!-- ══════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════ -->
+<section id="hero" class="py-16 md:py-24 scroll-mt-16">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+
+      <!-- Left: identity -->
+      <div class="flex-1 flex flex-col gap-6">
+        <p class="font-sans text-xs tracking-[0.25em] uppercase text-rust font-semibold">Field Note / 01</p>
+        <h1 class="font-serif text-paper text-4xl md:text-5xl leading-tight">
+          Muhammad Iman <br/> Nugraha
+        </h1>
+        <p class="font-sans text-paper/50 text-sm uppercase tracking-widest">Frontend-leaning Fullstack Web Developer</p>
+        <p class="font-sans text-paper/80 leading-relaxed max-w-sm">
+          From a UPNVJ profile dashboard secured with Supabase RLS to MQTT-powered home controls, I build the interface and the system behind it.
         </p>
-<div class="flex gap-6">
-<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="https://github.com/Jokskuyy" aria-label="GitHub profile" target="_blank" rel="noopener noreferrer">GH</a>
-<!-- Replace [LINKEDIN_URL_PLACEHOLDER] with the actual LinkedIn profile URL -->
-<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="[LINKEDIN_URL_PLACEHOLDER]" aria-label="LinkedIn profile">LI</a>
-<a class="text-slate-500 hover:text-white transition-colors hover:scale-125 transform" href="mailto:imannnnugraha@gmail.com" aria-label="Email">EM</a>
+        <p class="font-sans text-paper/60 text-sm leading-relaxed max-w-sm border-l-2 border-rust/40 pl-4">
+          Final-year Informatics student at UPN Veteran Jakarta, focused on frontend interfaces,
+          backend APIs, and database-backed systems. Previously completed a Front-End Internship at Mantra (Teman Transisi), 03/2025–10/2025.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="#projects" class="font-sans text-xs uppercase tracking-widest px-5 py-2.5 bg-rust text-paper hover:bg-rust-lt transition-colors">View projects</a>
+          <a href="#contact" class="font-sans text-xs uppercase tracking-widest px-5 py-2.5 border border-paper/20 text-paper/70 hover:text-paper hover:border-paper/50 transition-colors">Get in touch</a>
+        </div>
+        <div class="flex items-center gap-5 pt-1">
+          <a href="https://github.com/Jokskuyy" aria-label="GitHub profile" title="GitHub" target="_blank" rel="noopener noreferrer" class="text-paper/50 hover:text-paper transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" aria-label="LinkedIn profile" title="LinkedIn" target="_blank" rel="noopener noreferrer" class="text-paper/50 hover:text-paper transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
+          </a>
+          <a href="mailto:imannnnugraha@gmail.com" aria-label="Email Muhammad Iman Nugraha" title="Email" class="text-paper/50 hover:text-paper transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25H4.5a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5H4.5a2.25 2.25 0 0 0-2.25 2.25m19.5 0-9.75 6.75L2.25 6.75"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: dashboard screenshot evidence -->
+      <div class="flex-1 w-full max-w-lg">
+        <figure class="bg-paper-2 p-3 border border-paper-2 shadow-lg">
+          <img
+            src="imgs/dashboard-upnvj.png"
+            alt="Dashboard Profile UPNVJ — fullstack admin dashboard built with React, TypeScript, Supabase RLS, and Express.js"
+            class="w-full h-auto block"
+          />
+          <figcaption class="mt-2 text-xs text-ink/50 font-sans leading-snug">
+            Dashboard Profile UPNVJ — Supabase Row Level Security + Express.js APIs, React + TypeScript frontend.
+            <a href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline ml-1">Live ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     EVIDENCE STRIP
+══════════════════════════════════════════════════════ -->
+<div class="bg-paper ruled ruled-top">
+  <div class="max-w-5xl mx-auto px-6 md:px-10 py-6 flex flex-wrap gap-6 md:gap-12 text-sm text-ink/70 font-sans">
+    <span><span class="font-semibold text-ink">UPN Veteran Jakarta</span> — Informatics, final year</span>
+    <span class="border-l border-ink/15 pl-6"><span class="font-semibold text-ink">GPA 3.75 / 4.0</span></span>
+    <span class="border-l border-ink/15 pl-6"><span class="font-semibold text-ink">Mantra (Teman Transisi)</span> — Front-End Intern, 03/2025–10/2025</span>
+  </div>
 </div>
-</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ABOUT
+══════════════════════════════════════════════════════ -->
+<section id="about" class="py-16 md:py-20 scroll-mt-16 bg-paper">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-6">About</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Web content panel (2 cols) -->
+      <div class="md:col-span-2 flex flex-col gap-4">
+        <p class="font-sans text-ink/80 leading-relaxed">
+          I'm a <strong>final-year Informatics student at UPN Veteran Jakarta</strong> with a
+          <strong>GPA of 3.75 / 4.0</strong>, building production-grade web applications across the full stack.
+        </p>
+        <p class="font-sans text-ink/70 leading-relaxed text-sm">
+          My focus spans <strong>frontend web development</strong>, <strong>backend web development</strong>,
+          <strong>API integration</strong>, and <strong>database management</strong> — translating designs
+          into responsive UIs and wiring them to reliable server-side systems.
+        </p>
+        <p class="font-sans text-ink/70 leading-relaxed text-sm">
+          I've built admin dashboards with Supabase Row Level Security and custom Express APIs
+          (Dashboard Profile UPNVJ), orchestrated Node/Express microservices with Docker and MQTT over MySQL
+          (Smart Home IoT), shipped a TypeScript open-source web app (Albion Refining Calculator),
+          and integrated REST APIs end-to-end (Recehin).
+        </p>
+      </div>
+      <!-- Non-web aside -->
+      <div class="flex flex-col gap-3 border-l border-ink/10 pl-6">
+        <p class="text-xs uppercase tracking-widest text-olive font-sans font-semibold">How I work</p>
+        <p class="font-sans text-ink/60 text-sm leading-relaxed">
+          I prefer collaborative problem-solving: I ask clarifying questions early,
+          keep team members informed of blockers, and treat code review as a learning
+          opportunity rather than a formality.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-1">
+          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Teamwork</span>
+          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Problem Solving</span>
+          <span class="text-xs text-olive bg-olive/10 px-2 py-0.5 font-sans">Curiosity</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     EXPERIENCE
+══════════════════════════════════════════════════════ -->
+<section id="experience" class="py-16 md:py-20 scroll-mt-16 bg-charcoal">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Experience</p>
+    <article class="border-l-2 border-rust/40 pl-6">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-5">
+        <div>
+          <h4 class="font-serif text-paper text-xl">Front-End Intern</h4>
+          <p class="font-sans text-rust text-sm mt-0.5">Mantra (Teman Transisi)</p>
+        </div>
+        <span class="font-sans text-xs text-paper/40 tracking-wide pt-1">03/2025 – 10/2025</span>
+      </div>
+      <ul class="flex flex-col gap-3">
+        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
+          – <span>Responsive web platform front-end development</span>
+        </li>
+        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
+          – <span>Responsive admin dashboard UI implementation</span>
+        </li>
+        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
+          – <span>Front-end data validation for CRUD operations</span>
+        </li>
+        <li class="flex items-start gap-2 text-paper/70 text-sm font-sans leading-relaxed">
+          – <span>Collaboration with back-end developers for API integration within a Laravel framework</span>
+        </li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     SKILLS
+══════════════════════════════════════════════════════ -->
+<section id="skills" class="py-16 md:py-20 scroll-mt-16 bg-paper">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Skills Index</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Frontend -->
+      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
+        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Frontend</h4>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">React.js</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">TypeScript</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">JavaScript</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">HTML</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">CSS</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Tailwind CSS</span>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
+        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Backend</h4>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Python</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">PHP</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Node.js</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Express.js</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Laravel</span>
+        </div>
+      </div>
+
+      <!-- Databases -->
+      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
+        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Databases</h4>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">MySQL</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">PostgreSQL</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Supabase</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Firebase</span>
+        </div>
+      </div>
+
+      <!-- Architecture & Tools -->
+      <div class="border border-ink/10 bg-white/60 p-5 flex flex-col gap-3">
+        <h4 class="font-sans text-sm font-semibold text-ink uppercase tracking-widest">Architecture &amp; Tools</h4>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Git</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Docker</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">REST API</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">MVC</span>
+          <span class="text-xs font-sans text-ink/70 bg-ink/5 px-2 py-0.5">Microservices</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PROJECTS
+══════════════════════════════════════════════════════ -->
+<section id="projects" class="py-16 md:py-20 scroll-mt-16 bg-charcoal">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-10">Projects</p>
+    <div class="flex flex-col gap-14">
+
+      <!-- 01 Dashboard Profile UPNVJ -->
+      <article class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-5/12 shrink-0">
+          <div class="bg-paper-2 p-2">
+            <img
+              src="imgs/dashboard-upnvj.png"
+              alt="Dashboard Profile UPNVJ screenshot"
+              class="w-full h-auto block"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <p class="text-xs font-sans text-rust/70 tracking-widest">01</p>
+          <h4 class="font-serif text-paper text-xl leading-snug">Dashboard Profile UPNVJ</h4>
+          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Fullstack Web Application</p>
+          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
+            A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized through dynamic code splitting and memoized React context.
+          </p>
+          <ul class="flex flex-wrap gap-2 mt-1">
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">React.js</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TypeScript</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Vite</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TailwindCSS</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Supabase</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Express.js</li>
+          </ul>
+          <div class="flex gap-4 flex-wrap mt-1">
+            <a href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ" class="text-xs font-sans text-rust hover:underline">Live Demo ↗</a>
+            <a href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <hr class="border-white/5"/>
+
+      <!-- 02 Smart Home IoT -->
+      <article class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-5/12 shrink-0">
+          <div class="bg-paper-2/10 border border-paper/5 aspect-video flex items-center justify-center">
+            <p class="font-sans text-paper/30 text-xs text-center px-4">No screenshot available<br/>Live demo not available</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <p class="text-xs font-sans text-rust/70 tracking-widest">02</p>
+          <h4 class="font-serif text-paper text-xl leading-snug">Smart Home IoT</h4>
+          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Fullstack IoT Platform</p>
+          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
+            A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL.
+          </p>
+          <ul class="flex flex-wrap gap-2 mt-1">
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">HTML</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">CSS</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">JavaScript</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Express.js</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">MySQL</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">MQTT</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Docker</li>
+          </ul>
+          <p class="font-sans text-paper/30 text-xs mt-1">Live demo not available</p>
+          <div class="flex gap-4 flex-wrap">
+            <a href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <hr class="border-white/5"/>
+
+      <!-- 03 Albion Refining Calculator -->
+      <article class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-5/12 shrink-0">
+          <div class="bg-paper-2 p-2">
+            <img
+              src="imgs/albioncalc.png"
+              alt="Albion Refining Calculator screenshot"
+              class="w-full aspect-video object-cover object-top block"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <p class="text-xs font-sans text-rust/70 tracking-widest">03</p>
+          <h4 class="font-serif text-paper text-xl leading-snug">Albion Refining Calculator</h4>
+          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">Open-Source Web App</p>
+          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
+            An open-source game economy calculator for Albion Online's refining system, helping players model refining returns and profit margins. Written in TypeScript and deployed on Vercel.
+          </p>
+          <ul class="flex flex-wrap gap-2 mt-1">
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">TypeScript</li>
+          </ul>
+          <div class="flex gap-4 flex-wrap mt-1">
+            <a href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator" class="text-xs font-sans text-rust hover:underline">Live Demo ↗</a>
+            <a href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <hr class="border-white/5"/>
+
+      <!-- 04 Recehin -->
+      <article class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-5/12 shrink-0">
+          <div class="bg-paper-2/10 border border-paper/5 aspect-video flex items-center justify-center">
+            <p class="font-sans text-paper/30 text-xs text-center px-4">No screenshot available<br/>Live demo not available</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 flex-1">
+          <p class="text-xs font-sans text-rust/70 tracking-widest">04</p>
+          <h4 class="font-serif text-paper text-xl leading-snug">Recehin</h4>
+          <p class="font-sans text-paper/60 text-xs uppercase tracking-widest">REST API Integration</p>
+          <p class="font-sans text-paper/70 text-sm leading-relaxed leading-relaxed">
+            A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
+          </p>
+          <ul class="flex flex-wrap gap-2 mt-1">
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Android Studio</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Java/Kotlin</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">Retrofit</li>
+            <li class="text-xs font-sans text-paper/50 border border-paper/10 px-2 py-0.5">REST API</li>
+          </ul>
+          <p class="font-sans text-paper/30 text-xs mt-1">Live demo not available</p>
+          <div class="flex gap-4 flex-wrap">
+            <a href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin" class="text-xs font-sans text-paper/50 hover:text-paper transition-colors">View on GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════════════════ -->
+<section id="contact" class="py-16 md:py-20 scroll-mt-16 bg-paper">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs uppercase tracking-widest text-rust font-sans font-semibold mb-8">Contact</p>
+    <div class="flex flex-col md:flex-row gap-12">
+      <!-- Direct links -->
+      <div class="flex flex-col gap-5 flex-1">
+        <p class="font-sans text-ink/70 text-sm leading-relaxed max-w-xs">
+          Seeking a frontend or backend developer role. Reach out directly to discuss an opportunity.
+        </p>
+        <div class="flex flex-col gap-3 text-sm font-sans">
+          <div>
+            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">Email</p>
+            <a href="mailto:imannnnugraha@gmail.com" class="text-rust hover:underline">imannnnugraha@gmail.com</a>
+            <p class="text-ink/50 text-xs mt-0.5 select-all">imannnnugraha@gmail.com</p>
+          </div>
+          <div>
+            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">GitHub</p>
+            <a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline">github.com/Jokskuyy</a>
+          </div>
+          <div>
+            <p class="text-xs text-ink/40 uppercase tracking-widest mb-0.5">LinkedIn</p>
+            <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" class="text-rust hover:underline">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+      <!-- Email form -->
+      <div class="flex-1">
+        <form class="flex flex-col gap-4" action="mailto:imannnnugraha@gmail.com" method="post" enctype="text/plain">
+          <p class="text-xs font-sans text-ink/40 border border-ink/10 bg-ink/5 p-3 leading-relaxed">This static page has no backend. Submitting opens your email app with the message details.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-name">Name</label>
+              <input id="contact-name" name="name" type="text" placeholder="Your name" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-email">Email</label>
+              <input id="contact-email" name="email" type="email" placeholder="your@email.com" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-subject">Subject</label>
+            <input id="contact-subject" name="subject" type="text" placeholder="Opportunity / Role" class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none placeholder:text-ink/30"/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs uppercase tracking-widest text-ink/50 font-sans" for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" rows="4" placeholder="Tell me about the role or opportunity..." class="border border-ink/15 bg-white px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-rust rounded-none resize-none placeholder:text-ink/30"></textarea>
+          </div>
+          <button type="submit" class="font-sans text-xs uppercase tracking-widest px-5 py-3 bg-rust text-paper hover:bg-rust-lt transition-colors w-fit">Open Email Draft</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="bg-charcoal border-t border-white/5 py-8">
+  <div class="max-w-5xl mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-sans text-paper/30">
+    <span>Iman</span>
+    <span>© <script>document.write(new Date().getFullYear())</script> Muhammad Iman Nugraha</span>
+    <div class="flex gap-5">
+      <a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" class="hover:text-paper transition-colors">GitHub</a>
+      <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" class="hover:text-paper transition-colors">LinkedIn</a>
+      <a href="mailto:imannnnugraha@gmail.com" aria-label="Email" class="hover:text-paper transition-colors">Email</a>
+    </div>
+  </div>
 </footer>
-</body></html>
+
+</body>
+</html>

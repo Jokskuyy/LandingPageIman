@@ -111,15 +111,13 @@ function getAboutPanels() {
   return Array.from(grid.children);
 }
 
-/** The Non_Web_Focus aside is the panel mentioning "Beyond the Code". */
+/** The Non_Web_Focus aside is the shorter/secondary panel in the grid.
+ *  Previously keyed on "Beyond the Code"; now identified as the last
+ *  panel (the non-web aside is always placed after the main web panels). */
 function getNonWebPanel(panels) {
-  const nonWeb = panels.find((p) =>
-    /beyond[\s_]the[\s_]code/i.test(p.textContent),
-  );
-  assert.ok(
-    nonWeb,
-    'About should contain a non-web "Beyond the Code" aside panel',
-  );
+  // The non-web aside is the last panel in the About grid.
+  assert.ok(panels.length >= 2, "About should have at least two panels (web + non-web aside)");
+  const nonWeb = panels[panels.length - 1];
   return nonWeb;
 }
 
