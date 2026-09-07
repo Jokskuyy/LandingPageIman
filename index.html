@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#161A22" />
   <meta
     name="description"
-    content="Muhammad Iman Nugraha is a frontend, backend, and full-stack web developer building clear interfaces and reliable systems."
+    content="Muhammad Iman Nugraha — AI-native product builder and frontend developer. A personal creative lab for useful interfaces, experiments, and connected systems."
   />
-  <title>Muhammad Iman Nugraha — Fullstack Web Developer</title>
+  <title>Iman — AI-native Product Builder &amp; Frontend Developer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -206,6 +206,8 @@
     .nav-link[aria-current="location"] { color: var(--lime); }
 
     .hero-grid {
+      position: relative;
+      z-index: 1;
       display: grid;
       align-items: center;
       gap: clamp(2rem, 6vw, 5.5rem);
@@ -598,6 +600,215 @@
       transition: opacity 380ms ease-out, transform 380ms ease-out;
     }
 
+    /* --- Creative lab: particle field + aurora --- */
+    #hero::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(40rem 26rem at 10% 0%, rgba(181, 201, 139, 0.13), transparent 62%),
+        radial-gradient(34rem 24rem at 92% 8%, rgba(82, 103, 166, 0.2), transparent 60%),
+        radial-gradient(38rem 28rem at 55% 105%, rgba(204, 130, 106, 0.12), transparent 64%);
+      animation: aurora-shift 16s ease-in-out infinite alternate;
+    }
+
+    @keyframes aurora-shift {
+      from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+      to { transform: translate3d(1.5%, 1%, 0) scale(1.05); }
+    }
+
+    .particle-field {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    [data-parallax] {
+      transform: translate3d(0, var(--parallax-y, 0px), 0);
+      will-change: transform;
+    }
+
+    /* --- Creative lab: layered abstract objects --- */
+    .float-art {
+      position: absolute;
+      pointer-events: none;
+      will-change: transform;
+      transform: translate3d(0, var(--float-y, 0px), 0);
+      animation: float-drift 7s ease-in-out infinite alternate;
+    }
+
+    .float-art-1 { top: 2%; left: -3%; width: 13rem; height: 13rem; animation-duration: 8s; }
+    .float-art-2 { top: 10%; right: 2%; width: 9rem; height: 9rem; animation-duration: 6s; }
+    .float-art-3 { bottom: 7%; left: 5%; width: 5rem; height: 5rem; animation-duration: 5s; }
+    .float-art-4 { bottom: 14%; right: 24%; width: 10.5rem; height: 10.5rem; animation-duration: 9s; }
+    .float-art-5 { top: 40%; left: 46%; width: 7rem; height: 4rem; animation-duration: 7s; }
+
+    .float-orbit {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed rgba(181, 201, 139, 0.7);
+      border-radius: 9999px;
+      position: relative;
+      animation: spin-slow 26s linear infinite;
+    }
+
+    @keyframes spin-slow {
+      to { transform: rotate(1turn); }
+    }
+
+    .float-orbit::before {
+      content: "";
+      position: absolute;
+      top: -0.4rem;
+      left: 50%;
+      width: 0.8rem;
+      height: 0.8rem;
+      background: var(--signal);
+      border-radius: 9999px;
+      transform: translateX(-50%);
+    }
+
+    .float-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 32%;
+      border: 2px solid rgba(82, 103, 166, 0.75);
+      border-radius: 9999px;
+    }
+
+    .float-tile {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: var(--line);
+      background: var(--surface);
+      box-shadow: 6px 6px 0 var(--cobalt);
+      transform: rotate(12deg);
+    }
+
+    .float-tile::before {
+      content: "";
+      position: absolute;
+      inset: 18%;
+      background: var(--lime);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+
+    .float-asterisk {
+      display: block;
+      color: var(--signal);
+      font-size: 3.4rem;
+      line-height: 1;
+      text-align: center;
+      animation: spin-slow 18s linear infinite reverse;
+    }
+
+    .float-blob {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--raised);
+      border: var(--line);
+      border-radius: 58% 42% 55% 45% / 52% 55% 45% 48%;
+      box-shadow: inset -6px -6px 0 rgba(82, 103, 166, 0.35);
+    }
+
+    .float-dots {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, rgba(242, 238, 230, 0.55) 1.6px, transparent 1.8px);
+      background-size: 10px 10px;
+    }
+
+    @keyframes float-drift {
+      from { margin-top: 0; }
+      to { margin-top: -0.9rem; }
+    }
+
+    /* --- Creative lab: ticker marquee --- */
+    .ticker {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      border-block: var(--line);
+      background: var(--surface);
+      padding-block: 0.85rem;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 3.5rem;
+      width: max-content;
+      animation: ticker-scroll 30s linear infinite;
+    }
+
+    .ticker-track > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--paper);
+      white-space: nowrap;
+    }
+
+    .ticker-track > span::after {
+      content: "✳";
+      color: var(--lime);
+    }
+
+    @keyframes ticker-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    /* --- Creative lab: motion toggle --- */
+    .motion-toggle {
+      position: absolute;
+      bottom: 1.1rem;
+      right: 1.1rem;
+      z-index: 20;
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      gap: 0.55rem;
+      border: var(--line);
+      background: var(--surface);
+      color: var(--paper);
+      padding: 0.5rem 0.85rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .motion-toggle-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 9999px;
+      background: var(--lime);
+    }
+
+    .motion-toggle[aria-pressed="true"] .motion-toggle-dot { background: var(--signal); }
+    .motion-toggle:hover { background: var(--raised); }
+
+    :root[data-motion="paused"] .float-art { animation: none; }
+    :root[data-motion="paused"] .float-orbit,
+    :root[data-motion="paused"] .float-asterisk { animation: none; }
+    :root[data-motion="paused"] .ticker-track { animation: none; }
+    :root[data-motion="paused"] #hero::before { animation: none; }
+
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
       .hero-copy { max-width: 46rem; }
@@ -650,6 +861,12 @@
       .hero-avatar { filter: drop-shadow(6px 5px 0 rgba(22, 26, 34, 0.9)); }
       .scroll-companion.is-switching .scroll-companion-art,
       .scroll-companion.is-switching .scroll-companion-status { animation: none; }
+      .float-art { animation: none; transform: none; }
+      .particle-field { display: none; }
+      .hero-grid { transform: none !important; }
+      #hero::before { animation: none; }
+      .float-orbit, .float-asterisk { animation: none; }
+      .ticker-track { animation: none; }
     }
   </style>
 </head>
@@ -691,14 +908,15 @@
 
   <main id="main-content" class="pt-[4.75rem]">
     <section id="hero" class="relative overflow-hidden bg-ink py-16 text-paper md:py-24">
-      <div class="page-shell hero-grid">
+      <canvas id="particle-field" class="particle-field" aria-hidden="true"></canvas>
+      <div class="page-shell hero-grid" data-parallax>
         <div class="hero-copy reveal">
-          <p class="mono-label text-lime">Frontend / Backend / Fullstack Web Developer</p>
+          <p class="mono-label text-lime">AI-native product builder / frontend developer</p>
           <h1 class="hero-title mt-7">
-            I build the <span class="interface-word">interface</span>, the API, and the path between them.
+            <span class="hero-greeting">Hey, I’m Iman.</span> I turn ideas into <span class="interface-word">things you can use.</span>
           </h1>
           <p class="mt-7 max-w-2xl text-lg leading-relaxed text-paper/75">
-            I’m Muhammad Iman Nugraha, a final-year Informatics student at UPN Veteran Jakarta. I turn product requirements into responsive frontend interfaces, then connect them to backend APIs and database-backed systems.
+            I’m Muhammad Iman Nugraha, an Informatics graduate from UPN Veteran Jakarta. I work from the interface outward: shaping ideas, building with AI, and testing the details that make a product useful.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a class="action action-primary" href="#projects">Explore My Builds <span aria-hidden="true">↓</span></a>
@@ -723,23 +941,49 @@
           <span class="layer-tag layer-tag-ui" aria-hidden="true">UI / REACT</span>
           <span class="layer-tag layer-tag-api" aria-hidden="true">API / EXPRESS</span>
           <span class="layer-tag layer-tag-data" aria-hidden="true">DATA / SQL</span>
+          <span class="float-art float-art-1" data-float aria-hidden="true"><span class="float-orbit"></span></span>
+          <span class="float-art float-art-2" data-float aria-hidden="true"><span class="float-tile"></span></span>
+          <span class="float-art float-art-3" data-float aria-hidden="true"><span class="float-asterisk">✳</span></span>
+          <span class="float-art float-art-4" data-float aria-hidden="true"><span class="float-blob"></span></span>
+          <span class="float-art float-art-5" data-float aria-hidden="true"><span class="float-dots"></span></span>
           <figcaption id="avatar-caption" class="sr-only">A personalized comic portrait representing the frontend, API, and database layers Muhammad works across.</figcaption>
         </figure>
       </div>
+      <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false">
+        <span class="motion-toggle-dot" aria-hidden="true"></span>
+        <span class="motion-toggle-label">Motion: On</span>
+      </button>
     </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>AI-native product builder</span>
+        <span>Frontend engineering</span>
+        <span>Interface systems</span>
+        <span>Express APIs</span>
+        <span>SQL &amp; data flow</span>
+        <span>MQTT device link</span>
+        <span>AI-native product builder</span>
+        <span>Frontend engineering</span>
+        <span>Interface systems</span>
+        <span>Express APIs</span>
+        <span>SQL &amp; data flow</span>
+        <span>MQTT device link</span>
+      </div>
+    </div>
 
     <div class="signal-strip" aria-label="Profile highlights">
       <div class="page-shell signal-strip-inner">
         <div class="signal-item">
           <span class="signal-value">UPN Veteran Jakarta</span>
-          <span class="signal-key">Informatics · Final Year</span>
+          <span class="signal-key">Informatics · Graduate</span>
         </div>
         <div class="signal-item">
-          <span class="signal-value">3.75 / 4.0</span>
-          <span class="signal-key">Current GPA</span>
+          <span class="signal-value">3.76 / 4.0</span>
+          <span class="signal-key">Graduated · Informatics 2022–2026</span>
         </div>
         <div class="signal-item">
-          <span class="signal-value">Frontend ↔ Backend</span>
+          <span class="signal-value">Frontend-first, AI-assisted</span>
           <span class="signal-key">Primary Build Range</span>
         </div>
       </div>
@@ -753,10 +997,10 @@
             <h2 class="section-title">Both sides of the request.</h2>
             <div class="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-paper/75 md:text-lg">
               <p>
-                I’m a <strong class="text-paper">final-year Informatics student at UPN Veteran Jakarta</strong> with a <strong class="text-paper">GPA of 3.75 / 4.0</strong>. My work sits across <strong class="text-paper">frontend web development</strong>, <strong class="text-paper">backend web development</strong>, <strong class="text-paper">API integration</strong>, and <strong class="text-paper">database management</strong>.
+                I'm an <strong class="text-paper">Informatics graduate of UPN Veteran Jakarta (2022–2026)</strong> with a <strong class="text-paper">GPA of 3.76 / 4.0</strong>. My work sits across <strong class="text-paper">frontend web development</strong>, <strong class="text-paper">backend web development</strong>, <strong class="text-paper">API integration</strong>, and <strong class="text-paper">database management</strong>.
               </p>
               <p>
-                I’ve worked with React and TypeScript interfaces, Express APIs, Supabase Row Level Security, Dockerized services, MQTT device communication, and relational databases. I like understanding the full path a request takes—not only the screen where it starts.
+                I’ve worked with React and TypeScript interfaces, Express APIs, Supabase Row Level Security, Dockerized services, MQTT device communication, and relational databases. I like understanding the full path a request takes—not only the screen where it starts. My workflow is <strong class="text-paper">AI-assisted by design</strong>: idea → interface → AI-accelerated implementation → tests, so every result stays explainable and mine to defend.
               </p>
               <p>
                 The projects below show that range: a secure UPNVJ dashboard, an IoT control platform, an open-source game-economy calculator, and a mobile REST API integration.
@@ -800,7 +1044,7 @@
               <div class="route-step">
                 <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Foundation</p>
                 <p class="mt-2 font-bold">UPN Veteran Jakarta</p>
-                <p class="mt-1 text-sm text-paper/65">Informatics · Final year</p>
+                <p class="mt-1 text-sm text-paper/65">Informatics · 2022–2026</p>
               </div>
               <div class="route-step">
                 <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Industry</p>

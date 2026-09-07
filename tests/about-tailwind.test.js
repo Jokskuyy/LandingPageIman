@@ -65,8 +65,8 @@ test("About: states the UPN Veteran Jakarta GPA fact", () => {
     "About should mention UPN Veteran Jakarta",
   );
   assert.ok(
-    text.includes("3.75"),
-    "About should mention the 3.75 GPA",
+    text.includes("3.76"),
+    "About should mention the 3.76 GPA",
   );
 });
 

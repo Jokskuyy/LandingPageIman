@@ -52,15 +52,15 @@ test("Hero displays the professional title (R1.2)", () => {
   const hero = document.querySelector("#hero");
   const heroText = normalize(hero.textContent);
   assert.ok(
-    heroText.includes("Fullstack Web Developer"),
-    'Hero should display the title "Fullstack Web Developer"'
+    heroText.includes("AI-native product builder"),
+    'Hero should display the title "AI-native product builder"'
   );
 });
 
 test("Hero displays the redesigned full-stack headline (R1.3)", () => {
   const { document } = loadIndexHtml();
   const hero = document.querySelector("#hero");
-  const headline = "I build the interface, the API, and the path between them.";
+  const headline = "Hey, I’m Iman. I turn ideas into things you can use.";
 
   const match = [...hero.querySelectorAll("h1")].some(
     (heading) => normalize(heading.textContent) === headline
