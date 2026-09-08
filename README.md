@@ -15,6 +15,8 @@ python -m http.server 43187 --bind 127.0.0.1
 
 Open http://127.0.0.1:43187/. Tailwind 3.4 compiles `styles/input.css` to the
 committed `styles/site.css`; rebuild CSS after changing HTML classes or styles.
+Update the stylesheet's `v` query in `index.html` when publishing CSS changes so
+returning visitors receive the matching stylesheet instead of a cached version.
 There is no browser-side Tailwind compiler or frontend framework runtime.
 Keep asset and CV links relative so they also work under the Pages project path.
 

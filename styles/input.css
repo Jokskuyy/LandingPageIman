@@ -60,16 +60,19 @@
   .mobile-menu nav a { display: block; padding: 0.8rem 0.75rem; font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
   .mobile-menu nav a:hover { color: var(--ink); background: var(--lime); }
 
-  #hero { padding: 3rem 0 3.5rem; }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 285px; align-items: center; gap: 4.25rem; position: relative; }
-  .hero-name { font-size: 1.05rem; font-weight: 600; }
+  #hero { padding: 2.75rem 0 3rem; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 390px; align-items: center; gap: 3rem; position: relative; }
+  .hero-copy { min-width: 0; position: relative; z-index: 1; }
+  .hero-name { font-size: 1.15rem; font-weight: 600; }
   .location { margin-top: 0.25rem; font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; font-weight: 400; color: var(--steel); }
-  .hero-title { margin-top: 1.4rem; font-size: clamp(2.85rem, 5.6vw, 4.6rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.045em; text-wrap: initial; }
-  .hero-title span { display: block; color: var(--lime); }
-  .hero-description { max-width: 35rem; margin-top: 1.25rem; color: var(--paper); font-size: 1.125rem; line-height: 1.6; }
-  .hero-proof { max-width: 36rem; margin-top: 1rem; color: var(--steel); font-size: 0.825rem; line-height: 1.7; }
-  .hero-proof strong { color: var(--paper); font-weight: 600; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.875rem; margin-top: 1.75rem; }
+  .hero-title { margin-top: 1.4rem; font-size: clamp(3.8rem, 6.7vw, 5.8rem); font-weight: 800; line-height: 0.97; letter-spacing: -0.05em; text-wrap: initial; }
+  .hero-seniority { display: block; width: fit-content; margin-bottom: 0.75rem; padding: 0.3rem 0.6rem; border: 1px solid var(--cobalt); color: var(--paper); background: var(--raised); font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; font-weight: 500; line-height: 1.3; letter-spacing: 0.12em; text-transform: uppercase; }
+  .hero-role { display: block; width: fit-content; color: var(--lime); text-shadow: 3px 3px 0 var(--cobalt); }
+  .hero-description { max-width: 33rem; margin-top: 1.5rem; color: var(--paper); font-size: 1.05rem; line-height: 1.65; }
+  .hero-proof { max-width: 36rem; margin-top: 1.25rem; border-left: 3px solid var(--cobalt); padding-left: 0.8rem; color: var(--steel); font-size: 0.8rem; line-height: 1.7; }
+  .hero-proof strong { display: block; color: var(--paper); font-weight: 600; }
+  .hero-education { display: block; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.875rem; margin-top: 1.5rem; }
   .action { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 3rem; padding: 0.75rem 1.1rem; border: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; font-weight: 600; line-height: 1.4; }
   .action-primary { background: var(--lime); color: var(--ink); border-color: var(--lime); box-shadow: 4px 4px 0 var(--cobalt); }
   .action-primary:hover { background: var(--paper); border-color: var(--paper); color: var(--ink); }
@@ -77,10 +80,13 @@
   .action-secondary:hover { border-color: var(--lime); color: var(--lime); }
   .social-links { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
   .social-links a { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; }
-  .hero-visual { width: 100%; padding-right: 0.5rem; }
-  .portrait-frame { border: 1px solid var(--line); background-color: var(--raised); background-image: radial-gradient(var(--cobalt) 1px, transparent 1px); background-size: 10px 10px; box-shadow: 9px 9px 0 var(--cobalt); }
-  .hero-avatar { width: 100%; height: 335px; object-fit: contain; object-position: center bottom; }
-  .hero-visual figcaption { margin-top: 1.4rem; color: var(--steel); text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 0.625rem; }
+  .hero-visual { position: relative; width: 100%; padding: 0.75rem 0.75rem 0; transform: rotate(2deg); }
+  .portrait-frame { position: relative; isolation: isolate; height: 440px; border: 2px solid var(--paper); background-color: var(--cobalt); background-image: radial-gradient(var(--ink) 0.8px, transparent 0.8px); background-size: 7px 7px; box-shadow: 10px 10px 0 var(--ink), 12px 12px 0 var(--lime); }
+  .portrait-frame::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--lime); clip-path: polygon(0 64%, 100% 24%, 100% 43%, 0 83%); }
+  .portrait-lettering { position: absolute; top: 1.5rem; left: 1.1rem; color: var(--paper); font-size: 5.9rem; font-weight: 800; line-height: 1; letter-spacing: -0.065em; }
+  .hero-avatar { position: absolute; bottom: 0; left: -4%; max-width: none; width: 108%; height: 425px; object-fit: contain; object-position: center bottom; filter: drop-shadow(-3px 0 0 var(--ink)) drop-shadow(3px 0 0 var(--ink)); }
+  .hero-visual figcaption { position: relative; display: flex; align-items: center; justify-content: center; gap: 0.55rem; width: fit-content; margin: -0.6rem auto 0; padding: 0.8rem 1rem; border: 2px solid var(--ink); color: var(--ink); background: var(--paper); box-shadow: 4px 4px 0 var(--ink); transform: rotate(-4deg); font-family: "IBM Plex Mono", monospace; font-size: 0.65rem; font-weight: 500; }
+  .availability-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cobalt); }
 
   .section-block { padding-block: 4.5rem; border-top: 1px solid var(--line); }
   .projects-section { padding-top: 3rem; }
@@ -168,9 +174,11 @@
 
   @media (max-width: 1023px) {
     .page-shell { width: calc(100% - 3rem); }
-    .hero-grid { grid-template-columns: minmax(0, 1fr) 220px; gap: 2rem; }
-    .hero-avatar { height: 290px; }
-    .hero-title { font-size: 3.5rem; }
+    .hero-grid { grid-template-columns: minmax(0, 1fr) 290px; gap: 2rem; }
+    .portrait-frame { height: 360px; }
+    .hero-avatar { height: 340px; }
+    .portrait-lettering { font-size: 4.8rem; left: 0.7rem; }
+    .hero-title { font-size: 4.1rem; }
     .hero-description { font-size: 1rem; }
     .desktop-nav { gap: 1rem; }
     .project-body { padding: 1.35rem; }
@@ -182,17 +190,21 @@
     .desktop-nav { display: none; }
     .mobile-menu { display: block; }
     .site-header > div { min-height: 4.25rem; }
-    #hero { padding: 2rem 0 2.5rem; }
+    #hero { padding: 1.75rem 0 2.5rem; }
     .hero-grid { display: block; }
-    .hero-name { min-height: 5.25rem; padding-top: 0.25rem; max-width: calc(100% - 110px); font-size: 1rem; line-height: 1.45; }
-    .hero-title { margin-top: 1.3rem; font-size: clamp(2.65rem, 8.5vw, 3.5rem); line-height: 1.05; }
-    .hero-description { margin-top: 1.1rem; max-width: 32rem; font-size: 1.025rem; line-height: 1.65; }
+    .hero-name { min-height: 10.25rem; padding-top: 0.75rem; max-width: calc(100% - 160px); font-size: 1.3rem; line-height: 1.2; }
+    .location { margin-top: 0.7rem; font-size: 0.625rem; line-height: 1.6; }
+    .hero-title { margin-top: 1rem; font-size: clamp(2.9rem, 12.5vw, 4rem); line-height: 0.98; }
+    .hero-seniority { font-size: 0.65rem; margin-bottom: 0.6rem; }
+    .hero-role { text-shadow: 2px 2px 0 var(--cobalt); }
+    .hero-description { margin-top: 1.1rem; max-width: 32rem; font-size: 1rem; line-height: 1.65; }
     .hero-proof { margin-top: 1rem; max-width: 32rem; font-size: 0.8rem; }
     .hero-actions { gap: 0.75rem; margin-top: 1.5rem; }
     .hero-actions .action { padding-inline: 0.9rem; }
-    .hero-visual { position: absolute; top: 0; right: 0; width: 80px; padding-right: 0; }
-    .hero-avatar { height: 96px; }
-    .portrait-frame { box-shadow: 4px 4px 0 var(--cobalt); background-size: 6px 6px; }
+    .hero-visual { position: absolute; top: 0; right: 5px; width: 140px; padding: 0; }
+    .hero-avatar { height: 162px; }
+    .portrait-frame { height: 166px; box-shadow: 5px 5px 0 var(--ink), 7px 7px 0 var(--lime); background-size: 5px 5px; }
+    .portrait-lettering { top: 0.55rem; left: 0.35rem; font-size: 2.2rem; }
     .hero-visual figcaption { display: none; }
     .section-block { padding-block: 3rem; }
     .section-heading { display: block; margin-bottom: 1.5rem; }
@@ -227,7 +239,9 @@
   }
   @media (max-width: 359px) {
     .page-shell { width: calc(100% - 2rem); }
-    .hero-title { font-size: 2.4rem; }
+    .hero-title { font-size: 2.8rem; }
+    .hero-name { font-size: 1.15rem; max-width: calc(100% - 145px); }
+    .hero-visual { width: 126px; }
     .hero-actions .action { padding-inline: 0.65rem; gap: 0.4rem; font-size: 0.7rem; }
   }
   @media (prefers-reduced-motion: reduce) {

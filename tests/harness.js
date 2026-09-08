@@ -28,7 +28,7 @@ export function loadStyles(document) {
   return [...document.querySelectorAll('link[rel="stylesheet"]')]
     .map(link => link.getAttribute('href'))
     .filter(href => href && !/^(?:https?:)?\/\//.test(href))
-    .map(href => readFileSync(join(dirname(INDEX_HTML_PATH), href), 'utf8'))
+    .map(href => readFileSync(join(dirname(INDEX_HTML_PATH), href.split(/[?#]/)[0]), 'utf8'))
     .join('\n');
 }
 
