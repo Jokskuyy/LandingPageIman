@@ -20,6 +20,6 @@ test('Delivery includes compiled local CSS and no runtime styling dependency', (
   assert.equal(document.querySelector('#tailwind-config'), null);
   const scripts = [...document.querySelectorAll('script[src]')];
   assert.equal(scripts.length, 1);
-  assert.equal(scripts[0].getAttribute('src'), 'parallax.js');
+  assert.equal(scripts[0].getAttribute('src').split(/[?#]/)[0], 'parallax.js');
   assert.ok(scripts[0].hasAttribute('defer'));
 });

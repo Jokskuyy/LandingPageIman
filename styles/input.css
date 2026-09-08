@@ -94,34 +94,35 @@
   .section-title { margin-top: 0.75rem; font-size: clamp(2.25rem, 4.4vw, 3.6rem); font-weight: 700; letter-spacing: -0.045em; line-height: 1.08; }
   .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
   .section-heading > p { max-width: 25rem; color: var(--steel); font-size: 0.95rem; line-height: 1.6; }
-  .project-nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; margin-bottom: 1.5rem; }
-  .project-nav a { display: inline-flex; align-items: center; min-height: 2.75rem; border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; }
-  .project-nav a:hover { border-color: var(--lime); }
-  .project-list { display: grid; gap: 1.75rem; }
-  .project-card { min-width: 0; border: 1px solid var(--line); background: var(--surface); }
-  .project-overview { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
-  .project-media { min-width: 0; display: flex; flex-direction: column; justify-content: center; background: var(--raised); }
-  .project-overview > .project-media { border-right: 1px solid var(--line); }
+  .project-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin: 2.5rem 0 3rem; }
+  .project-nav a { display: flex; flex-direction: column; gap: 0.5rem; min-height: 4.5rem; padding: 0.5rem 0 1rem; border-bottom: 2px solid var(--line); font-size: 1.125rem; font-weight: 600; }
+  .project-nav a span { font-family: "IBM Plex Mono", monospace; color: var(--steel); font-size: 0.625rem; font-weight: 400; }
+  .project-nav a:hover, .project-nav a[aria-selected="true"] { color: var(--lime); border-color: var(--lime); }
+  .project-list { display: grid; gap: 4rem; }
+  .project-card { min-width: 0; }
+  .project-card:focus-visible { outline: 2px solid var(--lime); outline-offset: 8px; }
+  .project-overview { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); align-items: center; gap: 3.5rem; min-height: 410px; }
+  .project-media { min-width: 0; align-self: center; background: var(--surface); padding: 1rem; border-radius: 6px; }
   .project-media img { display: block; width: 100%; height: auto; }
-  .project-media figcaption { padding: 0.8rem 1rem; font-family: "IBM Plex Mono", monospace; font-size: 0.625rem; line-height: 1.65; color: var(--steel); border-top: 1px solid var(--line); }
-  .project-body { min-width: 0; padding: 1.75rem; }
+  .project-media figcaption { padding: 0.9rem 0 0; font-family: "IBM Plex Mono", monospace; font-size: 0.625rem; line-height: 1.65; color: var(--steel); }
+  .project-body { min-width: 0; padding: 1rem 0; }
   .project-index { color: var(--lime); font-family: "IBM Plex Mono", monospace; font-size: 0.625rem; line-height: 1.65; letter-spacing: 0.025em; }
-  .project-title { margin-top: 0.65rem; font-size: clamp(1.65rem, 2.5vw, 2.2rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.035em; }
-  [data-project-summary] { margin-top: 1rem; font-size: 0.925rem; line-height: 1.65; color: var(--paper); }
+  .project-title { margin-top: 1rem; font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.04em; text-wrap: initial; }
+  [data-project-summary] { max-width: 38ch; margin-top: 1.5rem; font-size: 1rem; line-height: 1.75; color: var(--paper); }
   .project-stack, .skill-links { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-  .project-stack { margin-top: 1.1rem; }
+  .project-stack { gap: 0.4rem 1rem; margin-top: 1.25rem; color: var(--steel); font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; line-height: 1.7; }
   .skill-token { display: inline-flex; align-items: center; border: 1px solid var(--line); padding: 0.35rem 0.5rem; font-family: "IBM Plex Mono", monospace; font-size: 0.65rem; line-height: 1.4; color: var(--paper); }
   .demo-note { color: var(--steel); font-size: 0.78rem; line-height: 1.6; margin-top: 1rem; }
-  .project-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.9rem; }
+  .project-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.25rem; }
   .project-link { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; border-bottom: 1px solid var(--steel); color: var(--paper); font-family: "IBM Plex Mono", monospace; font-size: 0.725rem; font-weight: 500; }
   .project-link:hover { border-color: var(--lime); }
-  .case-study { border-top: 1px solid var(--line); }
-  .case-study summary { padding: 1.1rem 1.75rem; color: var(--lime); font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; font-weight: 500; cursor: pointer; }
+  .case-study { margin-top: 2rem; border-top: 1px solid var(--line); }
+  .case-study summary { padding: 1.25rem 0; color: var(--lime); font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; font-weight: 500; cursor: pointer; }
   .case-study summary::marker { color: var(--lime); }
   .case-study summary > span { margin-left: 0.75rem; font-size: 0.65rem; font-weight: 400; color: var(--steel); }
   .case-study summary:hover { background: var(--raised); }
   .case-study[open] summary { border-bottom: 1px solid var(--line); }
-  .case-study-content { padding: 1.75rem; }
+  .case-study-content { padding: 2rem; background: var(--surface); }
   .case-study-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem 2.75rem; }
   .case-study h4 { margin-bottom: 0.5rem; font-size: 1.05rem; font-weight: 600; }
   .case-study p { font-size: 0.875rem; line-height: 1.7; color: var(--steel); }
@@ -131,13 +132,6 @@
   .architecture-figure img { width: 100%; }
   .architecture-figure figcaption { padding: 0.85rem 1rem; color: var(--steel); font-size: 0.75rem; line-height: 1.75; }
   .architecture-figure figcaption a { display: inline-block; margin-left: 0.5rem; }
-  .secondary-projects { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.75rem; }
-  .secondary-projects .project-card { display: flex; flex-direction: column; }
-  .secondary-projects .project-media img { height: 220px; object-fit: contain; background: var(--ink); }
-  .secondary-projects .concept-stage img { object-fit: cover; }
-  .secondary-projects .project-title { font-size: 1.75rem; }
-  .secondary-projects .project-body { display: flex; flex-direction: column; flex-grow: 1; }
-  .secondary-projects .project-links { margin-top: auto; padding-top: 0.9rem; }
 
   .alternate-section { background: var(--surface); }
   .experience-layout, .about-layout { display: grid; grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr); gap: 4rem; }
@@ -181,7 +175,7 @@
     .hero-title { font-size: 4.1rem; }
     .hero-description { font-size: 1rem; }
     .desktop-nav { gap: 1rem; }
-    .project-body { padding: 1.35rem; }
+    .project-overview { gap: 2rem; }
     .experience-layout, .about-layout { gap: 2rem; grid-template-columns: 0.6fr 1fr; }
     .contact-panel { padding: 2rem; gap: 2rem; }
   }
@@ -210,20 +204,20 @@
     .section-heading { display: block; margin-bottom: 1.5rem; }
     .section-heading > p { margin-top: 1rem; max-width: 32rem; font-size: 0.9rem; }
     .section-title { font-size: 2.5rem; }
-    .project-nav { gap: 0.25rem 1rem; }
-    .project-nav a { font-size: 0.65rem; }
-    .project-overview { grid-template-columns: 1fr; }
-    .project-overview > .project-media { border-right: 0; border-bottom: 1px solid var(--line); }
-    .project-body { padding: 1.25rem; }
-    .project-title { font-size: 1.8rem; }
+    .project-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1.25rem; margin: 1.5rem 0 2rem; }
+    .project-nav a { min-height: 3.5rem; padding-block: 0.5rem; font-size: 1rem; gap: 0.25rem; }
+    .project-nav a span { font-size: 0.6rem; }
+    .project-overview { grid-template-columns: 1fr; gap: 1.75rem; min-height: 0; }
+    .project-media { padding: 0.65rem; }
+    .project-body { padding: 0; }
+    .project-title { font-size: 2.1rem; }
+    [data-project-summary] { margin-top: 1rem; font-size: 0.95rem; }
     .project-media figcaption { font-size: 0.625rem; }
-    .case-study summary { padding: 1rem 1.25rem; }
+    .case-study summary { padding: 1.1rem 0; }
     .case-study summary > span { display: block; margin: 0.45rem 0 0 1.1rem; line-height: 1.6; }
     .case-study-content { padding: 1.25rem; }
     .case-study-grid { grid-template-columns: 1fr; gap: 1.5rem; }
     .architecture-figure { margin-top: 1.5rem; }
-    .secondary-projects { grid-template-columns: 1fr; }
-    .secondary-projects .project-media img { height: auto; max-height: 260px; }
     .experience-layout, .about-layout { grid-template-columns: 1fr; gap: 2rem; }
     .experience-entry { padding-left: 1.25rem; }
     .section-intro { max-width: none; margin-top: 1rem; }

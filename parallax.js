@@ -1,4 +1,4 @@
-/** Navigation and clipboard enhancements. Content stays visible without JavaScript. */
+/** Navigation, project gallery and clipboard enhancements. Content stays visible without JavaScript. */
 const onReady = (callback) => {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", callback, { once: true });
@@ -91,5 +91,62 @@ onReady(() => {
     } catch {
       copyStatus.textContent = "Copy failed. Select the visible email address instead.";
     }
+  });
+});
+
+onReady(() => {
+  const nav = document.querySelector('.project-nav');
+  const links = [...(nav?.querySelectorAll('[data-build-link]') || [])];
+  const panels = links.map(link => document.getElementById(link.dataset.buildLink));
+  if (!nav || !links.length || panels.some(panel => !panel)) return;
+
+  const status = document.getElementById('project-status');
+  const selectProject = (index, updateHash = false, announce = false) => {
+    panels.forEach((panel, i) => {
+      panel.hidden = i !== index;
+      links[i].setAttribute('aria-selected', String(i === index));
+      links[i].tabIndex = i === index ? 0 : -1;
+    });
+    if (updateHash) history.replaceState(history.state, '', links[index].hash);
+    if (announce && status) status.textContent = `Showing ${panels[index].querySelector('h3').textContent}.`;
+  };
+
+  nav.setAttribute('role', 'tablist');
+  links.forEach((link, index) => {
+    link.setAttribute('role', 'tab');
+    link.setAttribute('aria-controls', panels[index].id);
+    panels[index].setAttribute('role', 'tabpanel');
+    panels[index].setAttribute('aria-labelledby', link.id);
+    panels[index].tabIndex = 0;
+    link.addEventListener('click', event => {
+      // Modified clicks retain native links for opening a project in a new tab.
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      selectProject(index, true, true);
+    });
+    link.addEventListener('keydown', event => {
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % links.length;
+      else if (event.key === 'ArrowLeft') next = (index + links.length - 1) % links.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = links.length - 1;
+      else if (event.key === ' ') next = index;
+      else return;
+      event.preventDefault();
+      selectProject(next, true, true);
+      links[next].focus();
+    });
+  });
+
+  const hashIndex = () => links.findIndex(link => link.hash === location.hash);
+  const initial = hashIndex();
+  selectProject(initial < 0 ? 0 : initial);
+  const scrollToSelected = index => panels[index].scrollIntoView({ block: 'start', behavior: 'instant' });
+  if (initial >= 0) requestAnimationFrame(() => scrollToSelected(initial));
+  window.addEventListener('hashchange', () => {
+    const index = hashIndex();
+    if (index < 0) return;
+    selectProject(index, false, true);
+    scrollToSelected(index);
   });
 });

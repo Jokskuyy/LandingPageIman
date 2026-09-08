@@ -20,8 +20,12 @@ returning visitors receive the matching stylesheet instead of a cached version.
 There is no browser-side Tailwind compiler or frontend framework runtime.
 Keep asset and CV links relative so they also work under the Pages project path.
 
-The tests check content, links, accessibility structure and navigation/contact
-behavior. Browser verification covers 1280×720, 1440×900 and 390×844 layouts,
+The project gallery progressively enhances ordinary project links into keyboard
+accessible tabs. Without JavaScript, all four projects remain visible in order.
+Existing project fragments also open the matching panel when JavaScript runs.
+
+The tests check content, links, accessibility structure and navigation/contact/
+gallery behavior. Browser verification covers 1280×720, 1440×900 and 390×844 layouts,
 keyboard navigation, visible primary actions and a page with JavaScript absent.
 
 ## Content and evidence

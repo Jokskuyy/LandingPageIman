@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/site.css?v=20260909-hero" />
-  <script src="parallax.js" defer></script>
+  <link rel="stylesheet" href="styles/site.css?v=20260909-gallery" />
+  <script src="parallax.js?v=20260909-gallery" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to Main Content</a>
@@ -53,10 +53,11 @@
     </section>
     <section id="projects" class="section-block projects-section" aria-labelledby="projects-heading">
       <div class="page-shell">
-        <div class="section-heading"><div><p class="mono-label">Selected work</p><h2 id="projects-heading" class="section-title">Projects</h2></div><p>Web interfaces, the data behind them, and the decisions that connect both.</p></div>
+        <div class="section-heading"><div><p class="mono-label">Selected work</p><h2 id="projects-heading" class="section-title">Projects</h2></div><p>Four projects. Pick one to explore.</p></div>
         <nav class="project-nav" aria-label="Featured project selector">
-          <a href="#project-dashboard" data-build-link="project-dashboard">Dashboard UPNVJ</a><a href="#project-smarthome" data-build-link="project-smarthome">Smart Home IoT</a><a href="#project-albion" data-build-link="project-albion">Albion Calculator</a><a href="#project-recehin" data-build-link="project-recehin">Recehin</a>
+          <a id="tab-dashboard" href="#project-dashboard" data-build-link="project-dashboard">Dashboard <span>University data</span></a><a id="tab-smarthome" href="#project-smarthome" data-build-link="project-smarthome">Smart Home <span>Connected devices</span></a><a id="tab-albion" href="#project-albion" data-build-link="project-albion">Albion <span>Crafting &amp; refining</span></a><a id="tab-recehin" href="#project-recehin" data-build-link="project-recehin">Recehin <span>Personal finance</span></a>
         </nav>
+        <p id="project-status" class="sr-only" role="status" aria-live="polite"></p>
         <div class="project-list">
           <article id="project-dashboard" class="project-card project-featured" data-build="project-dashboard">
             <div class="project-overview">
@@ -64,14 +65,14 @@
               <div class="project-body">
                 <p class="project-index">Fullstack web application · Solo developer</p>
                 <h3 class="project-title">Dashboard Profile UPNVJ</h3>
-                <p data-project-summary>A university profile dashboard with public faculty and facility data, campus maps, and an authenticated admin interface. I built the React UI, data services, database setup, and supporting APIs.</p>
-                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">React</li><li class="skill-token">TypeScript</li><li class="skill-token">Supabase / PostgreSQL</li><li class="skill-token">Express</li><li class="skill-token">Tailwind CSS</li></ul>
-                <p class="demo-note">The public demo shows the visitor dashboard. Admin features require a login.</p>
+                <p data-project-summary>University profiles, campus maps, and admin tools. I built the interface, data services, and supporting APIs.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li>React</li><li>TypeScript</li><li>Supabase</li><li>Express</li></ul>
+                <p class="demo-note">Public visitor demo · Admin login required</p>
                 <div class="project-links"><a class="project-link" href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ">Live demo <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
             </div>
             <details class="case-study" data-case-study>
-              <summary>Inside the build <span>Contribution, architecture &amp; testing</span></summary>
+              <summary>Explore the build</summary>
               <div class="case-study-content">
                 <div class="case-study-grid">
                   <div><h4>Problem</h4><p>Make university profile data and campus facilities browsable while providing an admin interface to update the same information.</p></div>
@@ -89,14 +90,14 @@
               <div class="project-body">
                 <p class="project-index">Fullstack IoT platform · Solo developer</p>
                 <h3 class="project-title">Smart Home IoT</h3>
-                <p data-project-summary>A course project for viewing sensor readings, alerts, and device state, with controls for lights, a fan, and a smart lock. I built the browser dashboard, Express services, MQTT integration, and MySQL persistence.</p>
-                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">JavaScript</li><li class="skill-token">Node.js / Express</li><li class="skill-token">MySQL</li><li class="skill-token">MQTT</li><li class="skill-token">Docker</li></ul>
-                <p class="demo-note">Local demo available through the software simulator. No hosted live demo.</p>
+                <p data-project-summary>A dashboard for sensors, lights, fans, and locks. I built the browser UI, backend services, and device integration.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li>Express</li><li>MySQL</li><li>MQTT</li><li>Docker</li></ul>
+                <p class="demo-note">Coursework · Local simulator, no hosted live demo</p>
                 <div class="project-links"><a class="project-link" href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT">Source code <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/smart_home#-pure-software-demo-tanpa-hardware--tanpa-wokwi" target="_blank" rel="noopener noreferrer">Run the simulator <span aria-hidden="true">↗</span></a></div>
               </div>
             </div>
             <details class="case-study" data-case-study>
-              <summary>Inside the build <span>Contribution, architecture &amp; verification</span></summary>
+              <summary>Explore the build</summary>
               <div class="case-study-content case-study-grid">
                 <div><h4>Problem</h4><p>Connect a browser control panel to sensor readings and device commands, with a repeatable way to demonstrate the system without physical hardware.</p></div>
                 <div><h4>My contribution</h4><p>I implemented the HTML/CSS/JavaScript dashboard, API gateway, separate Express services, MySQL models, MQTT message handlers, and device integration for this PPLBS course project.</p></div>
@@ -105,28 +106,36 @@
               </div>
             </details>
           </article>
-          <div class="secondary-projects">
             <article id="project-albion" class="project-card" data-build="project-albion">
+              <div class="project-overview">
               <figure class="project-media"><img src="imgs/albioncalc.png" width="1440" height="900" loading="lazy" alt="Albion Refining Calculator showing quantity 10, revenue 10,000, cost 13,320, and net profit −3,320" /><figcaption>Application screenshot</figcaption></figure>
               <div class="project-body">
                 <p class="project-index">Game economy calculator</p><h3 class="project-title">Albion Refining Calculator</h3>
-                <p data-project-summary>Compare crafting and refining outcomes before spending in-game currency. The TypeScript calculations account for material costs, return rates, fees, and the value of remaining materials.</p>
-                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">TypeScript</li><li class="skill-token">React</li><li class="skill-token">Vite</li></ul>
-                <p class="demo-note">Equipment, Resources, and Multi Tier modes share validated result rendering. Invalid results prompt an input correction.</p>
+                <p data-project-summary>Compare crafting costs and refining profits across three modes, with input validation and a clear cost breakdown.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li>TypeScript</li><li>React</li><li>Vite</li></ul>
                 <div class="project-links"><a class="project-link" href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator">Live demo <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
+              </div>
+              <details class="case-study" data-case-study>
+                <summary>Explore the build</summary>
+                <div class="case-study-content case-study-grid">
+                  <div><h4>Calculation &amp; display</h4><p>A typed adapter maps Equipment, Resources, and Multi Tier calculations into one display model. Costs, fees, and remaining material value are shown without changing the underlying economic formulas.</p></div>
+                  <div><h4>Validation</h4><p>Regression tests use the actual calculators to check positive and negative profits, mode changes, and invalid inputs. Invalid results show a correction message and disable saving. The release build includes TypeScript checks.</p></div>
+                </div>
+              </details>
             </article>
             <article id="project-recehin" class="project-card" data-build="project-recehin">
+              <div class="project-overview">
               <figure class="project-media concept-stage"><img src="imgs/recehin-concept-sage.webp" width="1536" height="1024" loading="lazy" alt="Concept illustration of a mobile finance app connected to an API and transaction ledger" /><figcaption>Concept illustration · App screenshot unavailable</figcaption></figure>
               <div class="project-body">
                 <p class="project-index">Android API integration</p><h3 class="project-title">Recehin</h3>
-                <p data-project-summary>A mobile finance-tracking application that consumes REST endpoints with Retrofit for transaction data and authentication. This project demonstrates Android client integration with a backend API.</p>
-                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">Java / Kotlin</li><li class="skill-token">Retrofit</li><li class="skill-token">REST API</li></ul>
+                <p data-project-summary>An Android finance tracker connecting transaction records and authentication to a REST API through Retrofit.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li>Java / Kotlin</li><li>Retrofit</li><li>REST API</li></ul>
                 <p class="demo-note">Source available. No hosted live demo.</p>
                 <div class="project-links"><a class="project-link" href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
+              </div>
             </article>
-          </div>
         </div>
       </div>
     </section>
