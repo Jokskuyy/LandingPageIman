@@ -4,1316 +4,166 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#161A22" />
-  <meta
-    name="description"
-    content="Muhammad Iman Nugraha — AI-native product builder and frontend developer. A personal creative lab for useful interfaces, experiments, and connected systems."
-  />
-  <title>Iman — AI-native Product Builder &amp; Frontend Developer</title>
+  <meta name="description" content="Muhammad Iman Nugraha — Junior Fullstack Developer in Jakarta. React and TypeScript interfaces, Express APIs, and SQL-backed applications. Explore projects, experience, and CV." />
+  <title>Muhammad Iman Nugraha — Junior Fullstack Developer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
-  <script>document.documentElement.classList.add('js');</script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: '#161A22',
-            surface: '#1D2430',
-            raised: '#242C3A',
-            paper: '#F2EEE6',
-            lime: '#B5C98B',
-            cobalt: '#5267A6',
-            steel: '#AAB2C0',
-            signal: '#CC826A'
-          },
-          fontFamily: {
-            display: ['Bricolage Grotesque', 'Arial Black', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'Consolas', 'monospace']
-          }
-        }
-      }
-    };
-  </script>
-  <style>
-    :root {
-      color-scheme: dark;
-      --ink: #161a22;
-      --surface: #1d2430;
-      --raised: #242c3a;
-      --paper: #f2eee6;
-      --lime: #b5c98b;
-      --cobalt: #5267a6;
-      --steel: #aab2c0;
-      --signal: #cc826a;
-      --line: 2px solid rgba(242, 238, 230, 0.18);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html { background: var(--ink); color-scheme: dark; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      overflow-x: hidden;
-      background: var(--ink);
-      color: var(--paper);
-      font-family: "Bricolage Grotesque", sans-serif;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -webkit-tap-highlight-color: rgba(181, 201, 139, 0.18);
-    }
-
-    a, button, summary { touch-action: manipulation; }
-
-    a, button {
-      transition-property: color, background-color, border-color, box-shadow, transform;
-      transition-duration: 150ms;
-      transition-timing-function: ease-out;
-    }
-
-    :where(a, button, summary):focus-visible {
-      outline: 3px solid var(--lime);
-      outline-offset: 4px;
-    }
-
-    ::selection { background: var(--lime); color: var(--ink); }
-
-    h1, h2, h3 { text-wrap: balance; }
-    p { text-wrap: pretty; }
-
-    section[id], article[id] { scroll-margin-top: 5rem; }
-
-    .skip-link {
-      position: fixed;
-      top: 0.75rem;
-      left: 0.75rem;
-      z-index: 100;
-      transform: translateY(-180%);
-      border: var(--line);
-      background: var(--lime);
-      color: var(--ink);
-      padding: 0.65rem 1rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .skip-link:focus { transform: translateY(0); }
-
-    header summary:hover {
-      background: var(--lime);
-      color: var(--ink);
-      transform: translate(-1px, -1px);
-    }
-
-    .page-shell {
-      width: min(100% - 2rem, 1180px);
-      margin-inline: auto;
-    }
-
-    .mono-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.11em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    .mono-label::before {
-      width: 0.65rem;
-      height: 0.65rem;
-      border: 2px solid currentColor;
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    .section-title {
-      max-width: 13ch;
-      font-size: clamp(2.45rem, 7vw, 5.7rem);
-      font-weight: 800;
-      letter-spacing: -0.035em;
-      line-height: 0.96;
-    }
-
-    .comic-frame {
-      position: relative;
-      border: var(--line);
-      background: var(--raised);
-      color: var(--paper);
-      box-shadow: 9px 9px 0 var(--cobalt);
-    }
-
-    .comic-frame::after {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 2.5rem;
-      height: 2.5rem;
-      border-bottom: var(--line);
-      border-left: var(--line);
-      background: var(--cobalt);
-      content: "";
-      clip-path: polygon(100% 0, 100% 100%, 0 0);
-    }
-
-    .halftone {
-      background-image: radial-gradient(circle, rgba(242, 238, 230, 0.1) 1.1px, transparent 1.25px);
-      background-size: 8px 8px;
-    }
-
-    .action {
-      display: inline-flex;
-      min-height: 3rem;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      border: var(--line);
-      padding: 0.7rem 1rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      line-height: 1;
-    }
-
-    .action-primary {
-      background: var(--cobalt);
-      color: var(--paper);
-      box-shadow: 5px 5px 0 var(--lime);
-    }
-
-    .action-secondary {
-      border-color: rgba(242, 238, 230, 0.45);
-      background: transparent;
-      color: var(--paper);
-    }
-
-    .action:hover { transform: translate(-2px, -2px); }
-    .action-primary:hover { box-shadow: 7px 7px 0 var(--lime); }
-    .action-secondary:hover { border-color: var(--lime); color: var(--lime); }
-
-    .nav-link[aria-current="location"] { color: var(--lime); }
-
-    .hero-grid {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      align-items: center;
-      gap: clamp(2rem, 6vw, 5.5rem);
-      grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
-    }
-
-    .hero-title {
-      max-width: 11ch;
-      font-size: clamp(3.25rem, 7vw, 6.25rem);
-      font-weight: 700;
-      letter-spacing: -0.035em;
-      line-height: 0.94;
-      text-wrap: balance;
-    }
-
-    .hero-title .interface-word {
-      color: var(--lime);
-    }
-
-    .hero-visual {
-      position: relative;
-      isolation: isolate;
-      min-width: 0;
-      padding: 1.25rem 1.25rem 0;
-    }
-
-    .hero-visual::before {
-      position: absolute;
-      inset: 9% 2% 4% 12%;
-      z-index: -2;
-      border: var(--line);
-      background: var(--raised);
-      box-shadow: 12px 12px 0 var(--cobalt);
-      content: "";
-      transform: rotate(-2deg);
-    }
-
-    .hero-visual::after {
-      position: absolute;
-      inset: 14% 8% 8% 6%;
-      z-index: -1;
-      background-image: radial-gradient(circle, rgba(181, 201, 139, 0.24) 1.2px, transparent 1.35px);
-      background-size: 9px 9px;
-      content: "";
-      clip-path: polygon(7% 0, 100% 4%, 94% 100%, 0 92%);
-    }
-
-    .hero-avatar {
-      display: block;
-      width: 100%;
-      height: auto;
-      filter: drop-shadow(10px 8px 0 rgba(16, 17, 20, 0.9));
-    }
-
-    .layer-tag {
-      position: absolute;
-      z-index: 2;
-      border: var(--line);
-      border-color: rgba(242, 238, 230, 0.25);
-      background: var(--surface);
-      color: var(--paper);
-      padding: 0.55rem 0.7rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.68rem;
-      font-weight: 600;
-      box-shadow: 4px 4px 0 var(--cobalt);
-    }
-
-    .layer-tag-ui { top: 22%; left: -1.25rem; transform: rotate(-4deg); }
-    .layer-tag-api { top: 49%; right: -0.5rem; transform: rotate(3deg); }
-    .layer-tag-data { bottom: 8%; left: 1rem; transform: rotate(2deg); }
-
-    .signal-strip {
-      border-block: 1px solid rgba(181, 201, 139, 0.55);
-      background: var(--raised);
-      color: var(--paper);
-    }
-
-    .signal-strip-inner {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .signal-item {
-      min-width: 0;
-      padding: 1.1rem 1.5rem;
-    }
-
-    .signal-item + .signal-item { border-left: 1px solid rgba(242, 238, 230, 0.15); }
-
-    .signal-value {
-      display: block;
-      font-size: clamp(1.05rem, 2vw, 1.45rem);
-      font-weight: 800;
-      letter-spacing: -0.035em;
-    }
-
-    .signal-key {
-      display: block;
-      margin-top: 0.25rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.66rem;
-      letter-spacing: 0.08em;
-      opacity: 0.7;
-      text-transform: uppercase;
-    }
-
-    .route-line {
-      display: grid;
-      border: var(--line);
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .route-step {
-      position: relative;
-      min-width: 0;
-      padding: 1.2rem;
-    }
-
-    .route-step + .route-step { border-left: var(--line); }
-
-    .route-step::before {
-      display: block;
-      width: 0.8rem;
-      height: 0.8rem;
-      margin-bottom: 1rem;
-      border: 2px solid var(--paper);
-      background: var(--lime);
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    .route-step.is-current::before { background: var(--signal); }
-
-    .capability-card {
-      position: relative;
-      min-height: 15rem;
-      overflow: hidden;
-      border: var(--line);
-      background: var(--surface);
-      color: var(--paper);
-      padding: 1.4rem;
-      box-shadow: 6px 6px 0 rgba(82, 103, 166, 0.78);
-    }
-
-    .capability-card::after {
-      position: absolute;
-      right: -2.5rem;
-      bottom: -2.5rem;
-      width: 6rem;
-      height: 6rem;
-      border: 2px solid rgba(242, 238, 230, 0.2);
-      background: var(--lime);
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    .skill-token {
-      border: 1.5px solid rgba(242, 238, 230, 0.32);
-      background: transparent;
-      padding: 0.32rem 0.48rem;
-      color: var(--paper);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.68rem;
-      line-height: 1;
-    }
-
-    .project-layout {
-      display: grid;
-      align-items: start;
-      gap: clamp(2rem, 5vw, 5rem);
-      grid-template-columns: minmax(13rem, 0.32fr) minmax(0, 1fr);
-    }
-
-    .build-selector {
-      position: sticky;
-      top: 5.75rem;
-      border: 2px solid rgba(242, 238, 230, 0.22);
-    }
-
-    .build-link {
-      display: grid;
-      min-height: 4.25rem;
-      align-items: center;
-      gap: 0.7rem;
-      grid-template-columns: auto 1fr auto;
-      padding: 0.85rem 1rem;
-      color: rgba(242, 238, 230, 0.62);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      line-height: 1.3;
-    }
-
-    .build-link + .build-link { border-top: 1px solid rgba(242, 238, 230, 0.18); }
-
-    .build-link::after {
-      width: 0.6rem;
-      height: 0.6rem;
-      border: 1.5px solid currentColor;
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    .build-link:hover { background: rgba(181, 201, 139, 0.08); color: var(--paper); }
-
-    .build-link[aria-current="true"] {
-      background: var(--lime);
-      color: var(--ink);
-      box-shadow: inset 6px 0 0 var(--cobalt);
-    }
-
-    .build-link[aria-current="true"]::after { background: var(--cobalt); }
-
-    .project-card {
-      overflow: hidden;
-      border: 2px solid rgba(242, 238, 230, 0.24);
-      background: var(--surface);
-    }
-
-    .project-card + .project-card { margin-top: 3rem; }
-
-    .project-media {
-      position: relative;
-      overflow: hidden;
-      border-bottom: 2px solid rgba(242, 238, 230, 0.24);
-      background: var(--paper);
-    }
-
-    .project-media img {
-      display: block;
-      width: 100%;
-      height: auto;
-      transition: transform 280ms ease-out;
-    }
-
-    .project-card:hover .project-media img { transform: scale(1.015); }
-
-    .project-media-label {
-      position: absolute;
-      right: 0.75rem;
-      bottom: 0.75rem;
-      border: 2px solid var(--ink);
-      background: var(--lime);
-      color: var(--ink);
-      padding: 0.42rem 0.6rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.63rem;
-      font-weight: 600;
-    }
-
-    .concept-stage {
-      background: var(--raised);
-      color: var(--paper);
-    }
-
-    .concept-stage > img {
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .project-body { padding: clamp(1.25rem, 3vw, 2rem); }
-
-    .project-index {
-      font-family: "IBM Plex Mono", monospace;
-      color: var(--lime);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .project-title {
-      margin-top: 0.5rem;
-      color: var(--paper);
-      font-size: clamp(1.8rem, 4vw, 3.2rem);
-      font-weight: 800;
-      letter-spacing: -0.055em;
-      line-height: 0.95;
-    }
-
-    .project-link {
-      display: inline-flex;
-      min-height: 2.75rem;
-      align-items: center;
-      border-bottom: 2px solid currentColor;
-      color: var(--paper);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-    }
-
-    .project-link:hover { color: var(--lime); transform: translateY(-2px); }
-
-    .contact-panel {
-      border: var(--line);
-      background: var(--raised);
-      color: var(--paper);
-      box-shadow: 12px 12px 0 var(--signal);
-    }
-
-    .email-address { overflow-wrap: anywhere; user-select: all; }
-
-    .skills-intro {
-      display: grid;
-      align-items: end;
-      gap: clamp(1.5rem, 4vw, 3rem);
-      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.52fr) minmax(9rem, 0.3fr);
-    }
-
-    .skills-prop {
-      display: block;
-      width: min(100%, 13rem);
-      height: auto;
-      justify-self: end;
-      filter: drop-shadow(7px 7px 0 rgba(22, 26, 34, 0.65));
-    }
-
-    .projects-heading {
-      display: grid;
-      align-items: end;
-      gap: clamp(1.5rem, 4vw, 3rem);
-      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.48fr) minmax(9rem, 0.26fr);
-    }
-
-    .build-rack-prop {
-      display: block;
-      width: min(100%, 12rem);
-      height: auto;
-      justify-self: end;
-      filter: drop-shadow(7px 7px 0 rgba(22, 26, 34, 0.72));
-    }
-
-    .scroll-companion { display: none; }
-
-    @keyframes companion-switch {
-      0% { transform: translateY(0); opacity: 1; }
-      45% { transform: translateY(-3px); opacity: 0.72; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    @media (min-width: 1440px) {
-      .scroll-companion {
-        position: fixed;
-        top: 52%;
-        right: 1rem;
-        z-index: 30;
-        display: grid;
-        width: 6.5rem;
-        transform: translateY(-50%);
-        place-items: center;
-        pointer-events: none;
-      }
-
-      .scroll-companion-art {
-        width: 6.5rem;
-        aspect-ratio: 2 / 3;
-        background: url("imgs/scroll-workstation-sage.webp") center / contain no-repeat;
-        filter: drop-shadow(5px 5px 0 rgba(22, 26, 34, 0.72));
-        transform-origin: center bottom;
-      }
-
-      .scroll-companion-status {
-        margin-top: -0.1rem;
-        border: 1px solid rgba(181, 201, 139, 0.48);
-        background: var(--surface);
-        color: var(--lime);
-        padding: 0.38rem 0.5rem;
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 0.58rem;
-        font-weight: 600;
-        letter-spacing: 0.09em;
-        line-height: 1;
-        transform-origin: center;
-      }
-
-      .scroll-companion.is-switching .scroll-companion-art,
-      .scroll-companion.is-switching .scroll-companion-status {
-        animation: companion-switch 180ms steps(2, end);
-      }
-    }
-
-    .js .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-    }
-
-    .js .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 380ms ease-out, transform 380ms ease-out;
-    }
-
-    /* --- Creative lab: particle field + aurora --- */
-    #hero::before {
-      content: "";
-      position: absolute;
-      inset: -12%;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(40rem 26rem at 10% 0%, rgba(181, 201, 139, 0.13), transparent 62%),
-        radial-gradient(34rem 24rem at 92% 8%, rgba(82, 103, 166, 0.2), transparent 60%),
-        radial-gradient(38rem 28rem at 55% 105%, rgba(204, 130, 106, 0.12), transparent 64%);
-      animation: aurora-shift 16s ease-in-out infinite alternate;
-    }
-
-    @keyframes aurora-shift {
-      from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
-      to { transform: translate3d(1.5%, 1%, 0) scale(1.05); }
-    }
-
-    .particle-field {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    [data-parallax] {
-      transform: translate3d(0, var(--parallax-y, 0px), 0);
-      will-change: transform;
-    }
-
-    /* --- Creative lab: layered abstract objects --- */
-    .float-art {
-      position: absolute;
-      pointer-events: none;
-      will-change: transform;
-      transform: translate3d(0, var(--float-y, 0px), 0);
-      animation: float-drift 7s ease-in-out infinite alternate;
-    }
-
-    .float-art-1 { top: 2%; left: -3%; width: 13rem; height: 13rem; animation-duration: 8s; }
-    .float-art-2 { top: 10%; right: 2%; width: 9rem; height: 9rem; animation-duration: 6s; }
-    .float-art-3 { bottom: 7%; left: 5%; width: 5rem; height: 5rem; animation-duration: 5s; }
-    .float-art-4 { bottom: 14%; right: 24%; width: 10.5rem; height: 10.5rem; animation-duration: 9s; }
-    .float-art-5 { top: 40%; left: 46%; width: 7rem; height: 4rem; animation-duration: 7s; }
-
-    .float-orbit {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 2px dashed rgba(181, 201, 139, 0.7);
-      border-radius: 9999px;
-      position: relative;
-      animation: spin-slow 26s linear infinite;
-    }
-
-    @keyframes spin-slow {
-      to { transform: rotate(1turn); }
-    }
-
-    .float-orbit::before {
-      content: "";
-      position: absolute;
-      top: -0.4rem;
-      left: 50%;
-      width: 0.8rem;
-      height: 0.8rem;
-      background: var(--signal);
-      border-radius: 9999px;
-      transform: translateX(-50%);
-    }
-
-    .float-orbit::after {
-      content: "";
-      position: absolute;
-      inset: 32%;
-      border: 2px solid rgba(82, 103, 166, 0.75);
-      border-radius: 9999px;
-    }
-
-    .float-tile {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: var(--line);
-      background: var(--surface);
-      box-shadow: 6px 6px 0 var(--cobalt);
-      transform: rotate(12deg);
-    }
-
-    .float-tile::before {
-      content: "";
-      position: absolute;
-      inset: 18%;
-      background: var(--lime);
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    }
-
-    .float-asterisk {
-      display: block;
-      color: var(--signal);
-      font-size: 3.4rem;
-      line-height: 1;
-      text-align: center;
-      animation: spin-slow 18s linear infinite reverse;
-    }
-
-    .float-blob {
-      display: block;
-      width: 100%;
-      height: 100%;
-      background: var(--raised);
-      border: var(--line);
-      border-radius: 58% 42% 55% 45% / 52% 55% 45% 48%;
-      box-shadow: inset -6px -6px 0 rgba(82, 103, 166, 0.35);
-    }
-
-    .float-dots {
-      display: block;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(circle, rgba(242, 238, 230, 0.55) 1.6px, transparent 1.8px);
-      background-size: 10px 10px;
-    }
-
-    @keyframes float-drift {
-      from { margin-top: 0; }
-      to { margin-top: -0.9rem; }
-    }
-
-    /* --- Creative lab: ticker marquee --- */
-    .ticker {
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      border-block: var(--line);
-      background: var(--surface);
-      padding-block: 0.85rem;
-    }
-
-    .ticker-track {
-      display: flex;
-      gap: 3.5rem;
-      width: max-content;
-      animation: ticker-scroll 30s linear infinite;
-    }
-
-    .ticker-track > span {
-      display: inline-flex;
-      align-items: center;
-      gap: 3.5rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--paper);
-      white-space: nowrap;
-    }
-
-    .ticker-track > span::after {
-      content: "✳";
-      color: var(--lime);
-    }
-
-    @keyframes ticker-scroll {
-      to { transform: translateX(-50%); }
-    }
-
-    /* --- Creative lab: motion toggle --- */
-    .motion-toggle {
-      position: absolute;
-      bottom: 1.1rem;
-      right: 1.1rem;
-      z-index: 20;
-      display: inline-flex;
-      min-height: 2.75rem;
-      align-items: center;
-      gap: 0.55rem;
-      border: var(--line);
-      background: var(--surface);
-      color: var(--paper);
-      padding: 0.5rem 0.85rem;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.66rem;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .motion-toggle-dot {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 9999px;
-      background: var(--lime);
-    }
-
-    .motion-toggle[aria-pressed="true"] .motion-toggle-dot { background: var(--signal); }
-    .motion-toggle:hover { background: var(--raised); }
-
-    :root[data-motion="paused"] .float-art { animation: none; }
-    :root[data-motion="paused"] .float-orbit,
-    :root[data-motion="paused"] .float-asterisk { animation: none; }
-    :root[data-motion="paused"] .ticker-track { animation: none; }
-    :root[data-motion="paused"] #hero::before { animation: none; }
-
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-copy { max-width: 46rem; }
-      .hero-visual { width: min(100%, 37rem); margin-inline: auto; }
-      .skills-intro, .projects-heading { grid-template-columns: minmax(0, 1fr) auto; }
-      .skills-intro > p, .projects-heading > p { grid-column: 1; }
-      .skills-prop, .build-rack-prop { grid-column: 2; grid-row: 1 / span 2; width: 10rem; }
-      .project-layout { grid-template-columns: 1fr; }
-      .build-selector {
-        position: static;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .build-link + .build-link { border-top: 0; }
-      .build-link:nth-child(even) { border-left: 1px solid rgba(242, 238, 230, 0.18); }
-      .build-link:nth-child(n+3) { border-top: 1px solid rgba(242, 238, 230, 0.18); }
-    }
-
-    @media (max-width: 640px) {
-      .page-shell { width: min(100% - 1.25rem, 1180px); }
-      .signal-strip-inner, .route-line { grid-template-columns: 1fr; }
-      .signal-item + .signal-item, .route-step + .route-step {
-        border-top: var(--line);
-        border-left: 0;
-      }
-      .layer-tag { font-size: 0.58rem; padding: 0.4rem 0.5rem; }
-      .layer-tag-ui { left: 0; }
-      .layer-tag-api { right: 0; }
-      .skills-intro { grid-template-columns: 1fr; }
-      .skills-intro > p, .skills-prop { grid-column: 1; grid-row: auto; }
-      .skills-prop { width: 8.75rem; margin-top: -0.75rem; }
-      .projects-heading { grid-template-columns: 1fr; }
-      .projects-heading > p { grid-column: 1; }
-      .build-rack-prop { display: none; }
-      .build-selector { grid-template-columns: 1fr; }
-      .build-link:nth-child(even) { border-left: 0; }
-      .build-link + .build-link { border-top: 1px solid rgba(242, 238, 230, 0.18); }
-      .contact-panel { box-shadow: 7px 7px 0 var(--signal); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto !important; }
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-      }
-      .js .reveal { opacity: 1; transform: none; }
-      .hero-avatar { filter: drop-shadow(6px 5px 0 rgba(22, 26, 34, 0.9)); }
-      .scroll-companion.is-switching .scroll-companion-art,
-      .scroll-companion.is-switching .scroll-companion-status { animation: none; }
-      .float-art { animation: none; transform: none; }
-      .particle-field { display: none; }
-      .hero-grid { transform: none !important; }
-      #hero::before { animation: none; }
-      .float-orbit, .float-asterisk { animation: none; }
-      .ticker-track { animation: none; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/site.css" />
+  <script src="parallax.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to Main Content</a>
-
-  <header class="fixed inset-x-0 top-0 z-50 border-b border-paper/15 bg-surface text-paper">
-    <div class="page-shell flex h-[4.75rem] items-center justify-between gap-6">
-      <a href="#hero" class="group inline-flex items-center gap-2 font-mono text-xs font-semibold" aria-label="Go to top">
-        <span class="grid size-7 place-items-center border-2 border-ink bg-lime text-ink shadow-[3px_3px_0_#161A22] group-hover:-translate-y-0.5">MI</span>
-        <span>Muhammad Iman Nugraha</span>
-      </a>
-
-      <nav class="hidden items-center gap-6 md:flex" aria-label="Main navigation">
-        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#about">About</a>
-        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#experience">Experience</a>
-        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#skills">Skills</a>
-        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#projects">Projects</a>
-        <a class="nav-link font-mono text-[0.68rem] font-medium uppercase tracking-[0.09em] hover:text-lime" href="#contact">Contact</a>
+  <header class="site-header">
+    <div class="page-shell flex items-center justify-between gap-4">
+      <a class="brand" href="#hero" aria-label="Muhammad Iman Nugraha — Go to top"><span class="brand-mark" aria-hidden="true">MI</span><span>Iman Nugraha<span class="brand-subtitle">Developer portfolio</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a class="nav-link" href="#projects">Projects</a><a class="nav-link" href="#experience">Experience</a><a class="nav-link" href="#skills">Skills</a><a class="nav-link" href="#about">About</a><a class="nav-link" href="#contact">Contact</a>
       </nav>
-
-      <details class="relative md:hidden">
-        <summary class="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center border border-paper/20 bg-raised font-mono text-paper shadow-[3px_3px_0_#161A22] [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu">Menu</summary>
-        <nav class="absolute right-0 mt-3 flex w-52 flex-col border border-paper/20 bg-raised p-2 text-paper shadow-[6px_6px_0_#161A22]" aria-label="Mobile navigation">
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#about">About</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#experience">Experience</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#skills">Skills</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#projects">Projects</a>
-          <a class="px-3 py-3 font-mono text-xs font-semibold hover:bg-lime hover:text-ink" href="#contact">Contact</a>
-        </nav>
+      <details class="mobile-menu">
+        <summary aria-label="Open navigation menu">Menu <span aria-hidden="true">+</span></summary>
+        <nav aria-label="Mobile navigation"><a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
       </details>
     </div>
   </header>
-
-  <aside class="scroll-companion" data-scroll-companion data-state="ONLINE" aria-hidden="true">
-    <div class="scroll-companion-art"></div>
-    <span class="scroll-companion-status" data-companion-status>ONLINE</span>
-  </aside>
-
-  <main id="main-content" class="pt-[4.75rem]">
-    <section id="hero" class="relative overflow-hidden bg-ink py-16 text-paper md:py-24">
-      <canvas id="particle-field" class="particle-field" aria-hidden="true"></canvas>
-      <div class="page-shell hero-grid" data-parallax>
-        <div class="hero-copy reveal">
-          <p class="mono-label text-lime">AI-native product builder / frontend developer</p>
-          <h1 class="hero-title mt-7">
-            <span class="hero-greeting">Hey, I’m Iman.</span> I turn ideas into <span class="interface-word">things you can use.</span>
-          </h1>
-          <p class="mt-7 max-w-2xl text-lg leading-relaxed text-paper/75">
-            I’m Muhammad Iman Nugraha, an Informatics graduate from UPN Veteran Jakarta. I work from the interface outward: shaping ideas, building with AI, and testing the details that make a product useful.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a class="action action-primary" href="#projects">Explore My Builds <span aria-hidden="true">↓</span></a>
-            <a class="action action-secondary" href="mailto:imannnnugraha@gmail.com">Email Me <span aria-hidden="true">↗</span></a>
+  <main id="main-content" tabindex="-1">
+    <section id="hero" aria-labelledby="hero-heading">
+      <div class="page-shell hero-grid">
+        <div class="hero-copy">
+          <div class="hero-name"><p>Muhammad Iman Nugraha</p><p class="location">Jakarta, Indonesia</p></div>
+          <h1 id="hero-heading" class="hero-title">Junior Fullstack <span>Developer</span></h1>
+          <p class="hero-description">I build web interfaces, APIs, and database-backed applications with React, TypeScript, Express, and SQL.</p>
+          <p class="hero-proof"><strong>Front-End Intern at Mantra</strong><span aria-hidden="true"> · </span>Informatics graduate, UPN Veteran Jakarta</p>
+          <div class="hero-actions">
+            <a class="action action-primary" href="#projects">View Projects <span aria-hidden="true">↓</span></a>
+            <a class="action action-secondary" href="output/pdf/muhammad-iman-nugraha-cv.pdf" download data-cv-link>Download CV <span aria-hidden="true">↓</span></a>
           </div>
-          <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 font-mono text-xs text-paper/60">
-            <a class="hover:text-lime" href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub ↗</a>
-            <a class="hover:text-lime" href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn ↗</a>
-            <span class="inline-flex items-center gap-2 text-paper/80"><span class="size-2 bg-lime" aria-hidden="true"></span>Open to developer roles</span>
+          <div class="social-links">
+            <a href="mailto:imannnnugraha@gmail.com">Email <span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub <span aria-hidden="true">↗</span></a>
+            <a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn <span aria-hidden="true">↗</span></a>
           </div>
         </div>
-
-        <figure class="hero-visual reveal" aria-labelledby="avatar-caption">
-          <img
-            class="hero-avatar"
-            src="imgs/iman-avatar-comic-sage.webp"
-            width="1086"
-            height="1448"
-            fetchpriority="high"
-            alt="Cel-shaded illustration of Muhammad Iman Nugraha in a cobalt tech-casual jacket"
-          />
-          <span class="layer-tag layer-tag-ui" aria-hidden="true">UI / REACT</span>
-          <span class="layer-tag layer-tag-api" aria-hidden="true">API / EXPRESS</span>
-          <span class="layer-tag layer-tag-data" aria-hidden="true">DATA / SQL</span>
-          <span class="float-art float-art-1" data-float aria-hidden="true"><span class="float-orbit"></span></span>
-          <span class="float-art float-art-2" data-float aria-hidden="true"><span class="float-tile"></span></span>
-          <span class="float-art float-art-3" data-float aria-hidden="true"><span class="float-asterisk">✳</span></span>
-          <span class="float-art float-art-4" data-float aria-hidden="true"><span class="float-blob"></span></span>
-          <span class="float-art float-art-5" data-float aria-hidden="true"><span class="float-dots"></span></span>
-          <figcaption id="avatar-caption" class="sr-only">A personalized comic portrait representing the frontend, API, and database layers Muhammad works across.</figcaption>
+        <figure class="hero-visual">
+          <div class="portrait-frame"><img class="hero-avatar" src="imgs/iman-avatar-comic-sage.webp" width="1086" height="1448" fetchpriority="high" alt="Comic portrait of Muhammad Iman Nugraha wearing a cobalt jacket" /></div>
+          <figcaption>Open to junior developer roles</figcaption>
         </figure>
       </div>
-      <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false">
-        <span class="motion-toggle-dot" aria-hidden="true"></span>
-        <span class="motion-toggle-label">Motion: On</span>
-      </button>
     </section>
-
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>AI-native product builder</span>
-        <span>Frontend engineering</span>
-        <span>Interface systems</span>
-        <span>Express APIs</span>
-        <span>SQL &amp; data flow</span>
-        <span>MQTT device link</span>
-        <span>AI-native product builder</span>
-        <span>Frontend engineering</span>
-        <span>Interface systems</span>
-        <span>Express APIs</span>
-        <span>SQL &amp; data flow</span>
-        <span>MQTT device link</span>
-      </div>
-    </div>
-
-    <div class="signal-strip" aria-label="Profile highlights">
-      <div class="page-shell signal-strip-inner">
-        <div class="signal-item">
-          <span class="signal-value">UPN Veteran Jakarta</span>
-          <span class="signal-key">Informatics · Graduate</span>
-        </div>
-        <div class="signal-item">
-          <span class="signal-value">3.76 / 4.0</span>
-          <span class="signal-key">Graduated · Informatics 2022–2026</span>
-        </div>
-        <div class="signal-item">
-          <span class="signal-value">Frontend-first, AI-assisted</span>
-          <span class="signal-key">Primary Build Range</span>
-        </div>
-      </div>
-    </div>
-
-    <section id="about" class="bg-ink py-20 text-paper md:py-28">
+    <section id="projects" class="section-block projects-section" aria-labelledby="projects-heading">
       <div class="page-shell">
-        <p class="mono-label text-lime">Profile</p>
-        <div class="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(16rem,0.7fr)] lg:gap-14">
-          <div class="min-w-0">
-            <h2 class="section-title">Both sides of the request.</h2>
-            <div class="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-paper/75 md:text-lg">
-              <p>
-                I'm an <strong class="text-paper">Informatics graduate of UPN Veteran Jakarta (2022–2026)</strong> with a <strong class="text-paper">GPA of 3.76 / 4.0</strong>. My work sits across <strong class="text-paper">frontend web development</strong>, <strong class="text-paper">backend web development</strong>, <strong class="text-paper">API integration</strong>, and <strong class="text-paper">database management</strong>.
-              </p>
-              <p>
-                I’ve worked with React and TypeScript interfaces, Express APIs, Supabase Row Level Security, Dockerized services, MQTT device communication, and relational databases. I like understanding the full path a request takes—not only the screen where it starts. My workflow is <strong class="text-paper">AI-assisted by design</strong>: idea → interface → AI-accelerated implementation → tests, so every result stays explainable and mine to defend.
-              </p>
-              <p>
-                The projects below show that range: a secure UPNVJ dashboard, an IoT control platform, an open-source game-economy calculator, and a mobile REST API integration.
-              </p>
-            </div>
-            <figure class="comic-frame halftone mt-10 overflow-hidden p-4 md:p-7">
-              <img
-                class="block h-auto w-full"
-                src="imgs/fullstack-prop-rig-sage.webp"
-                width="1774"
-                height="887"
-                loading="lazy"
-                alt="Comic illustration connecting a browser interface, API nodes, database, and smart-home sensor"
-              />
-              <figcaption class="mt-3 font-mono text-[0.67rem] uppercase tracking-[0.08em] text-paper/60">A request moving from interface to API, data, and connected device.</figcaption>
-            </figure>
-          </div>
-
-          <aside class="border-l-2 border-paper/20 pl-6 lg:mt-24">
-            <p class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-lime">How I Build</p>
-            <p class="mt-5 leading-relaxed text-paper/70">
-              I clarify the problem early, keep blockers visible, and use code review as a way to sharpen the implementation—not as a final ceremony.
-            </p>
-            <div class="mt-7 space-y-3 font-mono text-xs">
-              <p class="border-b border-paper/15 pb-3"><span class="text-lime">01</span> Ask before assuming</p>
-              <p class="border-b border-paper/15 pb-3"><span class="text-lime">02</span> Trace the whole request</p>
-              <p class="border-b border-paper/15 pb-3"><span class="text-lime">03</span> Share the blocker early</p>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section id="experience" class="border-y border-paper/15 bg-surface py-20 text-paper md:py-28">
-      <div class="page-shell">
-        <p class="mono-label text-lime">Career Route</p>
-        <div class="mt-8 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          <div>
-            <h2 class="section-title text-paper">Learning, then shipping.</h2>
-            <div class="route-line mt-10 bg-raised text-paper">
-              <div class="route-step">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Foundation</p>
-                <p class="mt-2 font-bold">UPN Veteran Jakarta</p>
-                <p class="mt-1 text-sm text-paper/65">Informatics · 2022–2026</p>
-              </div>
-              <div class="route-step">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Industry</p>
-                <p class="mt-2 font-bold">Mantra</p>
-                <p class="mt-1 text-sm text-paper/65">Front-End Internship</p>
-              </div>
-              <div class="route-step is-current">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-lime">Now</p>
-                <p class="mt-2 font-bold">Next Team</p>
-                <p class="mt-1 text-sm text-paper/65">Frontend · Backend · Full-stack</p>
-              </div>
-            </div>
-          </div>
-
-          <article class="comic-frame self-end p-6 md:p-8">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p class="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-lime">Mantra (Teman Transisi)</p>
-                <h3 class="mt-2 text-3xl font-extrabold tracking-[-0.045em]">Front-End Intern</h3>
-              </div>
-              <span class="whitespace-nowrap font-mono text-xs font-semibold">03/2025 – 10/2025</span>
-            </div>
-            <ul class="mt-7 grid gap-3 text-sm leading-relaxed text-paper/75">
-              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Responsive web platform front-end development</span></li>
-              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Responsive admin dashboard UI implementation</span></li>
-              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Front-end data validation for CRUD operations</span></li>
-              <li class="flex gap-3"><b class="font-mono text-lime" aria-hidden="true">→</b><span>Collaboration with back-end developers for API integration within a Laravel framework</span></li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="skills" class="bg-ink py-20 text-paper md:py-28">
-      <div class="page-shell">
-        <div class="skills-intro">
-          <div>
-            <p class="mono-label text-lime">Capabilities</p>
-            <h2 class="section-title mt-7">The working stack.</h2>
-          </div>
-          <p class="max-w-md text-base leading-relaxed text-paper/65">Tools are useful when they help the request move cleanly from interaction to application logic and persistent data.</p>
-          <img class="skills-prop" src="imgs/iot-node-sage.webp" width="1641" height="958" loading="lazy" alt="" aria-hidden="true" />
-        </div>
-
-        <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="capability-card flex flex-col gap-5">
-            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Frontend</h3>
-            <div class="flex flex-wrap gap-2" translate="no">
-              <span class="skill-token">React.js</span>
-              <span class="skill-token">TypeScript</span>
-              <span class="skill-token">JavaScript</span>
-              <span class="skill-token">HTML</span>
-              <span class="skill-token">CSS</span>
-              <span class="skill-token">Tailwind CSS</span>
-            </div>
-          </div>
-          <div class="capability-card flex flex-col gap-5">
-            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Backend</h3>
-            <div class="flex flex-wrap gap-2" translate="no">
-              <span class="skill-token">Python</span>
-              <span class="skill-token">PHP</span>
-              <span class="skill-token">Node.js</span>
-              <span class="skill-token">Express.js</span>
-              <span class="skill-token">Laravel</span>
-            </div>
-          </div>
-          <div class="capability-card flex flex-col gap-5">
-            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Databases</h3>
-            <div class="flex flex-wrap gap-2" translate="no">
-              <span class="skill-token">MySQL</span>
-              <span class="skill-token">PostgreSQL</span>
-              <span class="skill-token">Supabase</span>
-              <span class="skill-token">Firebase</span>
-            </div>
-          </div>
-          <div class="capability-card flex flex-col gap-5">
-            <h3 class="text-xl font-extrabold tracking-[-0.035em]">Architecture &amp; Tools</h3>
-            <div class="flex flex-wrap gap-2" translate="no">
-              <span class="skill-token">Git</span>
-              <span class="skill-token">Docker</span>
-              <span class="skill-token">REST API</span>
-              <span class="skill-token">MVC</span>
-              <span class="skill-token">Microservices</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="projects" class="border-t-2 border-paper/20 bg-ink py-20 text-paper md:py-28">
-      <div class="page-shell">
-        <p class="mono-label text-lime">Build Select</p>
-        <div class="projects-heading mt-7">
-          <h2 class="section-title">Choose a build. See the system.</h2>
-          <p class="max-w-md text-base leading-relaxed text-paper/60">Four builds, ordered from full-stack web systems to a focused mobile API integration. Every project keeps its real evidence and constraints visible.</p>
-          <img class="build-rack-prop" src="imgs/build-cartridge-rack-sage.webp" width="1254" height="1254" loading="lazy" alt="" aria-hidden="true" />
-        </div>
-
-        <div class="project-layout mt-14">
-          <nav class="build-selector" aria-label="Featured project selector">
-            <a class="build-link" href="#project-dashboard" data-build-link="project-dashboard" aria-current="true"><span>01</span><span>Dashboard UPNVJ</span></a>
-            <a class="build-link" href="#project-smarthome" data-build-link="project-smarthome"><span>02</span><span>Smart Home IoT</span></a>
-            <a class="build-link" href="#project-albion" data-build-link="project-albion"><span>03</span><span>Albion Calculator</span></a>
-            <a class="build-link" href="#project-recehin" data-build-link="project-recehin"><span>04</span><span>Recehin</span></a>
-          </nav>
-
-          <div class="min-w-0">
-            <article id="project-dashboard" class="project-card reveal" data-build="project-dashboard">
-              <figure class="project-media">
-                <img
-                  src="imgs/dashboard-upnvj.png"
-                  width="1264"
-                  height="711"
-                  loading="lazy"
-                  alt="Dashboard Profile UPNVJ showing profile content management and analytics"
-                />
-                <figcaption class="project-media-label">REAL PROJECT SCREEN</figcaption>
-              </figure>
+        <div class="section-heading"><div><p class="mono-label">Selected work</p><h2 id="projects-heading" class="section-title">Projects</h2></div><p>Web interfaces, the data behind them, and the decisions that connect both.</p></div>
+        <nav class="project-nav" aria-label="Featured project selector">
+          <a href="#project-dashboard" data-build-link="project-dashboard">Dashboard UPNVJ</a><a href="#project-smarthome" data-build-link="project-smarthome">Smart Home IoT</a><a href="#project-albion" data-build-link="project-albion">Albion Calculator</a><a href="#project-recehin" data-build-link="project-recehin">Recehin</a>
+        </nav>
+        <div class="project-list">
+          <article id="project-dashboard" class="project-card project-featured" data-build="project-dashboard">
+            <div class="project-overview">
+              <figure class="project-media"><img src="imgs/dashboard-upnvj.png" width="1264" height="711" loading="lazy" alt="Dashboard Profile UPNVJ application showing university profile information" /><figcaption>Application screenshot</figcaption></figure>
               <div class="project-body">
-                <p class="project-index">Fullstack Web Application · Build 01</p>
+                <p class="project-index">Fullstack web application · Solo developer</p>
                 <h3 class="project-title">Dashboard Profile UPNVJ</h3>
-                <p class="mt-5 text-base leading-relaxed text-paper/68">
-                  A fullstack profile dashboard with a secure backend built on Supabase Row Level Security and custom Express.js APIs for fine-grained data access. The frontend is optimized through dynamic code splitting and memoized React context.
-                </p>
-                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
-                  <li class="skill-token !border-paper/35 !text-paper">React.js</li>
-                  <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Vite</li>
-                  <li class="skill-token !border-paper/35 !text-paper">TailwindCSS</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Supabase</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Express.js</li>
-                </ul>
-                <div class="mt-7 flex flex-wrap gap-6">
-                  <a class="project-link" href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ">Open Live Demo ↗</a>
-                  <a class="project-link" href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ">View Source ↗</a>
-                </div>
+                <p data-project-summary>A university profile dashboard with public faculty and facility data, campus maps, and an authenticated admin interface. I built the React UI, data services, database setup, and supporting APIs.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">React</li><li class="skill-token">TypeScript</li><li class="skill-token">Supabase / PostgreSQL</li><li class="skill-token">Express</li><li class="skill-token">Tailwind CSS</li></ul>
+                <p class="demo-note">The public demo shows the visitor dashboard. Admin features require a login.</p>
+                <div class="project-links"><a class="project-link" href="https://dashboard-profile-upnvj.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Dashboard Profile UPNVJ">Live demo <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/dashboard-profile-upnvj" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Dashboard Profile UPNVJ">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
-            </article>
-
-            <article id="project-smarthome" class="project-card reveal" data-build="project-smarthome">
-              <figure class="project-media concept-stage">
-                <img
-                  src="imgs/smarthome-concept-sage.webp"
-                  width="1536"
-                  height="1024"
-                  loading="lazy"
-                  alt="Cel-shaded Smart Home IoT concept showing a dashboard, MQTT devices, an API controller, and a database"
-                />
-                <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
-              </figure>
+            </div>
+            <details class="case-study" data-case-study>
+              <summary>Inside the build <span>Contribution, architecture &amp; testing</span></summary>
+              <div class="case-study-content">
+                <div class="case-study-grid">
+                  <div><h4>Problem</h4><p>Make university profile data and campus facilities browsable while providing an admin interface to update the same information.</p></div>
+                  <div><h4>My contribution</h4><p>I implemented the public and admin React interfaces, CRUD forms, Supabase data and authentication services, PostgreSQL setup, and building/room endpoints for the campus-map integration.</p></div>
+                  <div><h4>Decisions</h4><p>The React application uses the Supabase SDK directly. Database policies allow public reads and authenticated writes for profile tables. A separate API supplies building and room data to Unity; it is not the route for the dashboard’s CRUD operations. Route-level lazy loading separates the public, login, and admin screens.</p></div>
+                  <div><h4>Testing evidence</h4><p>The repository contains tests for required fields in building, facility, and program forms, plus API response tests with mocked database queries.</p><div class="evidence-links"><a href="https://github.com/Jokskuyy/dashboard-profile-upnvj/blob/main/src/components/modals/crud/CrudModalValidation.test.tsx" target="_blank" rel="noopener noreferrer">CRUD validation tests ↗</a><a href="https://github.com/Jokskuyy/dashboard-profile-upnvj/blob/main/server/index.test.ts" target="_blank" rel="noopener noreferrer">API tests ↗</a></div></div>
+                </div>
+                <figure class="architecture-figure"><img src="imgs/dashboard-data-flow.svg" width="1000" height="420" loading="lazy" alt="Dashboard architecture: React uses the Supabase SDK and Auth for PostgreSQL access controlled by row-level policies. Unity reads building and room data through a separate API, provided by Express locally or Vercel functions." /><figcaption>Data access architecture, based on the repository implementation. <a href="https://github.com/Jokskuyy/dashboard-profile-upnvj/blob/main/src/services/api/supabaseDataService.ts" target="_blank" rel="noopener noreferrer">Data service ↗</a> <a href="https://github.com/Jokskuyy/dashboard-profile-upnvj/blob/main/database/001_full_setup.sql" target="_blank" rel="noopener noreferrer">Database policies ↗</a></figcaption></figure>
+              </div>
+            </details>
+          </article>
+          <article id="project-smarthome" class="project-card project-featured" data-build="project-smarthome">
+            <div class="project-overview">
+              <figure class="project-media architecture-media"><img src="imgs/smarthome-architecture.svg" width="800" height="550" loading="lazy" alt="Smart Home architecture: browser dashboard connects over HTTP to an Express gateway and services; services persist to MySQL and exchange MQTT messages with a device simulator or ESP32." /><figcaption>Implementation architecture · Diagram</figcaption></figure>
               <div class="project-body">
-                <p class="project-index">Fullstack IoT Platform · Build 02</p>
+                <p class="project-index">Fullstack IoT platform · Solo developer</p>
                 <h3 class="project-title">Smart Home IoT</h3>
-                <p class="mt-5 text-base leading-relaxed text-paper/68">
-                  A smart home control platform powered by a Node.js and Express backend structured as a Microservices architecture orchestrated with Docker. Services communicate with devices over MQTT and persist state in MySQL.
-                </p>
-                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
-                  <li class="skill-token !border-paper/35 !text-paper">HTML</li>
-                  <li class="skill-token !border-paper/35 !text-paper">CSS</li>
-                  <li class="skill-token !border-paper/35 !text-paper">JavaScript</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Express.js</li>
-                  <li class="skill-token !border-paper/35 !text-paper">MySQL</li>
-                  <li class="skill-token !border-paper/35 !text-paper">MQTT</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Docker</li>
-                </ul>
-                <p class="mt-5 font-mono text-xs text-paper/45">Live demo not available</p>
-                <div class="mt-4 flex flex-wrap gap-6">
-                  <a class="project-link" href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT">View Source ↗</a>
-                </div>
+                <p data-project-summary>A course project for viewing sensor readings, alerts, and device state, with controls for lights, a fan, and a smart lock. I built the browser dashboard, Express services, MQTT integration, and MySQL persistence.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">JavaScript</li><li class="skill-token">Node.js / Express</li><li class="skill-token">MySQL</li><li class="skill-token">MQTT</li><li class="skill-token">Docker</li></ul>
+                <p class="demo-note">Local demo available through the software simulator. No hosted live demo.</p>
+                <div class="project-links"><a class="project-link" href="https://github.com/Jokskuyy/smart_home" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Smart Home IoT">Source code <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/smart_home#-pure-software-demo-tanpa-hardware--tanpa-wokwi" target="_blank" rel="noopener noreferrer">Run the simulator <span aria-hidden="true">↗</span></a></div>
+              </div>
+            </div>
+            <details class="case-study" data-case-study>
+              <summary>Inside the build <span>Contribution, architecture &amp; verification</span></summary>
+              <div class="case-study-content case-study-grid">
+                <div><h4>Problem</h4><p>Connect a browser control panel to sensor readings and device commands, with a repeatable way to demonstrate the system without physical hardware.</p></div>
+                <div><h4>My contribution</h4><p>I implemented the HTML/CSS/JavaScript dashboard, API gateway, separate Express services, MySQL models, MQTT message handlers, and device integration for this PPLBS course project.</p></div>
+                <div><h4>Decisions</h4><p>The dashboard polls the HTTP API every five seconds. The gateway routes requests to services for authentication, climate, devices, sensors, alerts, control, and security. MQTT carries sensor messages and device commands; Docker Compose starts the backend services and MySQL.</p></div>
+                <div><h4>Verification path</h4><p>The repository’s Node.js simulator publishes the same MQTT topics used by the ESP32 implementation. Its scripted scenarios include motion, a gas spike, a fire alert, and recovery. Run it with the dashboard to inspect telemetry and send light, fan, and lock commands.</p><div class="evidence-links"><a href="https://github.com/Jokskuyy/smart_home/tree/main/device-simulator" target="_blank" rel="noopener noreferrer">Simulator source ↗</a><a href="https://github.com/Jokskuyy/smart_home/blob/main/gateway/server.js" target="_blank" rel="noopener noreferrer">Gateway routes ↗</a></div></div>
+              </div>
+            </details>
+          </article>
+          <div class="secondary-projects">
+            <article id="project-albion" class="project-card" data-build="project-albion">
+              <figure class="project-media"><img src="imgs/albioncalc.png" width="1440" height="900" loading="lazy" alt="Albion Refining Calculator showing quantity 10, revenue 10,000, cost 13,320, and net profit −3,320" /><figcaption>Application screenshot</figcaption></figure>
+              <div class="project-body">
+                <p class="project-index">Game economy calculator</p><h3 class="project-title">Albion Refining Calculator</h3>
+                <p data-project-summary>Compare crafting and refining outcomes before spending in-game currency. The TypeScript calculations account for material costs, return rates, fees, and the value of remaining materials.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">TypeScript</li><li class="skill-token">React</li><li class="skill-token">Vite</li></ul>
+                <p class="demo-note">Equipment, Resources, and Multi Tier modes share validated result rendering. Invalid results prompt an input correction.</p>
+                <div class="project-links"><a class="project-link" href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator">Live demo <span aria-hidden="true">↗</span></a><a class="project-link" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
             </article>
-
-            <article id="project-albion" class="project-card reveal" data-build="project-albion">
-              <figure class="project-media">
-                <img
-                  src="imgs/albioncalc.png"
-                  width="2560"
-                  height="1069"
-                  loading="lazy"
-                  alt="Albion Refining Calculator showing material inputs and refining profit calculations"
-                />
-                <figcaption class="project-media-label">REAL PROJECT SCREEN</figcaption>
-              </figure>
+            <article id="project-recehin" class="project-card" data-build="project-recehin">
+              <figure class="project-media concept-stage"><img src="imgs/recehin-concept-sage.webp" width="1536" height="1024" loading="lazy" alt="Concept illustration of a mobile finance app connected to an API and transaction ledger" /><figcaption>Concept illustration · App screenshot unavailable</figcaption></figure>
               <div class="project-body">
-                <p class="project-index">Open-Source Web App · Build 03</p>
-                <h3 class="project-title">Albion Refining Calculator</h3>
-                <p class="mt-5 text-base leading-relaxed text-paper/68">
-                  An open-source game economy calculator for Albion Online’s refining system, helping players model refining returns and profit margins. Written in TypeScript and deployed on Vercel.
-                </p>
-                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
-                  <li class="skill-token !border-paper/35 !text-paper">TypeScript</li>
-                </ul>
-                <div class="mt-7 flex flex-wrap gap-6">
-                  <a class="project-link" href="https://albion-refining-calculator.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Live demo: Albion Refining Calculator">Open Live Demo ↗</a>
-                  <a class="project-link" href="https://github.com/Jokskuyy/Albion-Refining-Calculator" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Albion Refining Calculator">View Source ↗</a>
-                </div>
-              </div>
-            </article>
-
-            <article id="project-recehin" class="project-card reveal" data-build="project-recehin">
-              <figure class="project-media concept-stage">
-                <img
-                  src="imgs/recehin-concept-sage.webp"
-                  width="1536"
-                  height="1024"
-                  loading="lazy"
-                  alt="Cel-shaded Recehin concept showing a mobile finance client connected through an API to a transaction ledger"
-                />
-                <figcaption class="project-media-label">CONCEPT ILLUSTRATION · SCREENSHOT UNAVAILABLE</figcaption>
-              </figure>
-              <div class="project-body">
-                <p class="project-index">REST API Integration · Build 04</p>
-                <h3 class="project-title">Recehin</h3>
-                <p class="mt-5 text-base leading-relaxed text-paper/68">
-                  A finance-tracking application centered on REST API integration, consuming backend endpoints with Retrofit to synchronize transaction data and handle authentication, demonstrating end-to-end client-server communication.
-                </p>
-                <ul class="mt-6 flex flex-wrap gap-2" translate="no">
-                  <li class="skill-token !border-paper/35 !text-paper">Android Studio</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Java/Kotlin</li>
-                  <li class="skill-token !border-paper/35 !text-paper">Retrofit</li>
-                  <li class="skill-token !border-paper/35 !text-paper">REST API</li>
-                </ul>
-                <p class="mt-5 font-mono text-xs text-paper/45">Live demo not available</p>
-                <div class="mt-4 flex flex-wrap gap-6">
-                  <a class="project-link" href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin">View Source ↗</a>
-                </div>
+                <p class="project-index">Android API integration</p><h3 class="project-title">Recehin</h3>
+                <p data-project-summary>A mobile finance-tracking application that consumes REST endpoints with Retrofit for transaction data and authentication. This project demonstrates Android client integration with a backend API.</p>
+                <ul class="project-stack" data-project-stack translate="no"><li class="skill-token">Java / Kotlin</li><li class="skill-token">Retrofit</li><li class="skill-token">REST API</li></ul>
+                <p class="demo-note">Source available. No hosted live demo.</p>
+                <div class="project-links"><a class="project-link" href="https://github.com/Jokskuyy/recehin-app" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository: Recehin">Source code <span aria-hidden="true">↗</span></a></div>
               </div>
             </article>
           </div>
         </div>
       </div>
     </section>
-
-    <section id="contact" class="bg-surface py-20 text-paper md:py-28">
-      <div class="page-shell">
-        <div class="contact-panel p-6 md:p-10 lg:p-14">
-          <div class="grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-            <div>
-              <p class="mono-label text-lime">Contact</p>
-              <h2 class="mt-7 max-w-[11ch] text-[clamp(3rem,8vw,6.25rem)] font-bold leading-[0.94] tracking-[-0.035em]">Let’s trace the next request together.</h2>
-              <p class="mt-7 max-w-xl text-lg leading-relaxed text-paper/72">I’m looking for a frontend, backend, or full-stack developer role where I can keep improving across both product interfaces and the systems behind them.</p>
-            </div>
-
-            <div class="border-t-2 border-paper/30 pt-7 lg:border-l-2 lg:border-t-0 lg:pl-8 lg:pt-0">
-              <p class="font-mono text-[0.68rem] uppercase tracking-[0.1em] text-lime">Direct Line</p>
-              <p class="email-address mt-3 text-xl font-bold md:text-2xl">imannnnugraha@gmail.com</p>
-              <div class="mt-5 flex flex-wrap gap-3">
-                <a class="action action-primary" href="mailto:imannnnugraha@gmail.com">Write an Email ↗</a>
-                <button id="copy-email" class="action action-secondary" type="button" data-email="imannnnugraha@gmail.com" aria-describedby="copy-status">Copy Address</button>
-              </div>
-              <p id="copy-status" class="mt-3 min-h-5 font-mono text-xs text-paper/65" role="status" aria-live="polite"></p>
-              <div class="mt-7 flex flex-wrap gap-5 font-mono text-xs">
-                <a class="border-b-2 border-paper/40 pb-1 hover:border-lime hover:text-lime" href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-                <a class="border-b-2 border-paper/40 pb-1 hover:border-lime hover:text-lime" href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section id="experience" class="section-block alternate-section" aria-labelledby="experience-heading">
+      <div class="page-shell experience-layout">
+        <div><p class="mono-label">Industry experience</p><h2 id="experience-heading" class="section-title">Experience</h2><p class="section-intro">Building interfaces alongside a backend team.</p></div>
+        <article class="experience-entry">
+          <div class="experience-meta"><p>Mantra <span>(Teman Transisi)</span></p><p><time datetime="2025-03">Mar 2025</time> – <time datetime="2025-10">Oct 2025</time></p></div><h3>Front-End Intern</h3>
+          <ul class="contribution-list"><li>Implemented responsive pages for the web platform and its admin dashboard.</li><li>Added frontend data validation for create, read, update, and delete workflows.</li><li>Collaborated with backend developers to integrate APIs within a Laravel application.</li></ul>
+          <p class="experience-note">Focus: responsive UI, form validation, and API integration.</p>
+        </article>
       </div>
+    </section>
+    <section id="skills" class="section-block" aria-labelledby="skills-heading">
+      <div class="page-shell">
+        <div class="section-heading"><div><p class="mono-label">Used in the work above</p><h2 id="skills-heading" class="section-title">Skills</h2></div><p>Choose a technology to see it in a project.</p></div>
+        <div class="capability-grid">
+          <div class="capability-card"><h3>Frontend</h3><div class="skill-links" translate="no"><a class="skill-token" href="#project-dashboard">React</a><a class="skill-token" href="#project-dashboard">TypeScript</a><a class="skill-token" href="#project-smarthome">JavaScript</a><a class="skill-token" href="#project-smarthome">HTML / CSS</a><a class="skill-token" href="#project-dashboard">Tailwind CSS</a></div></div>
+          <div class="capability-card"><h3>Backend &amp; data</h3><div class="skill-links" translate="no"><a class="skill-token" href="#project-smarthome">Node.js</a><a class="skill-token" href="#project-smarthome">Express</a><a class="skill-token" href="#project-dashboard">Supabase</a><a class="skill-token" href="#project-dashboard">PostgreSQL</a><a class="skill-token" href="#project-smarthome">MySQL</a></div></div>
+          <div class="capability-card"><h3>Integration &amp; tooling</h3><div class="skill-links" translate="no"><a class="skill-token" href="#project-smarthome">REST APIs</a><a class="skill-token" href="#project-smarthome">MQTT</a><a class="skill-token" href="#project-smarthome">Docker</a><a class="skill-token" href="#project-albion">Git</a></div></div>
+        </div>
+        <p class="additional-skills"><strong>Additional experience</strong> <span>Laravel in the Mantra internship · Java/Kotlin and Retrofit in Recehin · Python, PHP, Firebase</span></p>
+      </div>
+    </section>
+    <section id="about" class="section-block alternate-section" aria-labelledby="about-heading">
+      <div class="page-shell about-layout">
+        <div><p class="mono-label">A little background</p><h2 id="about-heading" class="section-title">About me</h2></div>
+        <div class="about-copy"><p>I’m Muhammad Iman Nugraha, a Jakarta-based Informatics graduate interested in how interfaces, application logic, and data fit together. I’m looking for a junior fullstack role where I can contribute to a team and keep developing across those layers.</p><div class="education-entry"><h3>UPN Veteran Jakarta</h3><p>Informatics graduate · 2022–2026</p><p>GPA <strong>3.76 / 4.00</strong></p></div><h3 class="workflow-heading">An AI-assisted workflow</h3><p>I use AI tools to explore solutions and assist implementation. I review generated changes, test the behavior, and take responsibility for understanding the code I ship.</p></div>
+      </div>
+    </section>
+    <section id="contact" class="section-block" aria-labelledby="contact-heading">
+      <div class="page-shell"><div class="contact-panel">
+        <div><p class="mono-label">Let’s talk</p><h2 id="contact-heading" class="section-title">Have a role in mind?</h2><p>I’m open to junior fullstack opportunities, including roles focused on frontend or backend development.</p><a class="project-link" href="output/pdf/muhammad-iman-nugraha-cv.pdf" download data-cv-link>Download my CV <span aria-hidden="true">↓</span></a></div>
+        <div class="contact-details"><a class="email-address" href="mailto:imannnnugraha@gmail.com">imannnnugraha@gmail.com</a><div class="contact-actions"><a class="action action-primary" href="mailto:imannnnugraha@gmail.com">Write an Email <span aria-hidden="true">↗</span></a><button id="copy-email" class="action action-secondary" type="button" data-email="imannnnugraha@gmail.com" aria-describedby="copy-status" hidden>Copy Address</button></div><p id="copy-status" role="status" aria-live="polite"></p><div class="social-links"><a href="https://github.com/Jokskuyy" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/muhammad-nugraha-9bb016286/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></div></div>
+      </div></div>
     </section>
   </main>
-
-  <footer class="border-t-2 border-paper/20 bg-ink py-8 text-paper">
-    <div class="page-shell flex flex-col gap-3 font-mono text-[0.68rem] text-paper/55 sm:flex-row sm:items-center sm:justify-between">
-      <p>Built across the interface and the system.</p>
-      <p>Jakarta, Indonesia · 2026</p>
-    </div>
-  </footer>
-
-  <script src="parallax.js" defer></script>
+  <footer><div class="page-shell"><p>Muhammad Iman Nugraha · 2026</p><a href="#hero">Back to top ↑</a></div></footer>
 </body>
 </html>

@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Preserve generated PDF bytes across Windows and Unix checkouts.
+*.pdf binary

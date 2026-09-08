@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
+  <title id="title">Dashboard UPNVJ data access architecture</title>
+  <desc id="desc">The public and admin React interfaces use the Supabase SDK, Auth, and data API to access PostgreSQL directly under row-level security policies. Public reads and authenticated writes are separate permissions. Unity reads building and room data through a separate API, implemented with Express locally or Vercel functions. That API does not proxy the dashboard's CRUD operations.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#b5c98b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; }
+      .heading { font-size: 28px; font-weight: 700; fill: #f2eee6; }
+      .label { font-size: 27px; font-weight: 700; fill: #f2eee6; }
+      .detail { font-size: 22px; fill: #c1c8d3; }
+      .caption { font-size: 20px; fill: #b5c98b; }
+      .node { fill: #242c3a; stroke: #5267a6; stroke-width: 2; }
+      .flow { fill: none; stroke: #b5c98b; stroke-width: 2.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1000" height="420" fill="#161a22"/>
+  <rect x="32" y="30" width="6" height="29" fill="#b5c98b"/>
+  <text x="52" y="53" class="heading">Two clients. Separate access paths.</text>
+
+  <rect x="32" y="103" width="238" height="122" rx="12" class="node"/>
+  <text x="52" y="139" class="label">React</text>
+  <text x="52" y="174" class="detail">Public + admin UI</text>
+  <text x="52" y="205" class="caption">Supabase SDK</text>
+
+  <path d="M 270 164 H 346" class="flow"/>
+  <rect x="350" y="103" width="260" height="122" rx="12" class="node"/>
+  <text x="373" y="147" class="label">Supabase</text>
+  <text x="373" y="184" class="detail">Auth + Data API</text>
+
+  <path d="M 610 164 H 686" class="flow"/>
+  <rect x="690" y="103" width="278" height="122" rx="12" fill="#253028" stroke="#b5c98b" stroke-width="2"/>
+  <text x="714" y="139" class="label">PostgreSQL</text>
+  <text x="714" y="174" class="detail">RLS: public reads</text>
+  <text x="714" y="205" class="detail">Authenticated writes</text>
+
+  <rect x="32" y="284" width="238" height="102" rx="12" class="node"/>
+  <text x="52" y="325" class="label">Unity map</text>
+  <text x="52" y="361" class="detail">Buildings + rooms</text>
+
+  <path d="M 270 335 H 346" class="flow"/>
+  <rect x="350" y="284" width="260" height="102" rx="12" class="node"/>
+  <text x="373" y="319" class="label">Read API</text>
+  <text x="373" y="349" class="detail">Express locally</text>
+  <text x="373" y="375" class="detail">Vercel functions</text>
+
+  <path d="M 610 335 H 829 V 229" class="flow"/>
+  <text x="644" y="367" class="caption">Read requests</text>
+</svg>

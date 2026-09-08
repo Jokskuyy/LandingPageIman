@@ -2,68 +2,69 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
-import { loadIndexHtml } from './harness.js';
+import { html, loadStyles } from './harness.js';
 
-test('Creative lab: original layered scene, motion control and graduate workflow', () => {
-  const { document } = loadIndexHtml();
-  assert.ok(document.querySelector('#motion-toggle[aria-pressed][type="button"]'));
-  assert.equal(document.querySelector('#particle-field')?.getAttribute('aria-hidden'), 'true');
-  assert.ok(document.querySelectorAll('#hero [data-parallax] .float-art').length >= 4);
-  assert.match(document.querySelector('#about').textContent, /AI-assisted/);
-  assert.doesNotMatch(document.body.textContent, /final.year/i);
-});
-
-async function setup(reduced = false) {
-  const dom = new JSDOM(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), { runScripts: 'outside-only', pretendToBeVisual: true, url: 'https://example.test' });
-  const { window: w } = dom;
-  const frames = new Map(); let id = 0; const media = new Map();
-  w.matchMedia = query => {
-    if (!media.has(query)) {
-      const m = new w.EventTarget(); m.matches = query.includes('reduce') ? reduced : true;
-      media.set(query, m);
-    }
-    return media.get(query);
-  };
-  w.requestAnimationFrame = fn => { frames.set(++id, fn); return id; };
-  w.cancelAnimationFrame = id => frames.delete(id);
-  const ctx = { setTransform() {}, clearRect() {}, beginPath() {}, arc() {}, fill() {} };
-  w.HTMLCanvasElement.prototype.getContext = () => ctx;
+async function setup(writeText) {
+  const dom = new JSDOM(html, { runScripts: 'outside-only', pretendToBeVisual: true, url: 'https://example.test/portfolio/' });
+  const w = dom.window;
+  Object.defineProperty(w, 'isSecureContext', { value: true });
+  if (writeText) Object.defineProperty(w.navigator, 'clipboard', { value: { writeText }, configurable: true });
   w.eval(readFileSync(new URL('../parallax.js', import.meta.url), 'utf8'));
-  w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
-  return { dom, w, frames, media, tick() { const pending = [...frames.values()]; frames.clear(); pending.forEach(fn => fn(16)); } };
+  if (w.document.readyState === 'loading') {
+    await new Promise(resolve => w.document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+  }
+  return dom;
 }
 
-test('Motion: toggle cancels frames, resets parallax, resumes exactly one loop', async () => {
-  const s = await setup(); const { w, frames } = s;
-  const button = w.document.querySelector('#motion-toggle');
-  assert.ok(button, 'motion control must exist');
-  assert.equal(frames.size, 1);
-  w.scrollY = 9000; w.dispatchEvent(new w.Event('scroll')); s.tick();
-  const layer = w.document.querySelector('[data-parallax]');
-  assert.ok(Math.abs(parseFloat(layer.style.getPropertyValue('--parallax-y'))) <= 48);
-  button.click();
-  assert.equal(button.getAttribute('aria-pressed'), 'true');
-  assert.equal(frames.size, 0);
-  assert.equal(layer.style.getPropertyValue('--parallax-y'), '0px');
-  button.click(); assert.equal(frames.size, 1);
-  w.dispatchEvent(new w.Event('scroll')); w.dispatchEvent(new w.Event('resize'));
-  assert.equal(frames.size, 1);
-  s.dom.window.close();
+const flush = () => new Promise(resolve => setTimeout(resolve, 0));
+
+test('Without page JavaScript the headline and every project remain visible', () => {
+  const dom = new JSDOM(html);
+  const style = dom.window.document.createElement('style');
+  style.textContent = loadStyles(dom.window.document);
+  dom.window.document.head.append(style);
+  for (const el of dom.window.document.querySelectorAll('#hero, #hero h1, #projects article')) {
+    const css = dom.window.getComputedStyle(el);
+    assert.notEqual(css.opacity, '0');
+    assert.notEqual(css.display, 'none');
+    assert.notEqual(css.visibility, 'hidden');
+  }
+  dom.window.close();
 });
 
-test('Motion: runtime reduced motion and document visibility stop and resume safely', async () => {
-  const s = await setup(true); const { w, frames, media } = s;
-  assert.equal(frames.size, 0);
-  assert.equal(w.document.documentElement.dataset.motion, 'paused');
-  const preference = media.get('(prefers-reduced-motion: reduce)');
-  preference.matches = false; preference.dispatchEvent(new w.Event('change'));
-  assert.equal(frames.size, 1);
-  Object.defineProperty(w.document, 'hidden', { configurable: true, value: true });
-  w.document.dispatchEvent(new w.Event('visibilitychange')); assert.equal(frames.size, 0);
-  Object.defineProperty(w.document, 'hidden', { configurable: true, value: false });
-  w.document.dispatchEvent(new w.Event('visibilitychange')); assert.equal(frames.size, 1);
-  preference.matches = true; preference.dispatchEvent(new w.Event('change'));
-  assert.equal(frames.size, 0);
-  assert.ok([...w.document.querySelectorAll('.reveal')].every(el => el.classList.contains('is-visible')));
-  s.dom.window.close();
+test('Mobile navigation closes when choosing a section and on Escape', async () => {
+  const dom = await setup();
+  const { document } = dom.window;
+  const menu = document.querySelector('header details');
+  menu.open = true;
+  menu.querySelector('a[href="#projects"]').click();
+  assert.equal(menu.open, false);
+  menu.open = true;
+  menu.querySelector('summary').focus();
+  document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  assert.equal(menu.open, false);
+  assert.equal(document.activeElement, menu.querySelector('summary'));
+  dom.window.close();
+});
+
+test('Copy email writes the address and announces success', async () => {
+  const writes = [];
+  const dom = await setup(async text => { writes.push(text); });
+  const { document } = dom.window;
+  document.querySelector('#copy-email').click();
+  await flush();
+  assert.deepEqual(writes, ['imannnnugraha@gmail.com']);
+  assert.match(document.querySelector('#copy-status').textContent, /copied/i);
+  dom.window.close();
+});
+
+test('Clipboard rejection gives a useful fallback without hiding the address', async () => {
+  const dom = await setup(async () => { throw new Error('Clipboard permission denied'); });
+  const { document } = dom.window;
+  document.querySelector('#copy-email').click();
+  await flush();
+  assert.match(document.querySelector('#copy-status').textContent, /select|manually/i);
+  assert.match(document.querySelector('#contact').textContent, /imannnnugraha@gmail\.com/);
+  assert.equal(document.querySelector('#copy-email').disabled, false);
+  dom.window.close();
 });

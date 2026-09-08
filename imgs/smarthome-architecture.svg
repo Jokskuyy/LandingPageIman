@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="550" viewBox="0 0 800 550" role="img" aria-labelledby="title desc">
+  <title id="title">Smart Home IoT implementation architecture</title>
+  <desc id="desc">The browser dashboard polls an HTTP API every five seconds. An Express gateway routes requests to seven Express services for authentication, climate, devices, sensors, alerts, control, and security. Services persist state in MySQL and publish or subscribe through an MQTT broker. A Node.js device simulator or ESP32 exchanges sensor telemetry and device commands with the broker. Docker Compose starts the gateway, services, and MySQL.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#b5c98b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; }
+      .heading { font-size: 30px; font-weight: 700; fill: #f2eee6; }
+      .label { font-size: 28px; font-weight: 700; fill: #f2eee6; }
+      .detail { font-size: 24px; fill: #c1c8d3; }
+      .caption { font-size: 24px; fill: #b5c98b; }
+      .node { fill: #242c3a; stroke: #5267a6; stroke-width: 2; }
+      .flow { fill: none; stroke: #b5c98b; stroke-width: 3; marker-start: url(#arrow); marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="800" height="550" fill="#161a22"/>
+  <rect x="32" y="27" width="6" height="33" fill="#b5c98b"/>
+  <text x="52" y="53" class="heading">Smart Home · Architecture</text>
+
+  <rect x="32" y="100" width="216" height="100" rx="12" class="node"/>
+  <text x="52" y="142" class="label">Dashboard</text>
+  <text x="52" y="178" class="detail">Polls every 5s</text>
+
+  <path d="M 253 150 H 291" class="flow"/>
+  <text x="270" y="88" text-anchor="middle" class="caption">HTTP</text>
+  <rect x="296" y="100" width="216" height="100" rx="12" class="node"/>
+  <text x="318" y="142" class="label">Gateway</text>
+  <text x="318" y="178" class="detail">HTTP routing</text>
+
+  <path d="M 517 150 H 555" class="flow"/>
+  <rect x="560" y="100" width="208" height="100" rx="12" class="node"/>
+  <text x="580" y="142" class="label">Express</text>
+  <text x="580" y="178" class="detail">7 services</text>
+
+  <path d="M 616 205 V 232 H 404 V 286" class="flow"/>
+  <text x="418" y="271" class="caption">SQL</text>
+  <rect x="296" y="292" width="216" height="100" rx="12" fill="#253028" stroke="#b5c98b" stroke-width="2"/>
+  <text x="318" y="334" class="label">MySQL</text>
+  <text x="318" y="370" class="detail">Stored state</text>
+
+  <path d="M 712 205 V 286" class="flow"/>
+  <text x="690" y="272" text-anchor="end" class="caption">Pub / sub</text>
+  <rect x="560" y="292" width="208" height="100" rx="12" class="node"/>
+  <text x="580" y="334" class="label">MQTT</text>
+  <text x="580" y="370" class="detail">Broker</text>
+
+  <path d="M 664 397 V 445" class="flow"/>
+  <rect x="480" y="451" width="288" height="75" rx="12" class="node"/>
+  <text x="500" y="482" class="label">Node.js simulator</text>
+  <text x="500" y="513" class="detail">or ESP32 device</text>
+
+  <text x="32" y="447" class="caption">Sensor telemetry</text>
+  <text x="32" y="480" class="caption">+ device commands</text>
+  <text x="32" y="522" class="detail">Software demo available</text>
+</svg>

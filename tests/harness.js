@@ -23,6 +23,15 @@ export const INDEX_HTML_PATH = join(__dirname, "..", "index.html");
 // Raw file contents, read once. Useful for plain-text/regex scans.
 export const html = readFileSync(INDEX_HTML_PATH, "utf8");
 
+// Read the actual local CSS so style checks remain meaningful after compilation.
+export function loadStyles(document) {
+  return [...document.querySelectorAll('link[rel="stylesheet"]')]
+    .map(link => link.getAttribute('href'))
+    .filter(href => href && !/^(?:https?:)?\/\//.test(href))
+    .map(href => readFileSync(join(dirname(INDEX_HTML_PATH), href), 'utf8'))
+    .join('\n');
+}
+
 /**
  * Parse index.html into a fresh jsdom document.
  *

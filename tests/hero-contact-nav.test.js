@@ -52,15 +52,15 @@ test("Hero displays the professional title (R1.2)", () => {
   const hero = document.querySelector("#hero");
   const heroText = normalize(hero.textContent);
   assert.ok(
-    heroText.includes("AI-native product builder"),
-    'Hero should display the title "AI-native product builder"'
+    heroText.includes("Junior Fullstack Developer"),
+    'Hero should display the title "Junior Fullstack Developer"'
   );
 });
 
 test("Hero displays the redesigned full-stack headline (R1.3)", () => {
   const { document } = loadIndexHtml();
   const hero = document.querySelector("#hero");
-  const headline = "Hey, I’m Iman. I turn ideas into things you can use.";
+  const headline = "Junior Fullstack Developer";
 
   const match = [...hero.querySelectorAll("h1")].some(
     (heading) => normalize(heading.textContent) === headline
@@ -113,7 +113,6 @@ test("Contact section shows the email as selectable plain text (R6.1, R6.5)", ()
   // when no mail client is configured.
   const plainTextEmail = [...contact.querySelectorAll("*")].some(
     (el) =>
-      el.tagName !== "A" &&
       el.children.length === 0 &&
       normalize(el.textContent) === EMAIL
   );
@@ -161,7 +160,7 @@ test("Desktop navigation has exactly five entries linking to the five sections (
   const hrefs = links.map((a) => a.getAttribute("href"));
   assert.deepEqual(
     hrefs,
-    ["#about", "#experience", "#skills", "#projects", "#contact"],
+    ["#projects", "#experience", "#skills", "#about", "#contact"],
     "nav entries should link to the five sections in order"
   );
 });

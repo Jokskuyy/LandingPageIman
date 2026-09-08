@@ -51,8 +51,8 @@ function getRenderedProjects(document) {
   const articles = section.querySelectorAll("article");
   return Array.from(articles).map((article) => {
     const heading = article.querySelector("h3");
-    const descParagraph = article.querySelector("p.leading-relaxed");
-    const techList = article.querySelector("ul");
+    const descParagraph = article.querySelector("[data-project-summary]");
+    const techList = article.querySelector("[data-project-stack]");
     const techTokens = techList
       ? Array.from(techList.querySelectorAll("li"))
           .map((li) => li.textContent.trim())
@@ -274,8 +274,8 @@ test("Property 3.3: Smart Home card has repo link, no live-demo anchor, and 'Liv
   // Visible "Live demo not available"
   const articleText = article.textContent;
   assert.ok(
-    articleText.includes("Live demo not available"),
-    "Smart Home card should contain 'Live demo not available'"
+    /No hosted live demo/i.test(articleText),
+    "Smart Home card should clearly state that no hosted live demo is available"
   );
 });
 
@@ -297,8 +297,8 @@ test("Property 3.4: Recehin card has repo link, no live-demo anchor, and 'Live d
 
   const articleText = article.textContent;
   assert.ok(
-    articleText.includes("Live demo not available"),
-    "Recehin card should contain 'Live demo not available'"
+    /No hosted live demo/i.test(articleText),
+    "Recehin card should clearly state that no hosted live demo is available"
   );
 });
 
