@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="prototype.css?v=20261018-hologram-v9">
+  <link rel="stylesheet" href="prototype.css?v=20261018-console-v10">
   <script type="module" src="prototype.js?v=20261018-flow-v8"></script>
 </head>
 <body data-variant="A">
@@ -71,7 +71,8 @@
       </svg>
       <div class="guide-speech"><span class="holo-label" aria-hidden="true">IMAN <span>HOLO LINK</span></span><p id="guide-dialogue">Captain, follow the light to explore the work.</p></div>
     </aside>
-    <footer class="flight-console">
+    <footer class="flight-console" aria-label="Flight guidance">
+      <p class="console-hint">SCROLL TO FOLLOW THE LIGHT</p>
       <div class="console-note"><p class="eyebrow">YOUR ROUTE</p><p>Explore. Inspect. Connect.</p><small>Scroll to travel · Stop to read</small></div>
       <div class="route-instrument"><div class="route-track" aria-hidden="true"><span id="route-fill"></span><b></b><b></b><b></b><b></b><b></b></div><div class="route-labels"><span>Opening</span><span>Work</span><span>Capabilities</span><span>About</span><span>Contact</span></div></div>
       <div class="progress-readout"><strong id="route-percent">0<span>%</span></strong><small id="travel-status" role="status">HOLDING POSITION</small></div>

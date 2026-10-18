@@ -87,6 +87,12 @@ performance acceptance have not been completed.
   dialogue readability, control clearance, and both motion-pause paths.
 - Root HTML, JS, styles, Tailwind config and dependency files have zero diff.
   This remains a local prototype branch, with no production deployment.
+- Central display update: the scroll hint, route track and percentage now sit
+  inside the console's black monitor. The hint is accessible HTML text with
+  cyan styling; the former generated footer hint is removed. Fresh renders
+  at 1068×955 and 1280×720 confirm placement in A, and the twelve layout/size
+  browser matrix, normal-motion station checks, 53 root tests, build and flight
+  geometry regression passed again after this HTML/CSS change.
 
 ## Usability and accessibility, scoped to this preview
 
@@ -101,7 +107,7 @@ performance acceptance have not been completed.
 | 7 Efficiency | Lulus | Keyboard project entry/return, direct navigation and always accessible Contact |
 | 8 Focus/readability | Temuan: batas prototype | Quiet HUD and path/planet framing inspected; hologram shares cockpit lighting and leaves the exterior visible, dialogue has dark backing and neon text. Dense briefings may scroll. Full text-size/contrast audit and complete content migration remain for production |
 | 9 Error recovery | Lulus | 3D off/retry, real context loss/retry and source failure/retry verified; destination preserved after reload; source failure survives revisiting Work |
-| 10 Help | Lulus | Scroll-to-follow-light hint, named project controls and labeled return; Preview disclosure explains that layout choice is made in chat |
+| 10 Help | Lulus | Scroll-to-follow-light hint inside the central console display, named project controls and labeled return; Preview disclosure explains that layout choice is made in chat |
 
 Visible focus styles, semantic controls, native dialog containment and reduced
 motion are implemented. This is not a full accessibility conformance audit or

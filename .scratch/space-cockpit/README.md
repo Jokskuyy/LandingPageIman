@@ -30,6 +30,8 @@ references. The owner then chose a hologram guide with a visible projector and
 blue/green neon dialogue matching the cockpit lights. The preview now uses a
 translucent cyan version of the existing sprite, a light beam and a physical
 console projector, plus a dark teal dialogue panel with a neon edge.
+The scroll hint and existing route progress now sit inside the central console's
+black display, using the same cyan lighting. The hint is real HTML text.
 
 ## Confirmed decisions
 
