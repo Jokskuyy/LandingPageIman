@@ -101,7 +101,8 @@ async page => {
   await page.keyboard.press('Home'); await parked(0);
   await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg*1.45));
   await page.waitForTimeout(650);
-  check(new URL(page.url()).hash==='#opening','Passing a station incorrectly announced arrival');
+  check(new URL(page.url()).hash==='#selected-work','Passing a station kept the previous section');
+  check(await page.locator('#travel-status').textContent()==='FREE FLIGHT','Passing a station incorrectly announced a parked arrival');
   await page.keyboard.press('PageDown'); await parked(2);
   await page.keyboard.press('Home'); await parked(0);
   await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg*1.45));

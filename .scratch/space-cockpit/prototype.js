@@ -14,9 +14,9 @@ const dialogues = [
   'Captain, ready for a new mission? Open a channel.'
 ];
 const opening = $('#briefing-content').innerHTML;
-let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
+let variant = 'A', currentStop = -1, progress = 0, sectionTravel = 0, source, sourceError = false, projects = [], scene;
 let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
-let snapTimer, scrollDirection = 0, lastScrollY = scrollY, departedStop = false;
+let snapTimer, scrollDirection = 0, lastScrollY = scrollY, crossedStop = null;
 const detail = $('#project-detail');
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
@@ -125,22 +125,39 @@ function renderStop(index, announce = true) {
 }
 
 function arriveAtStop(index) {
-  if (index !== currentStop) renderStop(index);
-  departedStop = false;
+  if (index !== currentStop) renderStop(index, false);
+  crossedStop = null;
+  sectionTravel = index;
   document.body.dataset.travel = 'holding';
   $('.officer').dataset.state = index === 0 ? 'idle' : 'explaining';
   $('#travel-status').textContent = 'HOLDING POSITION';
   document.querySelectorAll('.project-picks button').forEach(button => button.disabled = false);
   document.querySelectorAll('.route-track b').forEach((dot,i) => dot.classList.toggle('reached',i<=index));
   history.replaceState(null,'',`${location.pathname}${location.search}#${slugs[index]}`);
+  $('#destination-announcement').textContent = `Arrived at ${stops[index]}.`;
+}
+function crossedStation(from, to) {
+  const stop=to>from ? Math.floor(to) : Math.ceil(to);
+  return (to>from ? stop>from : stop<from) ? stop : null;
+}
+function syncSection(value) {
+  const index=crossedStation(sectionTravel, value);
+  sectionTravel=value;
+  if (index===null || index===currentStop) return;
+  renderStop(index, false);
+  history.replaceState(null,'',`${location.pathname}${location.search}#${slugs[index]}`);
+  $('#destination-announcement').textContent = `Passing ${stops[index]}.`;
 }
 function updateRoute() {
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const max = document.documentElement.scrollHeight - innerHeight;
+  const previousProgress=progress;
   progress = Math.max(0, Math.min(4, scrollY / Math.max(1, max) * 4));
   const index = Math.round(progress), atStop = Math.abs(progress-index)<=4/Math.max(1,max);
   if (atStop) progress=index; // A station can fall between native scroll pixels.
-  if (Math.abs(progress-currentStop)>=.02) departedStop=true;
+  const crossed=crossedStation(previousProgress, progress);
+  if (crossed!==null) crossedStop=crossed;
+  if (!scene || sceneFailed || routeImmediate || isReduced()) syncSection(progress);
   const percent = Math.round(progress / 4 * 100);
   updateStepControls();
   $('#route-percent').innerHTML = `${percent}<span>%</span>`;
@@ -166,9 +183,8 @@ function finishScroll() {
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const value=progress;
   if (value===Math.round(value)) return;
-  const nearest=Math.round(value);
-  // Catch arrivals and returns without pulling a new departure back.
-  const stop=(nearest!==currentStop || departedStop) && Math.abs(value-nearest)<.02 ? nearest : scrollDirection<0 ? Math.floor(value) : Math.ceil(value);
+  // A crossed planet remains the landing target; leaving a parked one is free.
+  const stop=crossedStop!==null && Math.abs(value-crossedStop)<=.22 ? crossedStop : scrollDirection<0 ? Math.floor(value) : Math.ceil(value);
   if (Math.abs(value-stop)<=.22) goToStop(stop,false);
   else $('#travel-status').textContent='FREE FLIGHT';
 }
@@ -444,6 +460,7 @@ async function createScene() {
     else tracePhase.value = 0;
     updateAmbient(seconds,minimal);
     renderer.render(world, camera);
+    if (!path && !operation) syncSection(travel);
     const stop = Math.round(travel);
     if (!path && !operation && Math.abs(travel-stop)<.0002 && Math.abs(targetTravel-stop)<.0002 && (currentStop!==stop || document.body.dataset.travel!=='holding')) arriveAtStop(stop);
     completed?.(true);
