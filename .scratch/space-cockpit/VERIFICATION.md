@@ -116,6 +116,26 @@ reviewer reached the account usage limit; no independent approval is claimed.
 
 ## Usability and accessibility, scoped to this preview
 
+Online arrival-sync correction: the public route reproduced progress
+**1.0016339869 / 25%** with Opening still active after overshooting Work by
+two native scroll pixels. An exact arrival worked. `finishScroll` selected
+the next integer in the direction of travel, skipping the nearby station.
+It now prefers a newly reached station within 2% of a leg, or a return after
+leaving the current station's radius. A departure flag resets on actual
+arrival, so small departures retain free flow. The existing 22% directional
+approach, 280 ms pause and camera-owned arrival callback remain unchanged.
+`check-arrivals.js` failed before the fix and passed afterward: sixteen cases.
+Twelve two-pixel overshoots cover forward/reverse travel at three interior stations,
+at 1280×720 and 1290×955. It checks briefing, hash and holding status, plus
+24 px departures that must remain free. Four revisits cover leaving Work by
+45% of a leg and returning two pixels past it in either direction at both
+heights, including recovery of all four project controls. This revisit bug
+was found by independent review and reproduced in the permanent regression.
+The reviewer retested both excursions and returns on the generated route:
+Work returns to HOLDING with all project controls enabled, 24 px departures
+remain FREE, source/generated files match and console errors are zero.
+The published JavaScript cache key is updated to `20261018-arrival-v11`.
+
 | Nielsen # | Status | Evidence or limit |
 | --- | --- | --- |
 | 1 System status | Lulus | Camera arrival synchronizes active destination, content, hash and HOLDING status; compact progress and 3D recovery exercised |
