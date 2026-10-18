@@ -54,7 +54,7 @@ async (page) => {
     }
     await page.keyboard.press('Escape');
     await page.locator('#project-detail').waitFor({state:'hidden'});
-    await page.waitForFunction(() => !document.body.dataset.returning);
+    await page.waitForFunction(() => !document.body.dataset.returning && !document.body.dataset.approaching && document.querySelector('#travel-status').textContent === 'HOLDING POSITION');
     check(Math.abs(await page.evaluate(() => scrollY) - before)<1,'Return lost journey progress');
     check(await trigger.evaluate(node => node === document.activeElement),'Return lost focus');
   }

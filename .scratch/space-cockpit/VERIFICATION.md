@@ -138,7 +138,7 @@ The published JavaScript cache key is updated to `20261018-arrival-v11`.
 
 | Nielsen # | Status | Evidence or limit |
 | --- | --- | --- |
-| 1 System status | Lulus | Camera arrival synchronizes active destination, content, hash and HOLDING status; compact progress and 3D recovery exercised |
+| 1 System status | Lulus | Camera crossings synchronize section/nav/hash; actual parked arrivals alone confirm HOLDING and enable project entry; compact progress and 3D recovery exercised |
 | 2 Familiar language | Lulus | Plain section names and business project content; roleplay is confined to the guide |
 | 3 User control | Lulus | Small gestures and mid-route pauses stay free; directional snap near planets; keyboard stations and direct jumps; Escape/Return preserve route/focus; Minimal freezes decoration |
 | 4 Consistency | Lulus | Same route and project data in A/B/C; native links and dialog; system reduced motion takes priority over continuous decoration |
@@ -153,6 +153,38 @@ Visible focus styles, semantic controls, native dialog containment and reduced
 motion are implemented. This is not a full accessibility conformance audit or
 usability study. Desktop animation performance has not been benchmarked;
 there is no 60fps claim. Mobile is deferred as explicitly requested.
+
+## Passed sections — 2026-10-19
+
+The 2% correction above was incomplete: live probes with 4%, 12% and 35%
+overshoot retained Opening after Work had been passed. The current controller
+records the station crossed by native scroll for the landing target. After
+280 ms of quiet, the existing 22% approach radius also catches overshoots of
+that station. Leaving an exactly parked station does not register a crossing.
+
+Section activation now follows actual damped camera crossings independently
+of parking. A longer overshoot keeps FREE FLIGHT and its native position while
+updating briefing, navigation, hash and a Passing announcement. HOLDING,
+arrival announcements and enabled project controls require parked arrival.
+Reduced motion and text fallback use the same section travel record. Review
+found that context loss could occur after native scroll crossed a station but
+before the camera did; sharing that record fixes the handoff to text mode.
+
+`check-crossings.js` failed before the fix and covers 41 cases across standard
+motion, a taller viewport, reduced motion and text fallback, including a real
+WebGL context loss during that handoff. The existing station check now expects
+a passed station's section while retaining FREE FLIGHT. Independent targeted
+review passed departures in both directions, reversals, multi-stop skips,
+fragment entry, fractional resize and context-loss recovery. The JavaScript
+cache key is `20261019-crossings-v12`.
+
+The 41-case crossing regression, 16-case arrival regression, twelve desktop
+layout/size combinations and normal-motion station flow all pass on the
+generated local route. All 54 root tests, the root CSS build, flight geometry
+regression, JavaScript syntax and diff checks pass. The browser matrix now
+waits for HOLDING after closing a moon panel, because a hidden dialog can
+precede its queued return handler; this avoids starting the next project
+while the previous return is still beginning.
 
 ## Remaining implementation work after layout choice
 
