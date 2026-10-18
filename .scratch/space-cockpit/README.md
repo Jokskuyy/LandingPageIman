@@ -74,6 +74,12 @@ The main portfolio and this local design reference remain separate.
   update together after arrival. Direct navigation, Page Up/Down, Home/End
   and body Space still travel to exact stations. Previous/Next uses the ship's
   actual position even after passing a planet without stopping there.
+- Online testing exposed a two-pixel overshoot at a new station: progress read
+  25% while Opening remained active. After a pause, a position within 2% of a
+  newly reached station now settles there in either direction. Leaving the
+  current station still stays free; returning after leaving its arrival radius
+  also settles there and restores project controls. The 22% directional approach
+  is unchanged.
 - Twelve small, low-poly asteroids drift and rotate continuously behind the
   planets, rendered in one instanced draw. Two staggered shooting-star trails
   cross the distant layer occasionally. Wrapping happens beyond the camera's
@@ -133,6 +139,7 @@ Browser check, with the local server running:
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview open http://127.0.0.1:43188/.scratch/space-cockpit/ --browser msedge
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-browser.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-stations.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-arrivals.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.

@@ -16,7 +16,7 @@ const dialogues = [
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
 let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
-let snapTimer, scrollDirection = 0, lastScrollY = scrollY;
+let snapTimer, scrollDirection = 0, lastScrollY = scrollY, departedStop = false;
 const detail = $('#project-detail');
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
@@ -126,6 +126,7 @@ function renderStop(index, announce = true) {
 
 function arriveAtStop(index) {
   if (index !== currentStop) renderStop(index);
+  departedStop = false;
   document.body.dataset.travel = 'holding';
   $('.officer').dataset.state = index === 0 ? 'idle' : 'explaining';
   $('#travel-status').textContent = 'HOLDING POSITION';
@@ -139,6 +140,7 @@ function updateRoute() {
   progress = Math.max(0, Math.min(4, scrollY / Math.max(1, max) * 4));
   const index = Math.round(progress), atStop = Math.abs(progress-index)<=4/Math.max(1,max);
   if (atStop) progress=index; // A station can fall between native scroll pixels.
+  if (Math.abs(progress-currentStop)>=.02) departedStop=true;
   const percent = Math.round(progress / 4 * 100);
   updateStepControls();
   $('#route-percent').innerHTML = `${percent}<span>%</span>`;
@@ -164,7 +166,9 @@ function finishScroll() {
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const value=progress;
   if (value===Math.round(value)) return;
-  const stop=scrollDirection<0 ? Math.floor(value) : Math.ceil(value);
+  const nearest=Math.round(value);
+  // Catch arrivals and returns without pulling a new departure back.
+  const stop=(nearest!==currentStop || departedStop) && Math.abs(value-nearest)<.02 ? nearest : scrollDirection<0 ? Math.floor(value) : Math.ceil(value);
   if (Math.abs(value-stop)<=.22) goToStop(stop,false);
   else $('#travel-status').textContent='FREE FLIGHT';
 }
