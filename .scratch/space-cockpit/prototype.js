@@ -16,7 +16,7 @@ const dialogues = [
 const captions = ['SELECTED WORK', 'SELECTED WORK', 'CAPABILITIES', 'ABOUT & EXPERIENCE', 'CONTACT'];
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
-let lastTravel = 0, stopTimer, returnFocus, savedScroll = 0, approachTimer;
+let routeImmediate = false, stopTimer, returnFocus, savedScroll = 0, moonRequest = 0;
 const detail = $('#project-detail');
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
@@ -25,6 +25,7 @@ function updateMotionControl() {
   $('#motion-mode').disabled = reduced.matches;
   $('#motion-mode').title = reduced.matches ? 'Minimal motion follows your system preference.' : 'Toggle minimal motion';
   $('#motion-setting').textContent = isReduced() ? 'Minimal' : 'Standard';
+  scene?.render();
 }
 $('#motion-mode').addEventListener('click', () => { calm = !calm; updateMotionControl(); });
 reduced.addEventListener('change', updateMotionControl);
@@ -47,6 +48,7 @@ function cycleVariant(direction) { setVariant('ABC'[('ABC'.indexOf(variant) + di
 $('#previous-variant').addEventListener('click', () => cycleVariant(-1));
 $('#next-variant').addEventListener('click', () => cycleVariant(1));
 document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.body.dataset.approaching) { cancelApproach(); return; }
   if (detail.open || event.target.closest('input,textarea,select,[contenteditable],nav')) return;
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
@@ -57,6 +59,7 @@ document.addEventListener('keydown', event => {
 function goToStop(index, focus = true, immediate = false) {
   const max = document.documentElement.scrollHeight - innerHeight;
   scrollTo({ top: (index === 0 ? 0 : (index + .12) / 5) * max, behavior: isReduced() || immediate ? 'instant' : 'smooth' });
+  if (isReduced() || immediate) { routeImmediate = true; updateRoute(); routeImmediate = false; }
   history.replaceState(null, '', `${location.pathname}${location.search}#${slugs[index]}`);
   if (focus) $('#briefing-title').focus({ preventScroll: true });
 }
@@ -64,17 +67,19 @@ document.addEventListener('click', event => {
   const destination = event.target.closest('[data-stop]');
   if (destination && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
     event.preventDefault();
+    if (document.body.dataset.approaching) cancelApproach();
     goToStop(Number(destination.dataset.stop));
   }
   const moon = event.target.closest('[data-project]');
   if (moon) openMoon(Number(moon.dataset.project), moon);
   const step = event.target.closest('[data-route-step]');
-  if (step) goToStop(Math.max(0, Math.min(4, currentStop + Number(step.dataset.routeStep))));
+  if (step) { if (document.body.dataset.approaching) cancelApproach(); goToStop(Math.max(0, Math.min(4, currentStop + Number(step.dataset.routeStep)))); }
   if (event.target.closest('[data-retry-source]')) { sourceError = false; loadSource().catch(sourceFailure); }
 });
 
 const picks = () => `<div class="project-picks">${projects.map((project, i) => `<button type="button" data-project="${i}"><span class="moon-dot" aria-hidden="true"></span><span>${project.name}</span></button>`).join('')}</div>`;
 function renderStop(index, announce = true) {
+  const previousStop = currentStop;
   currentStop = index;
   const views = [opening,
     `<p class="eyebrow">PLANET 01 / SELECTED WORK</p><h1 id="briefing-title" tabindex="-1">Proof,<br><em>in orbit.</em></h1><p class="body-copy">Four projects. Select a moon to inspect the work and its implementation evidence.</p>${projects.length ? picks() : sourceError ? '<p class="source-note" role="status">Project archives could not load. <a href="../../index.html">Read the existing portfolio →</a></p><button type="button" class="button" data-retry-source>Retry archives</button>' : '<p class="source-note">Loading project archives…</p>'}<p class="source-note">Optional moon visits. Your place in the journey is saved.</p>`,
@@ -95,26 +100,36 @@ function renderStop(index, announce = true) {
   document.querySelectorAll('[data-route-step]').forEach(button => button.disabled = index + Number(button.dataset.routeStep) < 0 || index + Number(button.dataset.routeStep) > 4);
   if (announce) $('#destination-announcement').textContent = `Arrived at ${stops[index]}.`;
   $('#prototype-state').textContent = stateText();
+  if (previousStop >= 0 && previousStop !== index && !isReduced()) {
+    const panel = $('#briefing-content');
+    panel.getAnimations().forEach(animation => animation.cancel());
+    panel.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}], {duration:520,easing:'cubic-bezier(.2,.7,.2,1)'});
+    $('#guide-dialogue').animate([{opacity:.15},{opacity:1}], {duration:600});
+  }
   scene?.render();
 }
 
 function updateRoute() {
-  if (detail.open || document.body.dataset.approaching) return;
+  if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const max = document.documentElement.scrollHeight - innerHeight;
   progress = Math.min(4.999, (scrollY / Math.max(1, max)) * 5);
   const index = Math.floor(progress), fraction = progress - index;
-  const t = Math.max(0, Math.min(1, (fraction - .58) / .42));
-  lastTravel = Math.min(4, index + t * t * (3 - 2 * t));
+  const departing = fraction > .2 && index < 4;
   if (index !== currentStop) renderStop(index);
   const percent = Math.round(Math.min(1, progress / 4) * 100);
   $('#route-percent').innerHTML = `${percent}<span>%</span>`;
   $('#route-fill').style.width = `${percent}%`;
   document.querySelectorAll('.route-track b').forEach((dot, i) => dot.classList.toggle('reached', i <= index));
-  $('#travel-status').textContent = t > 0 && index < 4 ? 'IN TRANSIT' : 'HOLDING POSITION';
-  $('.officer').dataset.state = t > 0 && index < 4 ? 'traveling' : index === 0 ? 'idle' : 'arriving';
+  $('#travel-status').textContent = departing ? 'IN TRANSIT' : 'HOLDING POSITION';
+  $('.officer').dataset.state = departing ? 'traveling' : index === 0 ? 'idle' : 'arriving';
   clearTimeout(stopTimer);
-  stopTimer = setTimeout(() => { if (!detail.open) $('.officer').dataset.state = currentStop === 0 ? 'idle' : 'explaining'; }, 650);
-  scene?.setTravel(lastTravel);
+  stopTimer = setTimeout(() => {
+    if (!detail.open && !document.body.dataset.approaching && !document.body.dataset.returning) {
+      $('.officer').dataset.state = currentStop === 0 ? 'idle' : 'explaining';
+      $('#travel-status').textContent = 'HOLDING POSITION';
+    }
+  }, 650);
+  scene?.setProgress(progress, routeImmediate || isReduced());
 }
 addEventListener('scroll', updateRoute, { passive: true });
 
@@ -131,41 +146,48 @@ async function loadSource() {
   renderStop(currentStop, false);
   scene?.render();
 }
-function openMoon(index, origin) {
-  if (!projects[index] || detail.open || document.body.dataset.approaching) return;
+async function openMoon(index, origin) {
+  if (!projects[index] || detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
+  const request = ++moonRequest;
+  clearTimeout(stopTimer);
   returnFocus = origin;
   savedScroll = scrollY;
   document.body.style.overflow = 'hidden';
   document.body.dataset.approaching = 'true';
   $('.officer').dataset.state = 'traveling';
-  $('#travel-status').textContent = 'APPROACHING MOON';
-  scene?.setMoon(index);
-  approachTimer = setTimeout(() => {
-    const project = projects[index];
-    $('#detail-heading').textContent = project.name;
-    const article = project.node.cloneNode(true);
-    article.hidden = false;
-    article.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
-    article.removeAttribute('id');
-    article.querySelectorAll('details').forEach(node => node.open = true);
-    $('#detail-content').replaceChildren(article);
-    detail.showModal();
-    detail.scrollTop = 0;
-    $('#return-to-planet').focus();
-    $('.officer').dataset.state = 'explaining';
-    $('#travel-status').textContent = 'READING PROJECT';
-    delete document.body.dataset.approaching;
-  }, isReduced() ? 0 : 500);
+  $('#travel-status').textContent = 'APPROACHING · ESC TO CANCEL';
+  await scene?.setMoon(index);
+  if (request !== moonRequest || !document.body.dataset.approaching) return;
+  const project = projects[index];
+  $('#detail-heading').textContent = project.name;
+  const article = project.node.cloneNode(true);
+  article.hidden = false;
+  article.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+  article.removeAttribute('id');
+  article.querySelectorAll('details').forEach(node => node.open = true);
+  $('#detail-content').replaceChildren(article);
+  detail.showModal();
+  if (!isReduced()) detail.animate([{opacity:0,transform:'translateX(-8px)'},{opacity:1,transform:'translateX(0)'}], {duration:420,easing:'cubic-bezier(.2,.7,.2,1)'});
+  detail.scrollTop = 0;
+  $('#return-to-planet').focus();
+  $('.officer').dataset.state = 'explaining';
+  $('#travel-status').textContent = 'READING PROJECT';
+  delete document.body.dataset.approaching;
 }
-$('#return-to-planet').addEventListener('click', () => detail.close());
-detail.addEventListener('close', () => {
-  clearTimeout(approachTimer);
+async function returnFromMoon() {
+  document.body.dataset.returning = 'true';
+  delete document.body.dataset.approaching;
   document.body.style.overflow = '';
   scrollTo({ top: savedScroll, behavior: 'instant' });
-  scene?.setMoon(null);
   returnFocus?.focus({ preventScroll: true });
+  $('#travel-status').textContent = 'RETURNING TO ROUTE';
+  await scene?.setMoon(null);
+  delete document.body.dataset.returning;
   updateRoute();
-});
+}
+function cancelApproach() { moonRequest++; returnFromMoon(); }
+$('#return-to-planet').addEventListener('click', () => detail.close());
+detail.addEventListener('close', returnFromMoon);
 
 // The content and controls initialize before the optional 3D module.
 renderStop(0, false);
@@ -173,7 +195,10 @@ setVariant(new URLSearchParams(location.search).get('variant') || 'A');
 function sourceFailure(error) { console.error(error); sourceError = true; renderStop(currentStop, false); }
 loadSource().catch(sourceFailure);
 $('#retry-scene').addEventListener('click', () => {
-  const url = new URL(location.href); url.searchParams.delete('scene'); location.href = url;
+  const url = new URL(location.href);
+  url.searchParams.delete('scene');
+  history.replaceState(null, '', url);
+  location.reload();
 });
 function sceneFailure() {
   $('#scene-status').hidden = false;
@@ -186,25 +211,26 @@ function sceneFailure() {
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./node_modules/three/build/three.module.js');
+  const { planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour } = await import('./flight-path.js?v=20261018-flight-v3');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.setClearColor(0x050b17, 0);
   host.append(renderer.domElement);
-  renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); sceneFailure(); });
   const world = new THREE.Scene();
+  world.fog = new THREE.FogExp2(0x050b17, .005);
   const camera = new THREE.PerspectiveCamera(43, 1, .1, 160);
   world.add(new THREE.AmbientLight(0x8cacc6, 1.35));
   const key = new THREE.DirectionalLight(0xffead1, 3.3); key.position.set(-8, 7, 12); world.add(key);
   const fill = new THREE.DirectionalLight(0x4c7d98, .7); fill.position.set(8, -2, -12); world.add(fill);
-  // Fixed-seed stars: no idle travel, no allocation or draw loop while stopped.
+  // One fixed star field: depth and parallax come from the ship's winding path.
   let seed = 54;
   const random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
   const starGeometry = new THREE.BufferGeometry(), starPositions = [];
-  for (let i = 0; i < 1100; i++) starPositions.push((random() - .5) * 180, (random() - .5) * 120, -random() * 160);
+  for (let i = 0; i < 2200; i++) starPositions.push((random() - .5) * 240, (random() - .5) * 150, 80 - random() * 340);
   starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
   world.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xc7dadb, size: .075, transparent: true, opacity: .7, sizeAttenuation: true })));
-  const planetGeometry = new THREE.SphereGeometry(2.15, 56, 36), moonGeometry = new THREE.IcosahedronGeometry(.28, 2);
+  const planetGeometry = new THREE.SphereGeometry(1, 56, 36), moonGeometry = new THREE.IcosahedronGeometry(.32, 2);
   const palettes = [['#275358','#4e8580','#8eaa85','#cad1af'],['#3b485b','#73838c','#a4b8ab','#c7c8ab'],['#533e38','#966b4e','#b69667','#d4bc91'],['#344749','#647d6b','#adc19b','#d1d2ad']];
   function surface(palette, index) {
     const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 128;
@@ -220,72 +246,125 @@ async function createScene() {
     texture.magFilter = THREE.NearestFilter;
     return texture;
   }
-  const systems = [], moons = [];
+  const moons = [];
   palettes.forEach((palette, i) => {
-    const system = new THREE.Group(); system.position.set(2.5, .4, -(i + 1) * 18); world.add(system); systems.push(system);
+    const spec = planetSpecs[i];
+    const system = new THREE.Group(); system.position.copy(spec.position); world.add(system);
     const planet = new THREE.Mesh(planetGeometry, new THREE.MeshStandardMaterial({ map: surface(palette, i), roughness: .94 }));
-    planet.rotation.set(.12, .6 + i, -.16); system.add(planet);
+    planet.scale.setScalar(spec.radius);
+    planet.rotation.set(.12 + i * .09, .6 + i, spec.tilt); system.add(planet);
     const atmosphere = new THREE.Mesh(planetGeometry, new THREE.ShaderMaterial({
       uniforms: { tint: { value: new THREE.Color(palette[2]) } },
       vertexShader: 'varying vec3 n; varying vec3 v; void main(){ vec4 p=modelViewMatrix*vec4(position,1.0); n=normalize(normalMatrix*normal); v=normalize(-p.xyz); gl_Position=projectionMatrix*p; }',
       fragmentShader: 'uniform vec3 tint; varying vec3 n; varying vec3 v; void main(){ float a=pow(1.0-abs(dot(normalize(n),normalize(v))),3.5)*0.32; gl_FragColor=vec4(tint,a); }',
       transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending
-    })); atmosphere.scale.setScalar(1.055); system.add(atmosphere);
+    })); atmosphere.scale.setScalar(spec.radius * 1.055); system.add(atmosphere);
     if (i === 0 || i === 3) {
-      const ring = new THREE.Mesh(new THREE.RingGeometry(2.7, 3.7, 96), new THREE.MeshBasicMaterial({ color: i === 0 ? 0xa6bda2 : 0xb3a286, transparent: true, opacity: .25, side: THREE.DoubleSide, depthWrite: false }));
-      ring.rotation.set(1.05, .18, -.32); system.add(ring);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(spec.radius * 1.25, spec.radius * 1.85, 96), new THREE.MeshBasicMaterial({ color: i === 0 ? 0xa6bda2 : 0xb3a286, transparent: true, opacity: .25, side: THREE.DoubleSide, depthWrite: false }));
+      ring.rotation.set(1.05, .18, spec.tilt); system.add(ring);
     }
     if (i === 0) {
-      [[-3.1,1.6,1.1],[2.7,1.7,-.7],[-2.5,-1.9,1.8],[2.9,-1.3,1.3]].forEach((position,j) => {
-        const moon = new THREE.Mesh(moonGeometry, new THREE.MeshStandardMaterial({ color: [0xabb4a0,0x8c9eac,0xbbaa86,0x9b9eae][j], roughness: 1 })); moon.position.set(...position); system.add(moon); moons.push(moon);
+      moonOffsets.forEach((position,j) => {
+        const moon = new THREE.Mesh(moonGeometry, new THREE.MeshStandardMaterial({ color: [0xabb4a0,0x8c9eac,0xbbaa86,0x9b9eae][j], roughness: 1 })); moon.position.copy(position); system.add(moon); moons.push(moon);
       });
     }
   });
-  let travel = lastTravel, selectedMoon = null;
-  const projected = new THREE.Vector3(), cameraTarget = new THREE.Vector3();
-  function render() {
-    const centerX = variant === 'C' ? -.8 : variant === 'B' ? .4 : -1.35;
-    // A fixed cockpit viewpoint. Outside systems pass laterally with depth;
-    // the route never flies through a planet's surface.
-    camera.position.set(centerX, 0, 14);
-    systems.forEach((system, index) => {
-      const distance = index + 1 - travel;
-      system.position.set(2.5 + distance * 20, .4, -Math.abs(distance) * 24);
-      system.visible = Math.abs(distance) < .85;
-      if (index === 0 && travel < 1) {
-        system.position.set(2.5, .4, -18 * (1 - travel));
-        system.visible = true;
-      }
-    });
-    cameraTarget.set(centerX, 0, camera.position.z - 15);
-    if (selectedMoon !== null) {
-      const moon = moons[selectedMoon]; moon.getWorldPosition(projected);
-      camera.position.set(projected.x - 1.1, projected.y + .35, projected.z + 5);
-      cameraTarget.copy(projected);
+  let travel = scrollToTravel(progress), targetTravel = travel, selectedMoon = null;
+  let frame = 0, lastFrame = 0, lost = false, operation = null, path = null, pathProgress = 0;
+  const projected = new THREE.Vector3(), focus = new THREE.Vector3(), moonPosition = new THREE.Vector3();
+  const homePosition = new THREE.Vector3(), homeRotation = new THREE.Quaternion();
+  const homeRight = new THREE.Vector3();
+  const lookMatrix = new THREE.Matrix4(), lookRotation = new THREE.Quaternion();
+  const viewOffset = new THREE.Euler(), viewRotation = new THREE.Quaternion();
+  const pointer = new THREE.Vector2(), pointerTarget = new THREE.Vector2();
+
+  function render() { if (!frame && !lost && !document.hidden) frame = requestAnimationFrame(draw); }
+  function draw(time) {
+    frame = 0;
+    if (lost) return;
+    const seconds = lastFrame ? Math.min((time - lastFrame) / 1000, .05) : 1 / 60;
+    lastFrame = time;
+    const minimal = isReduced();
+    if (minimal) pointerTarget.set(0,0);
+    pointer.x = minimal ? 0 : THREE.MathUtils.damp(pointer.x, pointerTarget.x, 8, seconds);
+    pointer.y = minimal ? 0 : THREE.MathUtils.damp(pointer.y, pointerTarget.y, 8, seconds);
+    let completed;
+    if (operation) {
+      operation.started ??= time;
+      const elapsed = minimal ? 1 : Math.min(1, (time - operation.started) / operation.duration);
+      pathProgress = THREE.MathUtils.lerp(operation.from, operation.to, THREE.MathUtils.smootherstep(elapsed, 0, 1));
+      if (elapsed === 1) { completed = operation.resolve; operation = null; }
     }
-    camera.lookAt(cameraTarget);
+    if (path) {
+      path.getPoint(pathProgress, camera.position);
+      moons[selectedMoon].getWorldPosition(moonPosition);
+      focus.copy(moonPosition).addScaledVector(homeRight, -.6);
+      lookRotation.setFromRotationMatrix(lookMatrix.lookAt(camera.position, focus, camera.up));
+      camera.quaternion.copy(homeRotation).slerp(lookRotation, THREE.MathUtils.smootherstep(pathProgress, 0, .65));
+      if (!operation && pathProgress === 0) { path = null; selectedMoon = null; }
+    } else {
+      travel = dampTravel(travel, targetTravel, seconds, minimal);
+      sampleFlight(travel, camera.position, camera.quaternion);
+      const bank = minimal ? 0 : Math.sin((travel % 1) * Math.PI * 2) * .018;
+      viewOffset.set(-pointer.y * .008, pointer.x * .012, bank, 'YXZ');
+      camera.quaternion.multiply(viewRotation.setFromEuler(viewOffset));
+    }
     renderer.render(world, camera);
+    const bounds = host.getBoundingClientRect();
     document.querySelectorAll('.moon-label').forEach((button, index) => {
-      const visible = currentStop === 1 && !detail.open && selectedMoon === null && travel < 1.6;
+      const visible = currentStop === 1 && !detail.open && selectedMoon === null && Math.abs(travel - 1) < .25;
       button.hidden = !visible;
       if (visible) {
         moons[index].getWorldPosition(projected); projected.project(camera);
-        const bounds = host.getBoundingClientRect();
+        button.hidden = projected.z < -1 || projected.z > 1 || Math.abs(projected.x) > .94 || Math.abs(projected.y) > .75;
         button.style.left = `${bounds.left + (projected.x + 1) / 2 * bounds.width}px`;
         button.style.top = `${bounds.top + (-projected.y + 1) / 2 * bounds.height + 28}px`;
       }
     });
+    completed?.(true);
+    if (operation || (!path && Math.abs(travel - targetTravel) > .00001) || Math.abs(pointer.x - pointerTarget.x) > .001 || Math.abs(pointer.y - pointerTarget.y) > .001) render();
+    else lastFrame = 0;
   }
   function resize() {
     const { width, height } = host.getBoundingClientRect();
-    renderer.setSize(width, height, false); camera.aspect = width / height; camera.updateProjectionMatrix(); render();
+    renderer.setSize(width, height, false); camera.aspect = width / height;
+    camera.setViewOffset(width, height, variant === 'A' ? -width * .03 : 0, height * .08, width, height);
+    camera.updateProjectionMatrix(); render();
+  }
+  function setMoon(index) {
+    operation?.resolve(false);
+    if (lost) return Promise.resolve(true);
+    if (index !== null) {
+      selectedMoon = index;
+      homePosition.copy(camera.position); homeRotation.copy(camera.quaternion);
+      homeRight.set(1,0,0).applyQuaternion(homeRotation);
+      moons[index].getWorldPosition(moonPosition);
+      path = moonTour(homePosition, moonPosition); pathProgress = 0;
+    }
+    if (!path) return Promise.resolve(true);
+    return new Promise(resolve => {
+      operation = { from:pathProgress, to:index === null ? 0 : 1, duration:index === null ? 950 : 1450, resolve };
+      render();
+    });
   }
   addEventListener('resize', resize);
   reduced.addEventListener('change', render);
+  $('#cockpit').addEventListener('pointermove', event => {
+    if (isReduced() || detail.open || path) return;
+    const bounds = host.getBoundingClientRect();
+    pointerTarget.set(THREE.MathUtils.clamp((event.clientX - bounds.left) / bounds.width * 2 - 1, -1, 1), THREE.MathUtils.clamp((event.clientY - bounds.top) / bounds.height * 2 - 1, -1, 1));
+    render();
+  });
+  $('#cockpit').addEventListener('pointerleave', () => { pointerTarget.set(0,0); render(); });
+  addEventListener('visibilitychange', () => { lastFrame = 0; if (!document.hidden) render(); });
+  renderer.domElement.addEventListener('webglcontextlost', event => {
+    event.preventDefault(); lost = true; cancelAnimationFrame(frame); frame = 0;
+    operation?.resolve(true); operation = null; sceneFailure();
+  });
   resize();
   $('#scene-status').hidden = true;
   $('#window-mode').textContent = '3D ONLINE';
-  return { resize, render, setTravel(value) { travel = value; render(); }, setMoon(value) { selectedMoon = value; render(); } };
+  return { resize, render, setProgress(value, immediate = false) { targetTravel = scrollToTravel(value); if (immediate) travel = targetTravel; render(); }, setMoon };
 }
 createScene().then(result => { scene = result; updateRoute(); }).catch(error => {
   if (!String(error).includes('fallback preview')) console.error(error);

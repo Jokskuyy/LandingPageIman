@@ -39,6 +39,7 @@ async (page) => {
     }
     await page.keyboard.press('Escape');
     await page.locator('#project-detail').waitFor({state:'hidden'});
+    await page.waitForFunction(() => !document.body.dataset.returning);
     check(Math.abs(await page.evaluate(() => scrollY) - before)<1,'Return lost journey progress');
     check(await trigger.evaluate(node => node === document.activeElement),'Return lost focus');
   }
@@ -61,10 +62,16 @@ async (page) => {
   check(await page.getByRole('link',{name:'Discuss a Project',exact:true}).isVisible(),'3D fallback hid contact');
   await page.getByRole('button',{name:'Retry 3D',exact:true}).click();
   await page.locator('.space canvas').waitFor();
+  await page.getByRole('link',{name:'01 Selected work',exact:true}).click();
+  await page.evaluate(() => document.querySelector('.space canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());
+  await page.getByRole('button',{name:'Retry 3D',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Retry 3D',exact:true}).click();
+  await page.waitForFunction(() => document.querySelector('#window-mode').textContent === '3D ONLINE');
+  check(new URL(page.url()).hash === '#selected-work','3D recovery lost the current destination');
   await page.goto(base + '?variant=A#opening');
   await page.waitForFunction(() => document.querySelector('#cockpit-interior').complete && document.querySelector('#window-mode').textContent === '3D ONLINE');
   await page.waitForFunction(() => document.querySelector('#briefing-title').textContent.includes('Your next idea'));
   await page.screenshot({path:'tmp/cockpit-preview/cockpit-reference-final.png'});
   check(failures.length===0,`Uncaught browser errors: ${failures.join('; ')}`);
-  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720'],variants:3,projects:4,checks:'scroll forward/stop/reverse; direct destinations; keyboard moon entry/escape/focus restoration; panel scrolling; physical controls; contact href; reduced motion; 3D fallback/retry; reload and hash navigation',uncaughtErrors:failures};
+  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720'],variants:3,projects:4,checks:'scroll forward/stop/reverse; direct destinations; keyboard moon entry/escape/focus restoration; panel scrolling; physical controls; contact href; reduced motion; 3D fallback/retry; context-loss recovery with fragment; reload and hash navigation',uncaughtErrors:failures};
 }

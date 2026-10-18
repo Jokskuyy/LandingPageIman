@@ -2,6 +2,6 @@
   "name": "space-cockpit-prototype",
   "private": true,
   "type": "module",
-  "scripts": { "start": "node serve.mjs" },
+  "scripts": { "start": "node serve.mjs", "test": "node flight-path.test.js" },
   "dependencies": { "three": "0.186.1" }
 }
