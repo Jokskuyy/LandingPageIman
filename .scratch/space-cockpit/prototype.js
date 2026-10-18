@@ -146,12 +146,12 @@ function updateRoute() {
 }
 addEventListener('scroll', updateRoute, { passive: true });
 function finishScroll() {
-  if (wheelDirection && performance.now()-wheelAt<170) return;
+  if (wheelDirection && performance.now()-wheelAt<90) return;
   clearTimeout(snapTimer);
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const value = Math.max(0,Math.min(4,scrollY / Math.max(1,document.documentElement.scrollHeight-innerHeight)*4));
   let stop = Math.round(value);
-  if (wheelOrigin!==null && stop===wheelOrigin && Math.abs(value-wheelOrigin)>.005) stop=Math.max(0,Math.min(4,wheelOrigin+wheelDirection));
+  if (wheelOrigin!==null && stop===wheelOrigin && Math.abs(value-wheelOrigin)>.001) stop=Math.max(0,Math.min(4,wheelOrigin+wheelDirection));
   wheelOrigin=null; wheelDirection=0;
   if (Math.abs(value-stop)>.0002) goToStop(stop,false);
 }
@@ -163,7 +163,7 @@ addEventListener('wheel',event => {
   if (!wheelDirection) wheelOrigin=currentStop;
   wheelDirection=Math.sign(event.deltaY);
   wheelAt=performance.now();
-  clearTimeout(snapTimer); snapTimer=setTimeout(finishScroll,180);
+  clearTimeout(snapTimer); snapTimer=setTimeout(finishScroll,100);
 },{passive:true});
 addEventListener('resize',()=>{
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) {
@@ -271,6 +271,60 @@ async function createScene() {
   for (let i = 0; i < 2200; i++) starPositions.push((random() - .5) * 240, (random() - .5) * 150, 80 - random() * 340);
   starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
   world.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xc7dadb, size: .075, transparent: true, opacity: .7, sizeAttenuation: true })));
+  // A distant layer keeps small ambient details available throughout the route.
+  // Planet geometry still occludes it; the cockpit and content stay in front.
+  const ambient = new THREE.Group(); world.add(ambient);
+  const rockGeometry = new THREE.IcosahedronGeometry(1, 0);
+  const rockVertices = rockGeometry.attributes.position;
+  for (let i=0;i<rockVertices.count;i++) {
+    const x=rockVertices.getX(i), y=rockVertices.getY(i), z=rockVertices.getZ(i);
+    const roughness=.86+Math.sin(x*5.7+y*8.3+z*3.2)*.16;
+    rockVertices.setXYZ(i,x*roughness,y*roughness,z*roughness);
+  }
+  rockGeometry.computeVertexNormals();
+  const asteroids = new THREE.InstancedMesh(rockGeometry,new THREE.MeshStandardMaterial({roughness:1,flatShading:true}),12);
+  asteroids.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  asteroids.frustumCulled=false;
+  ambient.add(asteroids);
+  const rocks = Array.from({length:12},(_,i)=>{
+    asteroids.setColorAt(i,new THREE.Color().setHSL(.11+random()*.05,.09,.30+random()*.14));
+    return {x:random()*84-42,y:random()*29-10,z:-68-random()*36,size:.25+random()*.65,speed:.45+random()*.65,phase:random()*Math.PI*2};
+  });
+  const rockPose = new THREE.Object3D();
+  const meteorGeometry = new THREE.BufferGeometry(), meteorVertices=[], meteorColors=[];
+  for(let i=0;i<8;i++) {
+    const fraction=i/7, light=(1-fraction)**2;
+    meteorVertices.push(-fraction*5.5,fraction*2.3,0);
+    meteorColors.push(light*.78,light*.93,light);
+  }
+  meteorGeometry.setAttribute('position',new THREE.Float32BufferAttribute(meteorVertices,3));
+  meteorGeometry.setAttribute('color',new THREE.Float32BufferAttribute(meteorColors,3));
+  const meteors = Array.from({length:2},()=>{
+    const meteor = new THREE.Line(meteorGeometry,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+    ambient.add(meteor); return meteor;
+  });
+  let ambientTime=0;
+  function updateAmbient(seconds,minimal) {
+    if (!minimal) ambientTime+=seconds;
+    ambient.position.copy(camera.position); ambient.quaternion.copy(camera.quaternion);
+    const horizontalSlope=Math.tan(THREE.MathUtils.degToRad(camera.fov*.5))*camera.aspect*1.1;
+    rocks.forEach((rock,i)=>{
+      const edge=-rock.z*horizontalSlope+rock.size*2, span=edge*2;
+      rockPose.position.set(THREE.MathUtils.euclideanModulo(rock.x+ambientTime*rock.speed+edge,span)-edge,rock.y+Math.sin(ambientTime*.13+rock.phase)*.65,rock.z);
+      rockPose.rotation.set(rock.phase+ambientTime*.08,rock.phase+ambientTime*.055,rock.phase);
+      rockPose.scale.set(rock.size,rock.size*.7,rock.size*1.2);
+      rockPose.updateMatrix(); asteroids.setMatrixAt(i,rockPose.matrix);
+    });
+    asteroids.instanceMatrix.needsUpdate=true;
+    meteors.forEach((meteor,i)=>{
+      const cycle=9+i*3.6, phase=(ambientTime+i*4.8)%cycle, fraction=phase/1.35;
+      meteor.visible=!minimal && fraction<1;
+      if (!meteor.visible) return;
+      const lane=Math.sin(Math.floor((ambientTime+i*4.8)/cycle)*2.4+i)*9;
+      meteor.position.set(-30+lane+36*fraction,16-i*6-14*fraction,-76-i*15);
+      meteor.material.opacity=Math.sin(Math.PI*fraction)*.85;
+    });
+  }
   // A pilot-eye route ribbon, rising into the destination at its endpoint.
   const trace = new THREE.Group(); world.add(trace);
   const traceProgress = { value:0 }, tracePhase = { value:0 };
@@ -377,11 +431,12 @@ async function createScene() {
     traceProgress.value = travelToDistance(travel);
     if (!minimal) tracePhase.value += seconds;
     else tracePhase.value = 0;
+    updateAmbient(seconds,minimal);
     renderer.render(world, camera);
     const stop = Math.round(travel);
     if (!path && !operation && Math.abs(travel-stop)<.0002 && Math.abs(targetTravel-stop)<.0002 && (currentStop!==stop || document.body.dataset.travel!=='holding')) arriveAtStop(stop);
     completed?.(true);
-    if (operation || (!path && Math.abs(travel - targetTravel) > .00001) || Math.abs(pointer.x - pointerTarget.x) > .001 || Math.abs(pointer.y - pointerTarget.y) > .001) render();
+    if (!minimal || operation || (!path && Math.abs(travel - targetTravel) > .00001) || Math.abs(pointer.x - pointerTarget.x) > .001 || Math.abs(pointer.y - pointerTarget.y) > .001) render();
     else lastFrame = 0;
   }
   function resize() {

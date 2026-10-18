@@ -11,7 +11,7 @@ async page => {
   });
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('http://127.0.0.1:43188/.scratch/space-cockpit/?variant=C&revision=stations-v6#opening');
+  await page.goto('http://127.0.0.1:43188/.scratch/space-cockpit/?variant=C&revision=ambient-v7#opening');
   await page.reload();
   const parked=async index=>{
     try { await page.waitForFunction(stop=>document.body.dataset.travel==='holding' && !document.body.dataset.approaching && !document.body.dataset.returning && !document.querySelector('#project-detail').open && document.querySelector('#travel-status').textContent==='HOLDING POSITION' && Number(document.querySelector('.destination-nav [aria-current]').dataset.stop)===stop && Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-stop)<.001,index); }
@@ -21,7 +21,7 @@ async page => {
   await page.waitForFunction(()=>document.querySelector('#window-mode').textContent==='3D ONLINE');
   await parked(0);
   await page.mouse.move(720,400);
-  await page.mouse.wheel(0,240);
+  await page.mouse.wheel(0,24);
   await page.waitForTimeout(80);
   check((await page.locator('#briefing-title').innerText()).includes('Your next idea'),'Section switched before the ship arrived');
   await parked(1);
@@ -30,7 +30,16 @@ async page => {
   const frames=await page.evaluate(()=>stationFrames);
   await page.waitForTimeout(500);
   check(await page.evaluate(()=>scrollY)===workY,'Parked scroll drifts');
-  check(await page.evaluate(()=>stationFrames)===frames,'Parked camera keeps rendering');
+  check(await page.evaluate(()=>stationFrames)>frames,'Ambient motion stopped at the station');
+  check(await page.locator('#travel-status').innerText()==='HOLDING POSITION','Ambient motion moved the station');
+  await page.locator('.flight-tools summary').click();
+  await page.locator('#motion-mode').click();
+  await page.waitForTimeout(350);
+  const calmFrames=await page.evaluate(()=>stationFrames);
+  await page.waitForTimeout(500);
+  check(await page.evaluate(()=>stationFrames)===calmFrames,'Minimal motion kept rendering ambient effects');
+  await page.locator('#motion-mode').click();
+  await page.locator('.flight-tools summary').click();
   await page.screenshot({path:'tmp/cockpit-preview/stations-work-C.png'});
   const moon=page.locator('.project-picks button').first();
   await moon.click();
@@ -52,11 +61,11 @@ async page => {
   check(await page.evaluate(()=>!document.body.dataset.approaching && !document.body.dataset.returning),'Navigation left a moon transition running');
   await page.keyboard.press('PageUp'); await parked(1);
   for(const index of [2,3,4]){
-    await page.mouse.move(720,400); await page.mouse.wheel(0,240);
+    await page.mouse.move(720,400); await page.mouse.wheel(0,24);
     await parked(index);
     await page.screenshot({path:`tmp/cockpit-preview/stations-${index}-C.png`});
   }
-  await page.mouse.wheel(0,-240); await parked(3);
+  await page.mouse.wheel(0,-24); await parked(3);
   await page.keyboard.press('PageUp'); await parked(2);
   await page.keyboard.press('Home'); await parked(0);
   await page.mouse.wheel(0,240); await page.waitForTimeout(80);
@@ -67,5 +76,5 @@ async page => {
   await page.keyboard.press('Home'); await parked(0);
   await page.keyboard.press('End'); await parked(4);
   check(errors.length===0,errors.join('; '));
-  return {result:'passed',browser:page.context().browser().version(),checks:'short wheel gestures park at all five stations; section/planet/hash alignment; stable idle; moon approach blocks route keys; moon return/focus/status; navigation cancels approach; reverse wheel; PageUp/Home/End; direct navigation cancels pending snap',errors};
+  return {result:'passed',browser:page.context().browser().version(),checks:'24px wheel gestures park at all five stations; section/planet/hash alignment; ambient frames continue while parked; minimal motion stops frames; moon approach blocks route keys; moon return/focus/status; navigation cancels approach; reverse wheel; PageUp/Home/End; direct navigation cancels pending snap',errors};
 }

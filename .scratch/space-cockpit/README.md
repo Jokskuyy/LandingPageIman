@@ -47,17 +47,25 @@ chat before the full implementation, per the owner's UI guide.
   visible through the canopy from Opening as well as Work.
 - The owner clarified that smooth travel must still snap to each planet and
   section. Four equal scroll legs now join five exact camera waypoints. After
-  wheel input pauses for 180 ms, native smooth scrolling settles at a station;
+  wheel input pauses for 100 ms, native smooth scrolling settles at a station;
   a short gesture advances one station instead of falling back to the old one.
   During travel the camera follows the trace, then eases into the planet's
   arrival composition. Content, active navigation and the URL hash update
   together only after the camera arrives. Page Up/Down, Home/End and body Space
   also navigate stations. Reverse travel uses the same route and poses.
+- On the owner's next request, the activation threshold was reduced fivefold
+  and the quiet period shortened from 180 to 100 ms. Browser regression uses
+  24 px gestures in both directions, replacing the earlier 240 px gestures.
+- Twelve small, low-poly asteroids drift and rotate continuously behind the
+  planets, rendered in one instanced draw. Two staggered shooting-star trails
+  cross the distant layer occasionally. Wrapping happens beyond the camera's
+  horizontal frustum so asteroids do not jump across the visible window.
+  These decorative objects have no interactive labels or UI controls.
 - The route uses two lightweight Three.js tubes with a soft glow and glints.
   Arc-length mapping keeps the trace aligned with the camera's position. It
   sits below the ship and rises toward its endpoint, then clears at Contact.
-  Glints advance during movement and settle with the ship; reduced motion keeps
-  the trace steady. It is hidden during optional moon visits.
+  Glints advance with ambient motion while the ship can stay parked; reduced
+  motion keeps the trace steady. It is hidden during optional moon visits.
 - The guide uses the existing avatar as an identity reference. The fictional
   uniform and pixel-art roleplay do not claim actual military experience.
 - Mobile adaptation is a future phase, outside this prototype and current scope.
@@ -75,7 +83,10 @@ opens the project panel. Return reverses that path (950 ms); Escape can cancel
 an approach. Route keys are held during moon travel; direct navigation cancels
 the approach and waits for the return before departing. Focus, station and
 holding status are restored after return, including a resized viewport.
-Minimal motion skips the journey. Rendering stops when settled.
+Minimal motion skips the journey, freezes the asteroids, hides shooting-star
+trails and stops rendering when settled. Standard motion keeps the ambient
+scene alive while parked. Hidden tabs and lost WebGL contexts do not keep
+scheduling frames.
 
 This is not the production migration. Complete skills/background migration,
 all original fragment aliases, production progressive enhancement, final
@@ -106,7 +117,8 @@ forward/stop/reverse, direct destinations, contact href, keyboard access to the
 collapsed menus and physical controls,
 reduced motion, 3D fallback/retry and context-loss recovery on a fragment URL.
 The standard-motion check exercises short wheel gestures to all five exact
-stations, stable idle rendering, actual moon approach/return, navigation during
+stations, a stable parked ship with continuing ambient frames, paused rendering
+in minimal motion, actual moon approach/return, navigation during
 approach, reverse travel, keyboard stations and cancellation of pending snaps.
 Geometry checks include 942 projections of the future route through the window
 and the bounds of each arrival planet in all three layouts at both desktop sizes.

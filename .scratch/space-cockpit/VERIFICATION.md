@@ -25,10 +25,11 @@ performance acceptance have not been completed.
   remain in the clear window rectangle. Arrival sphere bounds also remain in
   the right side of the window. This is geometry evidence, not a frame-rate
   benchmark or proof against every cockpit/overlay occlusion.
-- Standard-motion station check: **passed**, short 240 px wheel gestures settle
+- Standard-motion station check: **passed**, short 24 px wheel gestures settle
   at all five exact stations, with matching section and hash only on arrival.
-  Reverse wheel, Page Up, Home and End also reach exact stops. Test-only RAF
-  counter and scroll position stayed unchanged for 500 ms while parked.
+  Reverse wheel, Page Up, Home and End also reach exact stops. Scroll position
+  and HOLDING status stayed unchanged for 500 ms while ambient RAF continued.
+  Toggling Minimal stopped the test-only RAF counter for 500 ms after settling.
   Moon panel stays closed during approach; route keys cannot leave it; Escape
   return restores focus, scroll and HOLDING status. Direct navigation cancels a
   pending wheel snap and waits for an approach to return before departure.
@@ -54,6 +55,15 @@ performance acceptance have not been completed.
   approach, and stale RETURNING status after return. All were fixed and the
   reviewer retested their reproduction paths successfully, along with viewport
   resize while reading a project and a short wheel gesture after return.
+- Ambient scene adds twelve instanced asteroids and two sparse shooting-star
+  trails behind the planets. Standard motion continues while parked; the
+  existing motion control and system preference freeze/disable the effects.
+  Independent review found the initial asteroid wrap edges were still visible;
+  wrap bounds now derive from the horizontal frustum plus a safety margin.
+  Reviewer rechecked 72 projection combinations including conservative rock
+  bounds; the nearest edge remains outside the viewport (|NDC x| >= 1.012).
+  The final browser recording also held the station for a 14-second explicit
+  idle check without page exceptions; asteroids remain visible behind planets.
 - Foreground PNG: 1672×941 RGBA, **alpha 0 at the window center**. The star field,
   planets and moons seen through the window are actual Three.js geometry.
 - Root HTML, JS, styles, Tailwind config and dependency files have zero diff.
@@ -65,8 +75,8 @@ performance acceptance have not been completed.
 | --- | --- | --- |
 | 1 System status | Lulus | Camera arrival synchronizes active destination, content, hash and HOLDING status; compact progress and 3D recovery exercised |
 | 2 Familiar language | Lulus | Plain section names and business project content; roleplay is confined to the guide |
-| 3 User control | Lulus | Smooth forward/reverse station snap, keyboard stations, direct jumps, physical Previous/Next; Escape cancels approach; Return restores scroll and focus |
-| 4 Consistency | Lulus | Same route and project data in A/B/C; native links and dialog; system reduced motion takes priority |
+| 3 User control | Lulus | Small forward/reverse gestures snap, keyboard stations, direct jumps, physical Previous/Next; Escape cancels approach; Return restores scroll/focus; Minimal freezes decoration |
+| 4 Consistency | Lulus | Same route and project data in A/B/C; native links and dialog; system reduced motion takes priority over continuous decoration |
 | 5 Error prevention | Lulus | Project entry disabled during transit; route keys held during moon travel; direct departure waits for moon return; edge destination buttons disabled; no external writes |
 | 6 Recognition | Lulus | Destination list and four named project buttons remain; secondary controls have labeled disclosures; duplicate scene labels removed |
 | 7 Efficiency | Lulus | Keyboard project entry/return, direct navigation and always accessible Contact |
