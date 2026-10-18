@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b141c">
+  <title>Iman — Cockpit design exploration</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="prototype.css?v=20261018-console-v10">
+  <script type="module" src="prototype.js?v=20261018-flow-v8"></script>
+</head>
+<body data-variant="A">
+  <a class="skip-link" href="#briefing-title">Skip to destination information</a>
+  <div id="cockpit" class="cockpit">
+    <div id="space" class="space" aria-hidden="true"></div>
+    <div class="window-tint" aria-hidden="true"></div>
+    <svg class="cockpit-frame" viewBox="0 0 1440 820" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <pattern id="hull" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0H8V8H0Z" fill="#101d27"/><path d="M0 7H8" stroke="#152430"/></pattern>
+      </defs>
+      <path d="M0 0H1440V96H1400V120H1344V104H1296V80H144V104H96V128H48V160H0Z" fill="#060d14"/>
+      <path d="M0 0H1440V68H1360V84H1312V64H128V88H80V112H32V144H0Z" fill="url(#hull)" stroke="#263d47" stroke-width="2"/>
+      <path d="M0 112H32V208H48V496H64V568H112V608H176V648H264V688H1176V648H1264V608H1328V568H1376V496H1392V208H1408V112H1440V820H0Z" fill="#060d14"/>
+      <path d="M0 128H16V224H32V496H48V584H96V624H160V664H248V704H1192V664H1280V624H1344V584H1392V496H1408V224H1424V128H1440V820H0Z" fill="url(#hull)" stroke="#2a414b" stroke-width="2"/>
+      <path d="M48 584H96V624H160V664H248V704M1392 584H1344V624H1280V664H1192V704" fill="none" stroke="#456052" stroke-width="3"/>
+      <path d="M96 80H128M1312 80H1344M48 192V264M1392 192V264M368 716H512M928 716H1072" stroke="#8eaa91" stroke-width="3"/>
+      <path d="M0 760H1440V820H0Z" fill="#08111a"/>
+    </svg>
+    <img class="cockpit-interior" id="cockpit-interior" src="assets/cockpit-interior-v1.png" alt="" aria-hidden="true" fetchpriority="high">
+    <header class="identity-bar">
+      <a class="brand" href="#opening" data-stop="0" aria-label="Iman Nugraha — Opening">
+        <svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true"><path d="M12 0h4v8h4v4h8v4h-8v4h-4v8h-4v-8H8v-4H0v-4h8V8h4Z" fill="currentColor"/><path d="M12 12h4v4h-4Z" fill="#101c25"/></svg>
+        <span>IMAN NUGRAHA<small>Developer portfolio</small></span>
+      </a>
+      <a class="contact-shortcut" href="#contact" data-stop="4">Contact <span aria-hidden="true">↗</span></a>
+    </header>
+    <nav class="destination-nav" aria-label="Destinations">
+      <a href="#opening" data-stop="0"><span class="nav-index">00</span><span>Opening</span></a>
+      <a href="#selected-work" data-stop="1"><span class="nav-index">01</span><span>Selected work</span></a>
+      <a href="#capabilities" data-stop="2"><span class="nav-index">02</span><span>Capabilities</span></a>
+      <a href="#about-experience" data-stop="3"><span class="nav-index">03</span><span>About &amp; experience</span></a>
+      <a href="#contact" data-stop="4"><span class="nav-index">04</span><span>Contact</span></a>
+    </nav>
+    <main class="briefing" id="briefing" aria-labelledby="briefing-title">
+      <div id="briefing-content">
+        <p class="eyebrow">MUHAMMAD IMAN NUGRAHA · JUNIOR FULLSTACK DEVELOPER</p>
+        <h1 id="briefing-title" tabindex="-1">Your next idea.<br><em>Ready for orbit.</em></h1>
+        <p class="body-copy">I build web interfaces, APIs, and database-backed applications with React, TypeScript, Express, and SQL.</p>
+        <div class="briefing-actions"><a class="button button-primary" href="#selected-work" data-stop="1">Explore selected work <span aria-hidden="true">→</span></a><a class="text-link" href="mailto:imannnnugraha@gmail.com">Discuss a Project ↗</a></div>
+        <p class="footnote">Informatics graduate · UPN Veteran Jakarta</p>
+      </div>
+    </main>
+    <aside class="guide" aria-label="Your holographic guide">
+      <div class="holo-beam" aria-hidden="true"></div>
+      <div class="officer" data-state="idle" role="img" aria-label="Holographic Iman projected from a cockpit console"><img src="assets/officer-sheet-v1.png" width="1983" height="793" alt="" aria-hidden="true"></div>
+      <svg class="holo-projector" viewBox="0 0 180 64" aria-hidden="true" focusable="false" shape-rendering="crispEdges">
+        <ellipse cx="90" cy="56" rx="74" ry="7" fill="#02080d" opacity=".85"/>
+        <path d="M12 26 37 10H143L168 26V44L143 57H37L12 43Z" fill="#09171f" stroke="#45636d" stroke-width="2"/>
+        <path d="M12 26 37 10H143L168 26 144 43H36Z" fill="#203740"/>
+        <path d="M12 26 36 43H144L168 26V44L143 57H37L12 43Z" fill="#101e2a"/>
+        <path d="M37 43H143M22 32V42M158 32V42" fill="none" stroke="#42646b" stroke-width="2"/>
+        <ellipse cx="90" cy="25" rx="48" ry="14" fill="#071b24" stroke="#448087" stroke-width="2"/>
+        <ellipse class="projector-light" cx="90" cy="25" rx="37" ry="9" fill="#146b6b" stroke="#78ffe5" stroke-width="2"/>
+        <ellipse cx="90" cy="25" rx="24" ry="4" fill="#b5fff3" opacity=".85"/>
+        <path d="M63 49H69M74 49H80M85 49H91M96 49H102M107 49H113" stroke="#030d14" stroke-width="3"/>
+        <path d="M29 38H35M145 38H151" stroke="#66ffe4" stroke-width="2"/>
+      </svg>
+      <div class="guide-speech"><span class="holo-label" aria-hidden="true">IMAN <span>HOLO LINK</span></span><p id="guide-dialogue">Captain, follow the light to explore the work.</p></div>
+    </aside>
+    <footer class="flight-console" aria-label="Flight guidance">
+      <p class="console-hint">SCROLL TO FOLLOW THE LIGHT</p>
+      <div class="console-note"><p class="eyebrow">YOUR ROUTE</p><p>Explore. Inspect. Connect.</p><small>Scroll to travel · Stop to read</small></div>
+      <div class="route-instrument"><div class="route-track" aria-hidden="true"><span id="route-fill"></span><b></b><b></b><b></b><b></b><b></b></div><div class="route-labels"><span>Opening</span><span>Work</span><span>Capabilities</span><span>About</span><span>Contact</span></div></div>
+      <div class="progress-readout"><strong id="route-percent">0<span>%</span></strong><small id="travel-status" role="status">HOLDING POSITION</small></div>
+    </footer>
+    <details class="flight-tools">
+      <summary>Flight controls</summary>
+      <div class="flight-tools-panel">
+        <div class="overhead-control" aria-label="Overhead controls">
+          <div class="overhead-indicator"><i aria-hidden="true"></i><span>VIEWING WINDOW<small id="window-mode">INITIALIZING</small></span></div>
+          <button type="button" id="motion-mode" aria-pressed="false"><span class="physical-toggle" aria-hidden="true"></span><span>Motion<small id="motion-setting">Standard</small></span></button>
+        </div>
+        <div class="manual-control" aria-label="Manual flight controls"><div><button type="button" data-route-step="-1">◀ Previous</button><button type="button" data-route-step="1">Next ▶</button></div></div>
+      </div>
+    </details>
+    <div class="scene-status" id="scene-status" role="status"><span>Preparing the viewing window…</span><button id="retry-scene" hidden>Retry 3D</button></div>
+  </div>
+  <div class="scroll-track" aria-hidden="true"></div>
+  <p class="sr-only" id="destination-announcement" role="status" aria-live="polite"></p>
+  <dialog class="detail-panel" id="project-detail" aria-labelledby="detail-heading">
+    <div class="detail-top"><div><p class="eyebrow">MISSION ARCHIVE / PROJECT DETAIL</p><h2 id="detail-heading">Project details</h2></div><button class="button return-button" id="return-to-planet">← Return to Selected Work</button></div>
+    <div id="detail-content"></div>
+  </dialog>
+  <details class="prototype-bar" aria-label="Design exploration controls">
+    <summary>Preview <span id="variant-name">A</span></summary>
+    <p class="prototype-label">Desktop preview · choose a layout in chat</p>
+    <div class="variant-buttons" role="group" aria-label="Visual direction">
+      <button data-variant="A" aria-pressed="true"><b>A</b><span>Panoramic bridge</span></button>
+      <button data-variant="B" aria-pressed="false"><b>B</b><span>Command console</span></button>
+      <button data-variant="C" aria-pressed="false"><b>C</b><span>Navigation chart</span></button>
+    </div>
+    <div class="variant-arrows"><button id="previous-variant" aria-label="Previous visual direction">←</button><button id="next-variant" aria-label="Next visual direction">→</button></div>
+    <p id="prototype-state" class="sr-only" role="status">Direction A: Panoramic bridge. Destination: Opening.</p>
+  </details>
+  <noscript><div class="no-script">This design preview uses JavaScript. <a href="../index.html">Read the existing portfolio and contact information →</a></div></noscript>
+</body>
+</html>

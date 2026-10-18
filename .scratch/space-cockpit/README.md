@@ -33,6 +33,11 @@ console projector, plus a dark teal dialogue panel with a neon edge.
 The scroll hint and existing route progress now sit inside the central console's
 black display, using the same cyan lighting. The hint is real HTML text.
 
+The owner subsequently approved online testing at `/cockpit/` on the existing
+GitHub Pages production site. `npm run build:cockpit` publishes an explicit
+static copy there, with adjusted project-relative URLs and self-hosted Three.js.
+The main portfolio and this local design reference remain separate.
+
 ## Confirmed decisions
 
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
@@ -112,13 +117,15 @@ performance measurements and release checks remain for implementation.
 
 ## Isolation and checks
 
-Everything is on `prototype/space-cockpit`, based on local `staging` at
-`6ce027f`. Nothing from this directory is referenced by production entry points,
-the Tailwind content scan, root package files or the published main branch.
+The exploration began on `prototype/space-cockpit`, based on local `staging` at
+`6ce027f`. The main portfolio entry point and Tailwind scan remain separate.
+Only the explicitly generated `cockpit/` test route is published; this hidden
+workspace, its server and checks are excluded by the existing Jekyll build.
 The prototype has its own pinned Three.js dependency and lockfile; its
-`node_modules/` is ignored. Do not merge the exploration into production.
+`node_modules/` is ignored. Publishing the test route does not migrate the
+portfolio's main entry point.
 
-Existing project baseline: `npm.cmd test` (53 tests) and `npm.cmd run build`.
+Current project checks: `npm.cmd test` (54 tests) and `npm.cmd run build`.
 Flight-curve regression: `npm.cmd test --prefix .scratch/space-cockpit`.
 Browser check, with the local server running:
 

@@ -1,4 +1,4 @@
-// Local-only design exploration. This server and route never enter the production branch.
+// Local design server; it is excluded from the published /cockpit/ files.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve, extname, sep } from 'node:path';

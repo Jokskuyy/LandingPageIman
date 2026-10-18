@@ -1,7 +1,7 @@
 // Run through the Playwright CLI: run-code --filename .scratch/space-cockpit/check-browser.js
 async (page) => {
   const check = (value, message) => { if (!value) throw new Error(message); };
-  const base = 'http://127.0.0.1:43188/.scratch/space-cockpit/';
+  const base = new URL('.', page.url()).href;
   const failures = [];
   page.on('pageerror', error => failures.push(error.message));
   await page.emulateMedia({ reducedMotion: 'reduce' });

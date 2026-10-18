@@ -85,14 +85,34 @@ performance acceptance have not been completed.
   combinations. System reduced motion and local Minimal pause hologram effects.
   Independent review found no issue in A at 1440×900 and 1280×720, including
   dialogue readability, control clearance, and both motion-pause paths.
-- Root HTML, JS, styles, Tailwind config and dependency files have zero diff.
-  This remains a local prototype branch, with no production deployment.
+- Root HTML, JS, styles, Tailwind config and dependency versions remain unchanged.
+  The root package adds only a separate static packaging command for `/cockpit/`.
 - Central display update: the scroll hint, route track and percentage now sit
   inside the console's black monitor. The hint is accessible HTML text with
   cyan styling; the former generated footer hint is removed. Fresh renders
   at 1068×955 and 1280×720 confirm placement in A, and the twelve layout/size
   browser matrix, normal-motion station checks, 53 root tests, build and flight
   geometry regression passed again after this HTML/CSS change.
+
+## Approved online test route
+
+The owner approved publishing `/cockpit/` to the existing GitHub Pages site;
+the main portfolio remains the archive source and homepage. The static build
+uses an explicit nine-file allowlist, rewrites the relative root/CV URLs for
+the shallower route and includes Three.js's module/core files and MIT license.
+The hidden design workspace, preview server and checks remain outside the
+Jekyll output. A second build produced identical hashes for all nine files.
+
+All **54 root tests** pass, including the packaged module graph and links under
+the `/LandingPageIman/` project prefix. Root CSS build and the prototype's
+geometry regression also pass. The existing browser checks now use the open
+tab's directory to exercise both the local packaged route and the public URL.
+Both browser suites passed on the packaged route served beneath the exact
+`/LandingPageIman/cockpit/` prefix: all twelve desktop layout/size combinations,
+four project panels, keyboard/focus return, source links, reduced/normal motion,
+free flight, directional arrival, resize and 3D context-loss recovery.
+Independent deployment review was attempted but unavailable because the
+reviewer reached the account usage limit; no independent approval is claimed.
 
 ## Usability and accessibility, scoped to this preview
 

@@ -11,7 +11,8 @@ async page => {
   });
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('http://127.0.0.1:43188/.scratch/space-cockpit/?variant=C&revision=flow-v8#opening');
+  const base = new URL('.', page.url()).href;
+  await page.goto(base + '?variant=C&revision=flow-v8#opening');
   await page.reload();
   let checkpoint=0;
   const parked=async index=>{
