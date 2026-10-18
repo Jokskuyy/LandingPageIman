@@ -161,8 +161,8 @@ body[data-variant] .officer[data-state='traveling'] img { left:calc(var(--office
 body[data-variant] .officer[data-state='arriving'] img { left:calc(var(--officer-height) * -1.153); }
 body[data-variant] .officer[data-state='explaining'] img { left:calc(var(--officer-height) * -1.862); }
 body[data-variant] .guide-speech {
-  right:0; bottom:calc(var(--officer-height) + 12px); width:210px; padding:0;
-  background:none; border:0; box-shadow:none; text-shadow:0 2px 8px #000;
+  right:0; bottom:-58px; width:210px; padding:6px 8px;
+  background:#07121bd9; border:0; box-shadow:none; text-shadow:0 2px 8px #000;
 }
 .guide-speech::after { display:none; }
 body[data-variant] .guide-speech>p:last-child { font-size:11px; line-height:1.7; color:#b9c6c6; }
@@ -201,7 +201,7 @@ body[data-variant] .manual-control button { font-size:9px; min-height:34px; }
 @media(max-height:800px) {
   body[data-variant] .destination-nav { top:18%; gap:20px; }
   body[data-variant] .guide { --officer-height:185px; height:200px; bottom:24%; }
-  body[data-variant] .guide-speech { bottom:calc(var(--officer-height) + 10px); width:195px; }
+  body[data-variant] .guide-speech { bottom:-58px; width:195px; }
   body[data-variant='C'] .briefing { max-height:29%; padding:13px 16px; }
   body[data-variant='C'] .briefing h1 { font-size:35px; }
   body[data-variant='C'] .briefing:has(.project-picks) h1 { font-size:33px; }

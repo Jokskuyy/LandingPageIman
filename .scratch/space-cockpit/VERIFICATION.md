@@ -6,7 +6,9 @@ performance acceptance have not been completed.
 - Existing root project: **53/53 tests passed**, Tailwind build passed. Build
   printed the existing outdated Browserslist data notice.
 - Browser: Microsoft Edge **155.0.4283.62**, Windows, viewports **1440×900** and
-  **1280×720**. All three directions rendered; no horizontal desktop overflow.
+  **1280×720** and the taller in-app-browser shape **1290×955**. All three
+  directions rendered; no horizontal desktop overflow. Guide narration sits on
+  the lower deck so it does not cover the arrival planet at the taller ratio.
 - Runnable browser check: **passed**, all four project dialogs, native panel
   scrolling without route movement, Enter/Escape and focus restoration,
   scroll forward/stop/reverse, direct destination jumps, physical Previous,

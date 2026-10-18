@@ -89,7 +89,7 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-co
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
-The browser check covers 1440×900 and 1280×720, variant switching, all four
+The browser check covers 1440×900, 1280×720 and 1290×955, variant switching, all four
 projects, panel scrolling, keyboard entry/Escape, focus and scroll restoration,
 forward/stop/reverse, direct destinations, contact href, keyboard access to the
 collapsed menus and physical controls,

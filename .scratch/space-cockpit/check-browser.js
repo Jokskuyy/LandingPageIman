@@ -13,7 +13,7 @@ async (page) => {
   check(await page.locator('.prototype-bar').evaluate(node => !node.open),'Preview controls should start collapsed');
   check(await page.locator('.flight-tools').evaluate(node => !node.open),'Flight controls should start collapsed');
   const destination = label => page.locator('.destination-nav').getByRole('link',{name:label,exact:true});
-  for (const [width, height] of [[1440,900],[1280,720]]) {
+  for (const [width, height] of [[1440,900],[1280,720],[1290,955]]) {
     await page.setViewportSize({width,height});
     for (const [key, name] of [['A','Panoramic bridge'],['B','Command console'],['C','Navigation chart']]) {
       await page.locator('.prototype-bar summary').click();
@@ -84,5 +84,5 @@ async (page) => {
   await page.waitForFunction(() => document.querySelector('#briefing-title').textContent.includes('Your next idea'));
   await page.screenshot({path:'tmp/cockpit-preview/cockpit-quiet-final.png'});
   check(failures.length===0,`Uncaught browser errors: ${failures.join('; ')}`);
-  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720'],variants:3,projects:4,checks:'collapsed preview/flight menus; keyboard menu access; scroll forward/stop/reverse; direct destinations; keyboard moon entry/escape/focus restoration; panel scrolling; physical controls; contact href; reduced motion; 3D fallback/retry; context-loss recovery with fragment; reload and hash navigation',uncaughtErrors:failures};
+  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720','1290x955'],variants:3,projects:4,checks:'collapsed preview/flight menus; keyboard menu access; scroll forward/stop/reverse; direct destinations; keyboard moon entry/escape/focus restoration; panel scrolling; physical controls; contact href; reduced motion; 3D fallback/retry; context-loss recovery with fragment; reload and hash navigation',uncaughtErrors:failures};
 }
