@@ -7,8 +7,8 @@ async page => {
   for(const mode of ['normal','tall','reduced','fallback']) {
     await page.emulateMedia({reducedMotion:mode==='reduced'?'reduce':'no-preference'});
     await page.setViewportSize({width:mode==='tall'?1068:1280,height:mode==='tall'?955:720});
-    await page.goto(base+`?variant=A&revision=moons-v13${mode==='fallback'?'&scene=off':''}#selected-work`);
-    await page.reload();
+    // A distinct query loads a fresh document without interrupting initial navigation.
+    await page.goto(base+`?variant=A&revision=moons-v13&case=${mode}${mode==='fallback'?'&scene=off':''}#selected-work`);
     await page.waitForFunction(()=>document.body.dataset.travel==='holding' && document.querySelectorAll('.project-picks button:not(:disabled)').length===4);
     await page.waitForFunction(fallback=>document.querySelector('#window-mode').textContent===(fallback?'TEXT VIEW':'3D ONLINE'),mode==='fallback');
     const points=mode==='fallback'?[]:await page.evaluate(async()=>{
