@@ -26,9 +26,10 @@ chat before the full implementation, per the owner's UI guide.
 
 The owner selected **A — Panoramic bridge** through chat. Carry its broad front
 window and left-side briefing into the implementation. B/C remain exploration
-references. The guide treatment is still being discussed: the owner finds the
-current full-body officer out of place. No replacement guide concept has been
-chosen yet.
+references. The owner then chose a hologram guide with a visible projector and
+blue/green neon dialogue matching the cockpit lights. The preview now uses a
+translucent cyan version of the existing sprite, a light beam and a physical
+console projector, plus a dark teal dialogue panel with a neon edge.
 
 ## Confirmed decisions
 
@@ -78,6 +79,10 @@ chosen yet.
   motion keeps the trace steady. It is hidden during optional moon visits.
 - The guide uses the existing avatar as an identity reference. The fictional
   uniform and pixel-art roleplay do not claim actual military experience.
+  CSS scanlines, tint and gentle drift make it a projection; the inline SVG
+  emitter gives it a visible source on the console. System and local Minimal
+  motion stop both the floating sprite and the beam glow. The projector and
+  light beam are decorative and do not add keyboard stops or announcements.
 - Mobile adaptation is a future phase, outside this prototype and current scope.
 
 ## Scope and source
@@ -98,8 +103,8 @@ trails and stops rendering when settled. Standard motion keeps the ambient
 scene alive while parked. Hidden tabs and lost WebGL contexts do not keep
 scheduling frames.
 
-This is not the production migration. A is now selected; guide treatment remains
-under discussion. Complete skills/background migration,
+This is not the production migration. A and the hologram treatment are selected.
+Complete skills/background migration,
 all original fragment aliases, production progressive enhancement, final
 performance measurements and release checks remain for implementation.
 
@@ -122,7 +127,8 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-co
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
-The browser check covers 1440×900, 1280×720 and 1290×955, variant switching, all four
+The browser check covers 1440×900, 1280×720, 1290×955 and 1068×955, projector and
+sprite alignment, dialogue bounds, variant switching, all four
 projects, panel scrolling, keyboard entry/Escape, focus and scroll restoration,
 forward/stop/reverse, direct destinations, contact href, keyboard access to the
 collapsed menus and physical controls,

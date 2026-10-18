@@ -51,6 +51,7 @@ async page => {
   await page.waitForTimeout(500);
   check(await page.evaluate(()=>scrollY)===workY,'Parked scroll drifts');
   check(await page.evaluate(()=>stationFrames)>frames,'Ambient motion stopped at the station');
+  check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)!=='none','Standard motion did not animate the hologram beam');
   check(await page.locator('#travel-status').innerText()==='HOLDING POSITION','Ambient motion moved the station');
   await page.locator('.flight-tools summary').click();
   await page.locator('#motion-mode').click();
@@ -58,6 +59,7 @@ async page => {
   const calmFrames=await page.evaluate(()=>stationFrames);
   await page.waitForTimeout(500);
   check(await page.evaluate(()=>stationFrames)===calmFrames,'Minimal motion kept rendering ambient effects');
+  check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)==='none','Minimal motion kept the hologram beam animated');
   await page.locator('#motion-mode').click();
   await page.locator('.flight-tools summary').click();
   await page.screenshot({path:'tmp/cockpit-preview/stations-work-C.png'});

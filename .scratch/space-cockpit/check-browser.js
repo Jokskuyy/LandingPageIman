@@ -13,7 +13,7 @@ async (page) => {
   check(await page.locator('.prototype-bar').evaluate(node => !node.open),'Preview controls should start collapsed');
   check(await page.locator('.flight-tools').evaluate(node => !node.open),'Flight controls should start collapsed');
   const destination = label => page.locator('.destination-nav').getByRole('link',{name:label,exact:true});
-  for (const [width, height] of [[1440,900],[1280,720],[1290,955]]) {
+  for (const [width, height] of [[1440,900],[1280,720],[1290,955],[1068,955]]) {
     await page.setViewportSize({width,height});
     for (const [key, name] of [['A','Panoramic bridge'],['B','Command console'],['C','Navigation chart']]) {
       await page.locator('.prototype-bar summary').click();
@@ -21,6 +21,14 @@ async (page) => {
       await page.locator('.prototype-bar summary').click();
       check(await page.locator('body').getAttribute('data-variant') === key, 'Variant switch failed');
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Horizontal overflow at desktop viewport');
+      check(await page.locator('.guide').evaluate(node=>{
+        const figure=node.querySelector('.officer').getBoundingClientRect(), emitter=node.querySelector('.projector-light').getBoundingClientRect();
+        return Math.abs((figure.left+figure.right-emitter.left-emitter.right)/2)<2 && figure.bottom<(emitter.top+emitter.bottom)/2;
+      }),'Hologram is not aligned above its projector');
+      for(const selector of ['.holo-projector','.guide-speech'])check(await page.locator(selector).evaluate(node=>{
+        const box=node.getBoundingClientRect();return box.left>=0 && box.top>=0 && box.right<=innerWidth && box.bottom<=innerHeight;
+      }),`${selector} leaves the viewport`);
+      check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)==='none','Reduced motion animated the hologram beam');
       await page.screenshot({path:`tmp/cockpit-preview/${key}-${width}x${height}-quiet.png`});
     }
   }
@@ -87,5 +95,5 @@ async (page) => {
   await page.waitForFunction(() => document.querySelector('#briefing-title').textContent.includes('Your next idea'));
   await page.screenshot({path:'tmp/cockpit-preview/cockpit-quiet-final.png'});
   check(failures.length===0,`Uncaught browser errors: ${failures.join('; ')}`);
-  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720','1290x955'],variants:3,projects:4,checks:'collapsed preview/flight menus; keyboard menu access; scroll forward/stop/reverse; direct destinations; keyboard moon entry/escape/focus restoration; panel scrolling; physical controls; contact href; reduced motion; 3D fallback/retry; context-loss recovery with fragment; reload and hash navigation',uncaughtErrors:failures};
+  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720','1290x955','1068x955'],variants:3,projects:4,checks:'hologram/projector alignment and dialogue bounds; reduced hologram motion; collapsed menus and keyboard; forward/stop/reverse scroll; destinations; four moon panels and focus return; contact; 3D fallback/retry/context-loss; reload/hash',uncaughtErrors:failures};
 }

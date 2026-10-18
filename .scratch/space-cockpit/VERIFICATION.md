@@ -6,7 +6,7 @@ performance acceptance have not been completed.
 - Existing root project: **53/53 tests passed**, Tailwind build passed. Build
   printed the existing outdated Browserslist data notice.
 - Browser: Microsoft Edge **155.0.4283.62**, Windows, viewports **1440×900** and
-  **1280×720** and the taller in-app-browser shape **1290×955**. All three
+  **1280×720**, **1290×955** and the narrower in-app-browser shape **1068×955**. All three
   directions rendered; no horizontal desktop overflow. Guide narration sits on
   the lower deck so it does not cover the arrival planet at the taller ratio.
 - Runnable browser check: **passed**, all four project dialogs, native panel
@@ -77,6 +77,14 @@ performance acceptance have not been completed.
   idle check without page exceptions; asteroids remain visible behind planets.
 - Foreground PNG: 1672×941 RGBA, **alpha 0 at the window center**. The star field,
   planets and moons seen through the window are actual Three.js geometry.
+- Selected A guide now appears as a translucent cyan hologram above a console
+  projector, with a visible light cone and a blue/green neon dialogue panel.
+  The existing sprite sheet is reused; no new runtime dependency or raster
+  asset was added. Browser checks verify that the figure is centered above the
+  emitter and both projector/dialogue stay in bounds at all twelve layout/size
+  combinations. System reduced motion and local Minimal pause hologram effects.
+  Independent review found no issue in A at 1440×900 and 1280×720, including
+  dialogue readability, control clearance, and both motion-pause paths.
 - Root HTML, JS, styles, Tailwind config and dependency files have zero diff.
   This remains a local prototype branch, with no production deployment.
 
@@ -91,7 +99,7 @@ performance acceptance have not been completed.
 | 5 Error prevention | Lulus | Project entry disabled during transit; route keys held during moon travel; direct departure waits for moon return; edge destination buttons disabled; no external writes |
 | 6 Recognition | Lulus | Destination list and four named project buttons remain; secondary controls have labeled disclosures; duplicate scene labels removed |
 | 7 Efficiency | Lulus | Keyboard project entry/return, direct navigation and always accessible Contact |
-| 8 Focus/readability | Temuan: batas prototype | Quiet HUD and path/planet framing inspected at two desktop sizes; dark backing preserves nav contrast over planets; dense briefings may scroll. Full text-size/contrast audit and complete content migration remain for production |
+| 8 Focus/readability | Temuan: batas prototype | Quiet HUD and path/planet framing inspected; hologram shares cockpit lighting and leaves the exterior visible, dialogue has dark backing and neon text. Dense briefings may scroll. Full text-size/contrast audit and complete content migration remain for production |
 | 9 Error recovery | Lulus | 3D off/retry, real context loss/retry and source failure/retry verified; destination preserved after reload; source failure survives revisiting Work |
 | 10 Help | Lulus | Scroll-to-follow-light hint, named project controls and labeled return; Preview disclosure explains that layout choice is made in chat |
 

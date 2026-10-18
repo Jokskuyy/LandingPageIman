@@ -206,3 +206,61 @@ body[data-variant] .manual-control button { font-size:9px; min-height:34px; }
   body[data-variant='C'] .briefing h1 { font-size:35px; }
   body[data-variant='C'] .briefing:has(.project-picks) h1 { font-size:33px; }
 }
+
+/* The guide is a projection from the console, with cockpit-colored light. */
+body[data-variant] .guide {
+  --officer-height:205px; --holo:#78ffe5;
+  width:220px; height:270px; isolation:isolate;
+}
+body[data-variant] .officer {
+  left:50%; right:auto; bottom:46px; z-index:2;
+  transform:translateX(-50%); filter:drop-shadow(0 0 6px #43ffe55c);
+}
+body[data-variant] .officer img {
+  opacity:.78; animation:none;
+  filter:grayscale(1) sepia(1) saturate(3.5) hue-rotate(125deg) brightness(1.4);
+  mask-image:repeating-linear-gradient(to bottom,#000 0 2px,#0008 2px 3px);
+}
+.holo-beam {
+  position:absolute; z-index:1; left:50%; bottom:31px;
+  width:170px; height:calc(var(--officer-height) + 36px);
+  transform:translateX(-50%); pointer-events:none;
+  clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);
+  background:linear-gradient(to top,#45ffdb30,#37d8ff09 72%,transparent);
+}
+.holo-projector {
+  position:absolute; z-index:3; width:150px; height:auto;
+  left:50%; bottom:0; transform:translateX(-50%);
+  overflow:visible; filter:drop-shadow(0 6px 3px #01080ac9);
+}
+.projector-light { filter:drop-shadow(0 0 5px #59ffe9bb); }
+body[data-variant] .guide-speech {
+  z-index:4; right:-5px; bottom:-86px; width:230px; padding:10px 13px 12px;
+  background:linear-gradient(125deg,#062c36f7,#04141ff7);
+  border:1px solid #59efd3b3; border-left:2px solid var(--holo);
+  box-shadow:inset 0 0 18px #26e4d00c,0 0 13px #28f1d51a;
+  text-shadow:none;
+}
+body[data-variant] .guide-speech::before {
+  content:''; position:absolute; width:1px; height:11px; top:-12px; left:50%;
+  background:linear-gradient(transparent,var(--holo));
+}
+.holo-label {
+  display:flex; justify-content:space-between; gap:10px; margin-bottom:7px;
+  color:var(--holo); font:500 8px/1.4 var(--mono); letter-spacing:.12em;
+}
+.holo-label>span { color:#5ccacb; letter-spacing:.07em; }
+body[data-variant] .guide-speech>p:last-child {
+  color:#c0fff1; font-size:11px; line-height:1.7; text-shadow:0 0 8px #49e8cd33;
+}
+@media(prefers-reduced-motion:no-preference) {
+  body[data-variant]:not([data-calm='true']) .officer img { animation:holo-float 6s ease-in-out infinite; }
+  body[data-variant]:not([data-calm='true']) .holo-beam { animation:holo-glow 6s ease-in-out infinite; }
+  @keyframes holo-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
+  @keyframes holo-glow { 0%,100% { opacity:.65; } 50% { opacity:1; } }
+}
+@media(max-height:800px) {
+  body[data-variant] .guide { --officer-height:170px; height:230px; width:205px; }
+  body[data-variant] .guide-speech { right:-5px; width:215px; bottom:-86px; }
+  .holo-projector { width:138px; }
+}
