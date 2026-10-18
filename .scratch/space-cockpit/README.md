@@ -67,19 +67,21 @@ The main portfolio and this local design reference remain separate.
   with frame-independent damping instead of a per-leg dead zone. Small input
   can leave a planet without jumping a whole section or being pulled back.
   Stopping mid-route keeps the position and shows **FREE FLIGHT**. After
-  280 ms without root scrolling, the ship settles at the next planet only
-  within the final 22% of the leg in the current direction. Continued input
+  280 ms without root scrolling, the ship settles at the upcoming planet or
+  a recently crossed planet within 22% of a leg. Continued input
   resets that wait; forward and reverse use the same rule. Resize preserves
   the fractional journey position. Content, active navigation and URL hash
-  update together after arrival. Direct navigation, Page Up/Down, Home/End
+  follow the planet actually crossed by the camera, even when a longer
+  overshoot stays in free flight. HOLDING and project entry wait for an actual
+  parked arrival. Direct navigation, Page Up/Down, Home/End
   and body Space still travel to exact stations. Previous/Next uses the ship's
   actual position even after passing a planet without stopping there.
-- Online testing exposed a two-pixel overshoot at a new station: progress read
-  25% while Opening remained active. After a pause, a position within 2% of a
-  newly reached station now settles there in either direction. Leaving the
-  current station still stays free; returning after leaving its arrival radius
-  also settles there and restores project controls. The 22% directional approach
-  is unchanged.
+- The initial online two-pixel correction used a 2% arrival band. Testing on
+  2026-10-19 found that 4%, 12% and 35% overshoots still retained Opening.
+  The current policy records crossed stations and uses the same 22% approach
+  radius after crossing. Passing a station updates the section independently
+  of parking, so a long overshoot keeps the ship free with the correct content.
+  Leaving a parked planet does not count as crossing it and remains free.
 - Twelve small, low-poly asteroids drift and rotate continuously behind the
   planets, rendered in one instanced draw. Two staggered shooting-star trails
   cross the distant layer occasionally. Wrapping happens beyond the camera's
@@ -140,6 +142,7 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview open h
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-browser.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-stations.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-arrivals.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-crossings.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
