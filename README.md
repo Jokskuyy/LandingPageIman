@@ -54,3 +54,27 @@ Publishing `main` triggers the existing GitHub Pages build. Verify the public
 page, relative assets and PDF after the Pages deployment finishes.
 The Albion demo is deployed independently from its own repository; update its
 portfolio screenshot only after checking the released calculator.
+
+### Cockpit test route
+
+The owner approved publishing the selected Panoramic bridge at
+`https://jokskuyy.github.io/LandingPageIman/cockpit/` for testing. The main
+portfolio remains at the project root and supplies the project archive and CV.
+This is a desktop prototype; mobile adaptation and the full production redesign
+remain separate work.
+
+```sh
+npm ci --prefix .scratch/space-cockpit --ignore-scripts --no-audit --no-fund
+npm run build:cockpit
+```
+
+Commit the generated `cockpit/` directory with its source changes. The build
+copies an explicit list of browser files, adjusts relative project paths and
+includes Three.js 0.186.1's two ESM files and MIT license. No `node_modules`,
+preview server, test scripts or workspace logs are included. Keep the original
+`.scratch/space-cockpit/` as the local design reference; GitHub Pages' existing
+Jekyll build excludes that hidden directory. Do not add `.nojekyll` to publish it.
+
+The existing `.scratch/space-cockpit/check-browser.js` and `check-stations.js`
+use the browser tab's current directory as their base. Open the packaged route
+before running them to check the published files rather than the workspace.

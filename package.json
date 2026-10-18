@@ -7,6 +7,7 @@
   "scripts": {
     "test": "node --test \"tests/**/*.test.js\"",
     "build": "tailwindcss -c tailwind.config.cjs -i ./styles/input.css -o ./styles/site.css --minify",
+    "build:cockpit": "node scripts/build-cockpit.mjs",
     "dev:css": "tailwindcss -c tailwind.config.cjs -i ./styles/input.css -o ./styles/site.css --watch"
   },
   "devDependencies": {
