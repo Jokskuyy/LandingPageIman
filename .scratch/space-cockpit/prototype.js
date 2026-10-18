@@ -16,7 +16,7 @@ const dialogues = [
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
 let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
-let snapTimer, wheelOrigin = null, wheelDirection = 0, wheelAt = 0;
+let snapTimer, scrollDirection = 0, lastScrollY = scrollY;
 const detail = $('#project-detail');
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
@@ -48,13 +48,19 @@ document.querySelectorAll('.variant-buttons button').forEach(button => button.ad
 function cycleVariant(direction) { setVariant('ABC'[('ABC'.indexOf(variant) + direction + 3) % 3]); }
 $('#previous-variant').addEventListener('click', () => cycleVariant(-1));
 $('#next-variant').addEventListener('click', () => cycleVariant(1));
+function stepStop(direction) {
+  return Math.max(0,Math.min(4,direction<0 ? Math.ceil(progress)-1 : Math.floor(progress)+1));
+}
+function updateStepControls() {
+  document.querySelectorAll('[data-route-step]').forEach(button=>button.disabled=stepStop(Number(button.dataset.routeStep))===progress);
+}
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && document.body.dataset.approaching) { cancelApproach(); return; }
   if (detail.open || event.target.closest('input,textarea,select,[contenteditable],nav')) return;
   if (['PageDown','PageUp','Home','End'].includes(event.key) || (event.key===' ' && event.target===document.body)) {
     event.preventDefault();
     if (document.body.dataset.approaching || document.body.dataset.returning) return;
-    const index = event.key==='Home' ? 0 : event.key==='End' ? 4 : currentStop + (event.key==='PageUp' || event.shiftKey ? -1 : 1);
+    const index = event.key==='Home' ? 0 : event.key==='End' ? 4 : stepStop(event.key==='PageUp' || event.shiftKey ? -1 : 1);
     goToStop(Math.max(0,Math.min(4,index)));
     return;
   }
@@ -67,7 +73,7 @@ document.addEventListener('keydown', event => {
 async function goToStop(index, focus = true, immediate = false) {
   if (document.body.dataset.approaching) await cancelApproach();
   if (detail.open || document.body.dataset.returning) return;
-  clearTimeout(snapTimer); wheelOrigin = null; wheelDirection = 0;
+  clearTimeout(snapTimer); scrollDirection = 0;
   const max = document.documentElement.scrollHeight - innerHeight;
   scrollTo({ top: index / 4 * max, behavior: isReduced() || immediate ? 'instant' : 'smooth' });
   if (isReduced() || immediate) { routeImmediate = true; updateRoute(); routeImmediate = false; }
@@ -82,7 +88,7 @@ document.addEventListener('click', event => {
   const moon = event.target.closest('[data-project]');
   if (moon) openMoon(Number(moon.dataset.project), moon);
   const step = event.target.closest('[data-route-step]');
-  if (step) goToStop(Math.max(0, Math.min(4, currentStop + Number(step.dataset.routeStep))));
+  if (step) goToStop(stepStop(Number(step.dataset.routeStep)));
   if (event.target.closest('[data-retry-source]')) { sourceError = false; loadSource().catch(sourceFailure); }
 });
 
@@ -106,7 +112,7 @@ function renderStop(index, announce = true) {
     if (Number(link.dataset.stop) === index) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
   });
-  document.querySelectorAll('[data-route-step]').forEach(button => button.disabled = index + Number(button.dataset.routeStep) < 0 || index + Number(button.dataset.routeStep) > 4);
+  updateStepControls();
   if (announce) $('#destination-announcement').textContent = `Arrived at ${stops[index]}.`;
   $('#prototype-state').textContent = stateText();
   if (previousStop >= 0 && previousStop !== index && !isReduced()) {
@@ -131,8 +137,10 @@ function updateRoute() {
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const max = document.documentElement.scrollHeight - innerHeight;
   progress = Math.max(0, Math.min(4, scrollY / Math.max(1, max) * 4));
-  const index = Math.round(progress), atStop = Math.abs(progress-index)<.002;
+  const index = Math.round(progress), atStop = Math.abs(progress-index)<=4/Math.max(1,max);
+  if (atStop) progress=index; // A station can fall between native scroll pixels.
   const percent = Math.round(progress / 4 * 100);
+  updateStepControls();
   $('#route-percent').innerHTML = `${percent}<span>%</span>`;
   $('#route-fill').style.width = `${percent}%`;
   if (!atStop || index !== currentStop) {
@@ -144,33 +152,32 @@ function updateRoute() {
   if (atStop && (!scene || sceneFailed || routeImmediate || isReduced())) arriveAtStop(index);
   scene?.setProgress(progress, routeImmediate || isReduced());
 }
-addEventListener('scroll', updateRoute, { passive: true });
+addEventListener('scroll',()=>{
+  const change=scrollY-lastScrollY; lastScrollY=scrollY;
+  updateRoute();
+  if (!change) return;
+  scrollDirection=Math.sign(change);
+  clearTimeout(snapTimer); snapTimer=setTimeout(finishScroll,280);
+},{passive:true});
 function finishScroll() {
-  if (wheelDirection && performance.now()-wheelAt<90) return;
   clearTimeout(snapTimer);
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
-  const value = Math.max(0,Math.min(4,scrollY / Math.max(1,document.documentElement.scrollHeight-innerHeight)*4));
-  let stop = Math.round(value);
-  if (wheelOrigin!==null && stop===wheelOrigin && Math.abs(value-wheelOrigin)>.001) stop=Math.max(0,Math.min(4,wheelOrigin+wheelDirection));
-  wheelOrigin=null; wheelDirection=0;
-  if (Math.abs(value-stop)>.0002) goToStop(stop,false);
+  const value=progress;
+  if (value===Math.round(value)) return;
+  const stop=scrollDirection<0 ? Math.floor(value) : Math.ceil(value);
+  if (Math.abs(value-stop)<=.22) goToStop(stop,false);
+  else $('#travel-status').textContent='FREE FLIGHT';
 }
-document.addEventListener('scrollend',finishScroll);
-addEventListener('wheel',event => {
-  if (!event.deltaY || event.ctrlKey || detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
-  const panel = event.target.closest('#briefing');
-  if (panel && panel.scrollHeight>panel.clientHeight+1 && (event.deltaY>0 ? panel.scrollTop<panel.scrollHeight-panel.clientHeight-1 : panel.scrollTop>1)) return;
-  if (!wheelDirection) wheelOrigin=currentStop;
-  wheelDirection=Math.sign(event.deltaY);
-  wheelAt=performance.now();
-  clearTimeout(snapTimer); snapTimer=setTimeout(finishScroll,100);
-},{passive:true});
 addEventListener('resize',()=>{
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) {
     savedScroll=currentStop/4*(document.documentElement.scrollHeight-innerHeight);
     return;
   }
-  goToStop(currentStop,false,true);
+  clearTimeout(snapTimer);
+  scrollTo({top:progress/4*(document.documentElement.scrollHeight-innerHeight),behavior:'instant'});
+  lastScrollY=scrollY;
+  routeImmediate=true; updateRoute(); routeImmediate=false;
+  snapTimer=setTimeout(finishScroll,280);
 });
 
 async function loadSource() {
@@ -252,7 +259,7 @@ function sceneFailure() {
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./node_modules/three/build/three.module.js');
-  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-stations-v6');
+  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-flow-v8');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));

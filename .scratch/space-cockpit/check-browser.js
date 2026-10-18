@@ -51,13 +51,14 @@ async (page) => {
     check(await trigger.evaluate(node => node === document.activeElement),'Return lost focus');
   }
   await page.mouse.move(750,400);
-  await page.mouse.wheel(0,850);
+  const approach=Math.round(await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4*.84));
+  await page.mouse.wheel(0,approach);
   await page.waitForFunction(y => scrollY > y+100,before);
   await page.waitForFunction(()=>document.body.dataset.travel==='holding');
   const stopped = await page.evaluate(() => scrollY);
   await page.waitForTimeout(350);
   check(await page.evaluate(() => scrollY) === stopped,'Route drifts after scrolling stops');
-  await page.mouse.wheel(0,-850);
+  await page.mouse.wheel(0,-approach);
   await page.waitForFunction(y => scrollY < y-100,stopped);
   await page.waitForFunction(()=>document.body.dataset.travel==='holding');
   for (const label of ['Capabilities','About & experience','Contact']) await destination(label).click();

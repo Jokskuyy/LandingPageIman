@@ -46,16 +46,18 @@ chat before the full implementation, per the owner's UI guide.
   reading area. The first leg is level and the first planet sits lower so it is
   visible through the canopy from Opening as well as Work.
 - The owner clarified that smooth travel must still snap to each planet and
-  section. Four equal scroll legs now join five exact camera waypoints. After
-  wheel input pauses for 100 ms, native smooth scrolling settles at a station;
-  a short gesture advances one station instead of falling back to the old one.
-  During travel the camera follows the trace, then eases into the planet's
-  arrival composition. Content, active navigation and the URL hash update
-  together only after the camera arrives. Page Up/Down, Home/End and body Space
-  also navigate stations. Reverse travel uses the same route and poses.
-- On the owner's next request, the activation threshold was reduced fivefold
-  and the quiet period shortened from 180 to 100 ms. Browser regression uses
-  24 px gestures in both directions, replacing the earlier 240 px gestures.
+  section while allowing some free flow. Four equal scroll legs join five
+  exact camera waypoints. Manual scrolling now controls distance directly,
+  with frame-independent damping instead of a per-leg dead zone. Small input
+  can leave a planet without jumping a whole section or being pulled back.
+  Stopping mid-route keeps the position and shows **FREE FLIGHT**. After
+  280 ms without root scrolling, the ship settles at the next planet only
+  within the final 22% of the leg in the current direction. Continued input
+  resets that wait; forward and reverse use the same rule. Resize preserves
+  the fractional journey position. Content, active navigation and URL hash
+  update together after arrival. Direct navigation, Page Up/Down, Home/End
+  and body Space still travel to exact stations. Previous/Next uses the ship's
+  actual position even after passing a planet without stopping there.
 - Twelve small, low-poly asteroids drift and rotate continuously behind the
   planets, rendered in one instanced draw. Two staggered shooting-star trails
   cross the distant layer occasionally. Wrapping happens beyond the camera's
@@ -116,8 +118,9 @@ projects, panel scrolling, keyboard entry/Escape, focus and scroll restoration,
 forward/stop/reverse, direct destinations, contact href, keyboard access to the
 collapsed menus and physical controls,
 reduced motion, 3D fallback/retry and context-loss recovery on a fragment URL.
-The standard-motion check exercises short wheel gestures to all five exact
-stations, a stable parked ship with continuing ambient frames, paused rendering
+The standard-motion check exercises small input without forced station jumps,
+continuous forward/reverse travel, stable mid-route pauses, resize, directional
+arrival snap at all five stations, continuing ambient frames, paused rendering
 in minimal motion, actual moon approach/return, navigation during
 approach, reverse travel, keyboard stations and cancellation of pending snaps.
 Geometry checks include 942 projections of the future route through the window

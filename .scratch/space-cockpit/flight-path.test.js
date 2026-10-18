@@ -10,6 +10,7 @@ for (let i = 0; i < waypoints.length; i++) {
   assert(Math.abs(rotation.length() - 1) < 1e-8);
 }
 assert(scrollToTravel(-1)===0 && scrollToTravel(5)===4,'Scroll must stay within the five stations');
+assert(scrollToTravel(.1)>.08 && scrollToTravel(.9)<.92,'Manual scroll must move the camera near station edges without a dead zone');
 const line = waypoints[4].clone().sub(waypoints[0]).normalize();
 assert(waypoints.some(point => point.clone().sub(waypoints[0]).cross(line).length() > 20), 'Route regressed to a straight line');
 assert(Math.max(...waypoints.map(p => p.y)) - Math.min(...waypoints.map(p => p.y)) > 12, 'Route lost vertical depth');

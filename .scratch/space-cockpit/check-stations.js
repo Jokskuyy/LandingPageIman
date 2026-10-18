@@ -11,18 +11,38 @@ async page => {
   });
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.setViewportSize({width:1440,height:900});
-  await page.goto('http://127.0.0.1:43188/.scratch/space-cockpit/?variant=C&revision=ambient-v7#opening');
+  await page.goto('http://127.0.0.1:43188/.scratch/space-cockpit/?variant=C&revision=flow-v8#opening');
   await page.reload();
+  let checkpoint=0;
   const parked=async index=>{
-    try { await page.waitForFunction(stop=>document.body.dataset.travel==='holding' && !document.body.dataset.approaching && !document.body.dataset.returning && !document.querySelector('#project-detail').open && document.querySelector('#travel-status').textContent==='HOLDING POSITION' && Number(document.querySelector('.destination-nav [aria-current]').dataset.stop)===stop && Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-stop)<.001,index); }
-    catch(error) { throw new Error(`Station ${index} did not settle: ${JSON.stringify(await page.evaluate(()=>({y:scrollY,progress:scrollY/(document.documentElement.scrollHeight-innerHeight)*4,travel:document.body.dataset.travel,status:document.querySelector('#travel-status').textContent,hash:location.hash})))}`,{cause:error}); }
+    const checkNumber=++checkpoint;
+    try { await page.waitForFunction(stop=>document.body.dataset.travel==='holding' && !document.body.dataset.approaching && !document.body.dataset.returning && !document.querySelector('#project-detail').open && document.querySelector('#travel-status').textContent==='HOLDING POSITION' && Number(document.querySelector('.destination-nav [aria-current]').dataset.stop)===stop && Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-stop)<.001,index,{timeout:7000}); }
+    catch(error) { throw new Error(`Check ${checkNumber}, station ${index} did not settle: ${JSON.stringify(await page.evaluate(()=>({y:scrollY,progress:scrollY/(document.documentElement.scrollHeight-innerHeight)*4,width:innerWidth,travel:document.body.dataset.travel,status:document.querySelector('#travel-status').textContent,hash:location.hash,focus:document.activeElement.outerHTML.slice(0,140)})))}`,{cause:error}); }
     await page.waitForTimeout(300);
   };
   await page.waitForFunction(()=>document.querySelector('#window-mode').textContent==='3D ONLINE');
   await parked(0);
+  const leg=await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4);
   await page.mouse.move(720,400);
   await page.mouse.wheel(0,24);
-  await page.waitForTimeout(80);
+  await page.waitForTimeout(650);
+  check(Math.abs(await page.evaluate(()=>scrollY)-24)<2,'Small input was pulled into a station');
+  for(let i=0;i<8;i++){await page.mouse.wheel(0,60);await page.waitForTimeout(90);}
+  await page.waitForTimeout(650);
+  const freeY=await page.evaluate(()=>scrollY);
+  check(Math.abs(freeY-504)<3,'Continuous scroll was captured before reaching a planet');
+  check(await page.locator('#travel-status').innerText()==='FREE FLIGHT','Mid-route pause did not preserve free flight');
+  await page.waitForTimeout(400);
+  check(await page.evaluate(()=>scrollY)===freeY,'Free-flight pause drifted toward a station');
+  await page.mouse.wheel(0,-100);await page.waitForTimeout(650);
+  check(Math.abs(await page.evaluate(()=>scrollY)-(freeY-100))<3,'Mid-route reversal was pulled back');
+  await page.setViewportSize({width:1290,height:955});
+  await page.waitForTimeout(450);
+  check(Math.abs(await page.evaluate(()=>scrollY/(document.documentElement.scrollHeight-innerHeight)*4)-(freeY-100)/leg)<.003,'Resize lost the free-flight position');
+  check(await page.locator('#travel-status').innerText()==='FREE FLIGHT','Resize lost the paused free-flight status');
+  await page.setViewportSize({width:1440,height:900});await page.waitForTimeout(350);
+  await page.mouse.wheel(0,Math.round(leg*.84)-await page.evaluate(()=>scrollY));
+  await page.waitForTimeout(120);
   check((await page.locator('#briefing-title').innerText()).includes('Your next idea'),'Section switched before the ship arrived');
   await parked(1);
   check(new URL(page.url()).hash==='#selected-work','Wheel arrival hash differs from the section');
@@ -61,20 +81,39 @@ async page => {
   check(await page.evaluate(()=>!document.body.dataset.approaching && !document.body.dataset.returning),'Navigation left a moon transition running');
   await page.keyboard.press('PageUp'); await parked(1);
   for(const index of [2,3,4]){
-    await page.mouse.move(720,400); await page.mouse.wheel(0,24);
+    await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg*.84));
     await parked(index);
     await page.screenshot({path:`tmp/cockpit-preview/stations-${index}-C.png`});
   }
-  await page.mouse.wheel(0,-24); await parked(3);
+  await page.mouse.wheel(0,-Math.round(leg*.84)); await parked(3);
   await page.keyboard.press('PageUp'); await parked(2);
   await page.keyboard.press('Home'); await parked(0);
-  await page.mouse.wheel(0,240); await page.waitForTimeout(80);
+  await page.mouse.wheel(0,Math.round(leg*.84)); await page.waitForTimeout(80);
   await page.locator('.destination-nav').getByRole('link',{name:'Contact',exact:true}).click();
   check(new URL(page.url()).hash==='#opening','Navigation changed the section hash before arrival');
   await parked(4); await page.waitForTimeout(500);
   check(new URL(page.url()).hash==='#contact','Pending wheel snap overrode direct navigation');
   await page.keyboard.press('Home'); await parked(0);
   await page.keyboard.press('End'); await parked(4);
+  await page.keyboard.press('Home'); await parked(0);
+  await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg*1.45));
+  await page.waitForTimeout(650);
+  check(new URL(page.url()).hash==='#opening','Passing a station incorrectly announced arrival');
+  await page.keyboard.press('PageDown'); await parked(2);
+  await page.keyboard.press('Home'); await parked(0);
+  await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg*1.45));
+  await page.waitForTimeout(650);
+  await page.locator('.flight-tools summary').click();
+  check(await page.locator('[data-route-step="-1"]').isEnabled(),'Previous stayed disabled after free flight passed a planet');
+  await page.locator('[data-route-step="-1"]').click(); await parked(1);
+  await page.locator('.flight-tools summary').click();
+  await page.keyboard.press('Home'); await parked(0);
+  await page.mouse.move(720,400); await page.mouse.wheel(0,Math.round(leg-2)); await parked(1);
+  await page.setViewportSize({width:1290,height:955});
+  await page.waitForTimeout(350);
+  await page.keyboard.press('Home'); await parked(0);
+  const tallLeg=await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4);
+  await page.mouse.move(650,380); await page.mouse.wheel(0,Math.round(tallLeg*.84)); await parked(1);
   check(errors.length===0,errors.join('; '));
-  return {result:'passed',browser:page.context().browser().version(),checks:'24px wheel gestures park at all five stations; section/planet/hash alignment; ambient frames continue while parked; minimal motion stops frames; moon approach blocks route keys; moon return/focus/status; navigation cancels approach; reverse wheel; PageUp/Home/End; direct navigation cancels pending snap',errors};
+  return {result:'passed',browser:page.context().browser().version(),checks:'small/continuous/reverse free flight; paused resize position/status; directional snap; native scroll-pixel arrival; keyboard and physical controls after passing stations; section/hash alignment; ambient/minimal motion; moon approach/return/focus; direct navigation cancels pending snap',errors};
 }

@@ -25,14 +25,25 @@ performance acceptance have not been completed.
   remain in the clear window rectangle. Arrival sphere bounds also remain in
   the right side of the window. This is geometry evidence, not a frame-rate
   benchmark or proof against every cockpit/overlay occlusion.
-- Standard-motion station check: **passed**, short 24 px wheel gestures settle
-  at all five exact stations, with matching section and hash only on arrival.
-  Reverse wheel, Page Up, Home and End also reach exact stops. Scroll position
+- Standard-motion station check: **passed**, a 24 px gesture remains free;
+  successive short gestures and a mid-route reversal keep their native scroll
+  distance. Mid-route pauses stay stable and resize preserves fractional
+  position. Approaching within 22% of the next station and pausing 280 ms
+  settles forward or backward, with section and hash matching camera arrival.
+  Page Up, Home and End also reach exact stops. Scroll position
   and HOLDING status stayed unchanged for 500 ms while ambient RAF continued.
   Toggling Minimal stopped the test-only RAF counter for 500 ms after settling.
   Moon panel stays closed during approach; route keys cannot leave it; Escape
   return restores focus, scroll and HOLDING status. Direct navigation cancels a
   pending wheel snap and waits for an approach to return before departure.
+- Free-flight review identified native pixel rounding near arrivals, controls
+  using the last visited station after passing it, and paused status lost on
+  resize. Progress now aligns within one scroll pixel at a station; step
+  controls use the actual route position; resize preserves direction and
+  re-arms the pause check. Regression covers a near-arrival input, an odd-height
+  viewport, controls after passing a station, and resized paused position/status.
+  Targeted independent browser retests closed all three findings with zero
+  console errors; the complete final normal-motion regression also passed.
 - Zero uncaught page exceptions during the successful final browser-check run.
   Earlier failed checks are retained as diagnostic logs in ignored tmp/tool
   output; they are not described as successful checks.
@@ -75,7 +86,7 @@ performance acceptance have not been completed.
 | --- | --- | --- |
 | 1 System status | Lulus | Camera arrival synchronizes active destination, content, hash and HOLDING status; compact progress and 3D recovery exercised |
 | 2 Familiar language | Lulus | Plain section names and business project content; roleplay is confined to the guide |
-| 3 User control | Lulus | Small forward/reverse gestures snap, keyboard stations, direct jumps, physical Previous/Next; Escape cancels approach; Return restores scroll/focus; Minimal freezes decoration |
+| 3 User control | Lulus | Small gestures and mid-route pauses stay free; directional snap near planets; keyboard stations and direct jumps; Escape/Return preserve route/focus; Minimal freezes decoration |
 | 4 Consistency | Lulus | Same route and project data in A/B/C; native links and dialog; system reduced motion takes priority over continuous decoration |
 | 5 Error prevention | Lulus | Project entry disabled during transit; route keys held during moon travel; direct departure waits for moon return; edge destination buttons disabled; no external writes |
 | 6 Recognition | Lulus | Destination list and four named project buttons remain; secondary controls have labeled disclosures; duplicate scene labels removed |

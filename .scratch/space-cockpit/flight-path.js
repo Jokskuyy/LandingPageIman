@@ -43,9 +43,7 @@ const arrivalRotations = planetSpecs.map((planet,index) => {
 });
 
 export function scrollToTravel(progress) {
-  const bounded = MathUtils.clamp(progress, 0, 4);
-  const index = Math.floor(bounded);
-  return Math.min(4, index + MathUtils.smootherstep(bounded - index, 0, 1));
+  return MathUtils.clamp(progress,0,4);
 }
 export function dampTravel(current, target, seconds, immediate = false) {
   if (immediate || Math.abs(target - current) < .0001) return target;
