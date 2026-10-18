@@ -22,6 +22,14 @@ chat before the full implementation, per the owner's UI guide.
 | B — Command console | Compact navigation and reading console on the left | Consistent reading area; narrower exterior view |
 | C — Navigation chart | Thin navigation, open central window, wide lower briefing | More room for the flight path; less height for detailed text |
 
+## Selected direction — 2026-10-18
+
+The owner selected **A — Panoramic bridge** through chat. Carry its broad front
+window and left-side briefing into the implementation. B/C remain exploration
+references. The guide treatment is still being discussed: the owner finds the
+current full-body officer out of place. No replacement guide concept has been
+chosen yet.
+
 ## Confirmed decisions
 
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
@@ -90,9 +98,10 @@ trails and stops rendering when settled. Standard motion keeps the ambient
 scene alive while parked. Hidden tabs and lost WebGL contexts do not keep
 scheduling frames.
 
-This is not the production migration. Complete skills/background migration,
+This is not the production migration. A is now selected; guide treatment remains
+under discussion. Complete skills/background migration,
 all original fragment aliases, production progressive enhancement, final
-performance measurements and release checks remain after a layout is chosen.
+performance measurements and release checks remain for implementation.
 
 ## Isolation and checks
 
