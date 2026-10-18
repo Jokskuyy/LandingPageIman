@@ -124,3 +124,85 @@ body[data-variant='C'] .briefing:has(.capability-list) .body-copy { grid-row:1; 
   body[data-variant='C'] .guide-speech { bottom:calc(var(--officer-height) + 18px); right:0; }
   body[data-variant='C'] .flight-console { height:81px; bottom:4%; }
 }
+
+/* Quiet HUD: the route through the window carries the navigation story. */
+body[data-variant] .cockpit { inset:0; }
+body[data-variant] .brand { padding:6px 8px; background:#06131ad9; border:0; box-shadow:none; font-size:10px; }
+.brand svg { width:18px; height:18px; }
+.brand small { display:none; }
+body[data-variant] .contact-shortcut { border:0; background:#06131ad9; box-shadow:none; padding:8px; }
+body[data-variant] .destination-nav {
+  top:18%; left:9%; width:auto; max-width:80%; display:flex; gap:23px;
+  padding:0 10px; border:0; background:#06131acc;
+}
+body[data-variant] .destination-nav a {
+  padding:0; border:0; border-bottom:1px solid transparent; background:none;
+  min-height:34px; font-size:10px; color:#aebbbd;
+}
+body[data-variant] .destination-nav a[aria-current] { border:0; border-bottom:1px solid var(--sage); color:var(--paper); }
+body[data-variant] .destination-nav a[aria-current]::before { display:none; }
+.nav-index { display:none; }
+body[data-variant='B'] .destination-nav { top:13%; left:38px; max-width:270px; flex-wrap:wrap; gap:4px 18px; }
+body[data-variant='C'] .briefing {
+  left:8%; bottom:24%; width:56%; max-height:28%; padding:18px 20px;
+  background:linear-gradient(90deg,#081720ed,#081720c9); border:0; box-shadow:none;
+}
+body[data-variant='C'] #briefing-content { gap:0 26px; grid-template-columns:.9fr 1.1fr; }
+body[data-variant='C'] .briefing h1 { font-size:42px; }
+.briefing:has(.project-picks) .body-copy, .briefing:has(.project-picks) .source-note { display:none; }
+body[data-variant='C'] .briefing:has(.project-picks) h1 { font-size:38px; }
+body[data-variant='C'] .project-picks { grid-row:1/5; margin:0; }
+.project-picks button { background:transparent; }
+body[data-variant] .guide { --officer-height:225px; right:8%; bottom:24%; height:240px; width:170px; }
+body[data-variant] .officer { height:var(--officer-height); width:calc(var(--officer-height) * .70); right:0; }
+body[data-variant] .officer img { left:calc(var(--officer-height) * .029); }
+body[data-variant] .officer[data-state='traveling'] { clip-path:inset(0 22% 0 0); }
+body[data-variant] .officer[data-state='traveling'] img { left:calc(var(--officer-height) * -.595); }
+body[data-variant] .officer[data-state='arriving'] img { left:calc(var(--officer-height) * -1.153); }
+body[data-variant] .officer[data-state='explaining'] img { left:calc(var(--officer-height) * -1.862); }
+body[data-variant] .guide-speech {
+  right:0; bottom:calc(var(--officer-height) + 12px); width:210px; padding:0;
+  background:none; border:0; box-shadow:none; text-shadow:0 2px 8px #000;
+}
+.guide-speech::after { display:none; }
+body[data-variant] .guide-speech>p:last-child { font-size:11px; line-height:1.7; color:#b9c6c6; }
+body[data-variant] .flight-console {
+  left:50%; right:auto; bottom:7%; width:240px; height:auto; transform:translateX(-50%);
+  display:flex; gap:14px; padding:0; border:0; background:none; box-shadow:none;
+}
+.console-note, .route-labels { display:none; }
+.route-instrument { flex:1; padding:0; }
+.route-track b { width:4px; height:4px; }
+.progress-readout { border:0; padding:0; }
+body[data-variant] .progress-readout strong { font:11px var(--mono); }
+.progress-readout strong span { font-size:9px; }
+.progress-readout small { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+body[data-variant] .flight-console::after { content:'SCROLL TO FOLLOW THE LIGHT'; top:-22px; bottom:auto; font-size:7px; color:#9cacae; }
+.flight-tools { position:absolute; z-index:10; right:8%; bottom:5%; font:9px var(--mono); color:#bdcbc9; }
+.flight-tools>summary, .prototype-bar>summary { cursor:pointer; min-height:32px; padding:9px 0; }
+.flight-tools-panel { position:absolute; bottom:44px; right:0; width:255px; padding:14px; border:1px solid #425d60; background:#091923f5; }
+body[data-variant] .flight-tools .overhead-control {
+  position:static; display:flex; justify-content:space-between; width:auto; height:auto;
+  padding:0; background:none; border:0; box-shadow:none;
+}
+body[data-variant] .flight-tools .manual-control { position:static; padding:14px 0 0; border:0; background:none; box-shadow:none; transform:none; }
+.manual-control>div { justify-content:space-between; }
+body[data-variant] .manual-control button { font-size:9px; min-height:34px; }
+.prototype-bar {
+  left:25px; bottom:15px; transform:none; display:block; padding:0 12px; width:auto;
+  border:1px solid #324b5066; background:#091620e6; color:#b8c7c4; box-shadow:none;
+}
+.prototype-bar[open] { padding-bottom:12px; }
+.prototype-label { font:8px/1.8 var(--mono); margin:4px 0 10px; }
+.variant-buttons button { color:#c3cecb; border-color:#3b5458; font-size:9px; min-height:34px; }
+.variant-buttons button[aria-pressed='true'] { background:#304a40; color:#edf1df; }
+.variant-arrows { display:none; }
+.prototype-bar :focus-visible { outline-color:#edcf95; }
+@media(max-height:800px) {
+  body[data-variant] .destination-nav { top:18%; gap:20px; }
+  body[data-variant] .guide { --officer-height:185px; height:200px; bottom:24%; }
+  body[data-variant] .guide-speech { bottom:calc(var(--officer-height) + 10px); width:195px; }
+  body[data-variant='C'] .briefing { max-height:29%; padding:13px 16px; }
+  body[data-variant='C'] .briefing h1 { font-size:35px; }
+  body[data-variant='C'] .briefing:has(.project-picks) h1 { font-size:33px; }
+}

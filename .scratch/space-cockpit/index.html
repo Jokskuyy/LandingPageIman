@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="prototype.css?v=20261018-flight-v3">
-  <script type="module" src="prototype.js?v=20261018-flight-v3"></script>
+  <link rel="stylesheet" href="prototype.css?v=20261018-framing-v5">
+  <script type="module" src="prototype.js?v=20261018-framing-v5"></script>
 </head>
 <body data-variant="A">
   <a class="skip-link" href="#briefing-title">Skip to destination information</a>
@@ -31,17 +31,11 @@
       <path d="M0 760H1440V820H0Z" fill="#08111a"/>
     </svg>
     <img class="cockpit-interior" id="cockpit-interior" src="assets/cockpit-interior-v1.png" alt="" aria-hidden="true" fetchpriority="high">
-    <div class="overhead-control" aria-label="Overhead controls">
-      <div class="overhead-indicator"><i aria-hidden="true"></i><span>VIEWING WINDOW<small id="window-mode">INITIALIZING</small></span></div>
-      <button type="button" id="motion-mode" aria-pressed="false"><span class="physical-toggle" aria-hidden="true"></span><span>Motion<small id="motion-setting">Standard</small></span></button>
-    </div>
-    <div class="manual-control" aria-label="Manual flight controls"><p>DESTINATION CONTROL</p><div><button type="button" data-route-step="-1">◀ Previous</button><button type="button" data-route-step="1">Next ▶</button></div></div>
     <header class="identity-bar">
       <a class="brand" href="#opening" data-stop="0" aria-label="Iman Nugraha — Opening">
         <svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true"><path d="M12 0h4v8h4v4h8v4h-8v4h-4v8h-4v-8H8v-4H0v-4h8V8h4Z" fill="currentColor"/><path d="M12 12h4v4h-4Z" fill="#101c25"/></svg>
         <span>IMAN NUGRAHA<small>Developer portfolio</small></span>
       </a>
-      <div class="flight-label"><i aria-hidden="true"></i><span>PERSONAL EXPLORER<small>Jakarta, Indonesia / Earth</small></span></div>
       <a class="contact-shortcut" href="#contact" data-stop="4">Contact <span aria-hidden="true">↗</span></a>
     </header>
     <nav class="destination-nav" aria-label="Destinations">
@@ -60,20 +54,26 @@
         <p class="footnote">Informatics graduate · UPN Veteran Jakarta</p>
       </div>
     </main>
-    <div class="window-label" aria-hidden="true"><span class="crosshair">+</span><span id="window-caption">SELECTED WORK<small>Mission archives · 4 project moons</small></span></div>
-    <div id="moon-labels" class="moon-labels" aria-label="Project moons"></div>
     <aside class="guide" aria-label="Your guide">
-      <div class="guide-speech"><p class="eyebrow">A WORD FROM YOUR GUIDE</p><p id="guide-dialogue">Captain, navigation is ready. Our route will take us through the mission archives, operational capabilities, and command records.</p></div>
+      <div class="guide-speech"><p id="guide-dialogue">Captain, follow the light to explore the work.</p></div>
       <div class="officer" data-state="idle" role="img" aria-label="Pixel-art Iman as a fictional space officer"><img src="assets/officer-sheet-v1.png" width="1983" height="793" alt="" aria-hidden="true"></div>
-      <div class="guide-name"><i aria-hidden="true"></i><span>IMAN<small>Mission guide</small></span><span class="rank" aria-hidden="true">▰ ▰ ▰</span></div>
     </aside>
     <footer class="flight-console">
       <div class="console-note"><p class="eyebrow">YOUR ROUTE</p><p>Explore. Inspect. Connect.</p><small>Scroll to travel · Stop to read</small></div>
       <div class="route-instrument"><div class="route-track" aria-hidden="true"><span id="route-fill"></span><b></b><b></b><b></b><b></b><b></b></div><div class="route-labels"><span>Opening</span><span>Work</span><span>Capabilities</span><span>About</span><span>Contact</span></div></div>
       <div class="progress-readout"><strong id="route-percent">0<span>%</span></strong><small id="travel-status" role="status">HOLDING POSITION</small></div>
     </footer>
+    <details class="flight-tools">
+      <summary>Flight controls</summary>
+      <div class="flight-tools-panel">
+        <div class="overhead-control" aria-label="Overhead controls">
+          <div class="overhead-indicator"><i aria-hidden="true"></i><span>VIEWING WINDOW<small id="window-mode">INITIALIZING</small></span></div>
+          <button type="button" id="motion-mode" aria-pressed="false"><span class="physical-toggle" aria-hidden="true"></span><span>Motion<small id="motion-setting">Standard</small></span></button>
+        </div>
+        <div class="manual-control" aria-label="Manual flight controls"><div><button type="button" data-route-step="-1">◀ Previous</button><button type="button" data-route-step="1">Next ▶</button></div></div>
+      </div>
+    </details>
     <div class="scene-status" id="scene-status" role="status"><span>Preparing the viewing window…</span><button id="retry-scene" hidden>Retry 3D</button></div>
-    <div class="chart-grid" aria-hidden="true"></div>
   </div>
   <div class="scroll-track" aria-hidden="true"></div>
   <p class="sr-only" id="destination-announcement" role="status" aria-live="polite"></p>
@@ -81,8 +81,9 @@
     <div class="detail-top"><div><p class="eyebrow">MISSION ARCHIVE / PROJECT DETAIL</p><h2 id="detail-heading">Project details</h2></div><button class="button return-button" id="return-to-planet">← Return to Selected Work</button></div>
     <div id="detail-content"></div>
   </dialog>
-  <div class="prototype-bar" aria-label="Design exploration controls">
-    <div class="prototype-label"><strong>DESIGN EXPLORATION</strong><span>Desktop preview · choose in chat</span></div>
+  <details class="prototype-bar" aria-label="Design exploration controls">
+    <summary>Preview <span id="variant-name">A</span></summary>
+    <p class="prototype-label">Desktop preview · choose a layout in chat</p>
     <div class="variant-buttons" role="group" aria-label="Visual direction">
       <button data-variant="A" aria-pressed="true"><b>A</b><span>Panoramic bridge</span></button>
       <button data-variant="B" aria-pressed="false"><b>B</b><span>Command console</span></button>
@@ -90,7 +91,7 @@
     </div>
     <div class="variant-arrows"><button id="previous-variant" aria-label="Previous visual direction">←</button><button id="next-variant" aria-label="Next visual direction">→</button></div>
     <p id="prototype-state" class="sr-only" role="status">Direction A: Panoramic bridge. Destination: Opening.</p>
-  </div>
+  </details>
   <noscript><div class="no-script">This design preview uses JavaScript. <a href="../../index.html">Read the existing portfolio and contact information →</a></div></noscript>
 </body>
 </html>

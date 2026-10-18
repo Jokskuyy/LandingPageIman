@@ -3,31 +3,37 @@ import { Vector3, Quaternion, Matrix4, CatmullRomCurve3, MathUtils } from './nod
 
 const up = new Vector3(0, 1, 0);
 export const waypoints = [
-  new Vector3(-12, 6, 40),
+  new Vector3(-12, 2, 40),
   new Vector3(0, 2, 16),
   new Vector3(24, 11, -27),
   new Vector3(-14, -5, -69),
-  new Vector3(18, 6, -116)
+  new Vector3(-38, 6, -116)
 ];
 export const flightCurve = new CatmullRomCurve3(waypoints, false, 'centripetal');
-const distances = [19, 22, 20, 24], sides = [8.5, 11, -12, 9];
-export const planetSpecs = [2.4, 3.1, 2.75, 3.8].map((radius, index) => {
-  const forward = flightCurve.getTangent((index + 1) / 4).normalize();
-  const right = forward.clone().cross(up).normalize();
+const routeLengths = flightCurve.getLengths();
+// Tube UVs measure arc length; camera arrivals use the curve's parameter.
+export function travelToDistance(travel) {
+  const sample = MathUtils.clamp(travel / 4, 0, 1) * (routeLengths.length - 1);
+  const index = Math.floor(sample);
+  return MathUtils.lerp(routeLengths[index], routeLengths[Math.min(index + 1, routeLengths.length - 1)], sample - index) / routeLengths.at(-1);
+}
+export function traceDrop(distance) {
+  return 2.6 * (1 - MathUtils.smoothstep(distance, .85, 1));
+}
+const ahead = new Vector3(), view = new Matrix4(), heading = new Quaternion();
+const distances = [22, 24, 23, 28], sides = [7, 6.5, 6.5, 7];
+export const planetSpecs = [2.4, 3.1, 2.75, 3.4].map((radius, index) => {
+  sampleFlight(index + 1, new Vector3(), heading);
+  const forward = new Vector3(0,0,-1).applyQuaternion(heading);
+  const right = new Vector3(1,0,0).applyQuaternion(heading);
   const position = waypoints[index + 1].clone().addScaledVector(forward, distances[index]).addScaledVector(right, sides[index]);
-  position.y += [1, 2.2, -.8, 2.5][index];
+  position.addScaledVector(new Vector3(0,1,0).applyQuaternion(heading), index === 0 ? -3.4 : -.4);
   return { position, radius, tilt: [.28, -.38, .16, -.25][index] };
 });
 export const moonOffsets = [
   new Vector3(-4.2, 1.8, 2.8), new Vector3(2.8, 2.7, 3.8),
   new Vector3(-2.7, -2.2, 3.5), new Vector3(4.4, -1.4, 2)
 ];
-const headings = waypoints.map((position, index) => {
-  const planet = planetSpecs[Math.max(0, index - 1)].position;
-  const right = planet.clone().sub(position).normalize().cross(up).normalize();
-  const focus = planet.clone().addScaledVector(right, -[4.8, 4.1, 3, 4.2, 3.7][index]);
-  return new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(position, focus, up));
-});
 
 export function scrollToTravel(progress) {
   const bounded = MathUtils.clamp(progress, 0, 4.999);
@@ -39,9 +45,11 @@ export function dampTravel(current, target, seconds, immediate = false) {
   return MathUtils.damp(current, target, 10, MathUtils.clamp(seconds, 0, .05));
 }
 export function sampleFlight(travel, position, quaternion) {
-  const value = MathUtils.clamp(travel, 0, 4), index = Math.min(3, Math.floor(value));
+  const value = MathUtils.clamp(travel, 0, 4);
   flightCurve.getPoint(value / 4, position);
-  quaternion.slerpQuaternions(headings[index], headings[index + 1], MathUtils.smootherstep(value - index, 0, 1));
+  flightCurve.getPointAt(Math.min(1, travelToDistance(value) + .055), ahead);
+  if (ahead.distanceToSquared(position) < .0001) ahead.copy(position).add(flightCurve.getTangent(1));
+  quaternion.setFromRotationMatrix(view.lookAt(position, ahead, up));
 }
 
 export function moonTour(homePosition, moonPosition) {

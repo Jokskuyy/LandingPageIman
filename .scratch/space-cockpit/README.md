@@ -11,15 +11,16 @@ node .scratch/space-cockpit/serve.mjs
 ```
 
 Open http://127.0.0.1:43188/.scratch/space-cockpit/?variant=A
-The bottom A/B/C buttons change the preview and its URL; they do not approve a
-production direction. Left/right arrows also switch directions. Choose through
+Open the small **Preview A/B/C** disclosure at the bottom left to compare
+layouts. Its buttons change the preview and URL; they do not approve a
+production direction. Left/right arrows also switch layouts. Choose through
 chat before the full implementation, per the owner's UI guide.
 
 | Direction | Composition | Tradeoff |
 | --- | --- | --- |
 | A — Panoramic bridge | Horizontal navigation, briefing on left, guide on right | Recommended for the brief: broad exterior view and readable introduction |
-| B — Command console | Permanent left navigation and reading console | Consistent reading area; narrower exterior view |
-| C — Navigation chart | Vertical route, central exterior view, wide lower briefing | More of a navigation chart; less height for detailed text |
+| B — Command console | Compact navigation and reading console on the left | Consistent reading area; narrower exterior view |
+| C — Navigation chart | Thin navigation, open central window, wide lower briefing | More room for the flight path; less height for detailed text |
 
 ## Confirmed decisions
 
@@ -35,6 +36,20 @@ chat before the full implementation, per the owner's UI guide.
   snappy, linear planet transitions. The preview now uses one fixed 3D world:
   a winding camera path with lateral/vertical depth, gradual turns, subtle bank,
   frame-independent easing and a longer scroll route. The cockpit stays fixed.
+- The owner then requested a quieter interface and a shimmering trace of the
+  route. Duplicate floating project labels, large status/navigation instruments,
+  and the permanent layout switcher were removed from the default view. Native
+  **Flight controls** and **Preview** disclosures retain the secondary controls.
+  The guide is smaller and speaks one short sentence per destination.
+- Camera heading follows a lookahead on the actual route. Planets are placed
+  beside the arrival direction, preserving the view of the route and a clear
+  reading area. The first leg is level and the first planet sits lower so it is
+  visible through the canopy from Opening as well as Work.
+- The route uses two lightweight Three.js tubes with a soft glow and glints.
+  Arc-length mapping keeps the trace aligned with the camera's position. It
+  sits below the ship and rises toward its endpoint, then clears at Contact.
+  Glints advance during movement and settle with the ship; reduced motion keeps
+  the trace steady. It is hidden during optional moon visits.
 - The guide uses the existing avatar as an identity reference. The fictional
   uniform and pixel-art roleplay do not claim actual military experience.
 - Mobile adaptation is a future phase, outside this prototype and current scope.
@@ -76,10 +91,14 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-co
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
 The browser check covers 1440×900 and 1280×720, variant switching, all four
 projects, panel scrolling, keyboard entry/Escape, focus and scroll restoration,
-forward/stop/reverse, direct destinations, contact href, physical controls,
+forward/stop/reverse, direct destinations, contact href, keyboard access to the
+collapsed menus and physical controls,
 reduced motion, 3D fallback/retry and context-loss recovery on a fragment URL.
-The standard-motion check exercises gradual wheel travel, a settled render
-counter, actual moon approach, return and reverse travel. External destinations are preserved,
+The standard-motion check exercises all five destinations via gradual wheel
+input, a settled render counter, actual moon approach, return and reverse travel.
+Geometry checks include 942 projections of the future route through the window
+and the bounds of each arrival planet in all three layouts at both desktop sizes.
+External destinations are preserved,
 not sent messages or submitted forms. A preview pass is not a production
 acceptance or a final 60fps benchmark.
 

@@ -7,13 +7,12 @@ const stops = ['Opening', 'Selected work', 'Capabilities', 'About & experience',
 const slugs = ['opening', 'selected-work', 'capabilities', 'about-experience', 'contact'];
 const variants = { A: 'Panoramic bridge', B: 'Command console', C: 'Navigation chart' };
 const dialogues = [
-  'Captain, navigation is ready. Our route will take us through the mission archives, operational capabilities, and command records.',
-  'Captain, the mission archives are within range. Select a moon to inspect its challenges, decisions, and evidence.',
-  'Captain, this sector charts the capabilities behind the missions. The console has the operational overview.',
-  'Captain, these are my command records: the background, experience, and approach behind the work.',
-  'Captain, our route is complete. Open a channel when you are ready to discuss your next mission.'
+  'Captain, follow the light to explore the work.',
+  'Captain, four project moons are ready to inspect.',
+  'Captain, these are the capabilities behind the work.',
+  'Captain, here are my background and experience.',
+  'Captain, ready for a new mission? Open a channel.'
 ];
-const captions = ['SELECTED WORK', 'SELECTED WORK', 'CAPABILITIES', 'ABOUT & EXPERIENCE', 'CONTACT'];
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
 let routeImmediate = false, stopTimer, returnFocus, savedScroll = 0, moonRequest = 0;
@@ -36,6 +35,7 @@ function setVariant(next) {
   if (!variants[next]) return;
   variant = next;
   document.body.dataset.variant = next;
+  $('#variant-name').textContent = next;
   document.querySelectorAll('.variant-buttons button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.variant === next)));
   const url = new URL(location.href);
   url.searchParams.set('variant', next);
@@ -92,7 +92,6 @@ function renderStop(index, announce = true) {
   if (titleFocused) $('#briefing-title').focus({ preventScroll: true });
   $('#briefing').scrollTop = 0;
   $('#guide-dialogue').textContent = dialogues[index];
-  $('#window-caption').innerHTML = `${captions[index]}<small>${index < 2 ? 'Mission archives · 4 project moons' : ['','','Operational overview','Background & approach','Open a channel'][index]}</small>`;
   document.querySelectorAll('[data-stop]').forEach(link => {
     if (Number(link.dataset.stop) === index) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
@@ -142,7 +141,6 @@ async function loadSource() {
     for (const attribute of ['href', 'src']) if (node.hasAttribute(attribute)) node.setAttribute(attribute, new URL(node.getAttribute(attribute), sourceURL).href);
   });
   projects = [...source.querySelectorAll('[data-build]')].map(node => ({ name: node.querySelector('.project-title').textContent.trim(), node }));
-  $('#moon-labels').innerHTML = projects.map((project, i) => `<button class="moon-label" data-project="${i}" hidden>${project.name}</button>`).join('');
   renderStop(currentStop, false);
   scene?.render();
 }
@@ -204,14 +202,13 @@ function sceneFailure() {
   $('#scene-status').hidden = false;
   $('#scene-status span').textContent = '3D is unavailable. You can still explore the content.';
   $('#retry-scene').hidden = false;
-  $('#moon-labels').hidden = true;
   $('#window-mode').textContent = 'TEXT VIEW';
 }
 
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./node_modules/three/build/three.module.js');
-  const { planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour } = await import('./flight-path.js?v=20261018-flight-v3');
+  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-framing-v5');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
@@ -230,6 +227,29 @@ async function createScene() {
   for (let i = 0; i < 2200; i++) starPositions.push((random() - .5) * 240, (random() - .5) * 150, 80 - random() * 340);
   starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
   world.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xc7dadb, size: .075, transparent: true, opacity: .7, sizeAttenuation: true })));
+  // A pilot-eye route ribbon, rising into the destination at its endpoint.
+  const trace = new THREE.Group(); world.add(trace);
+  const traceProgress = { value:0 }, tracePhase = { value:0 };
+  for (const [radius, opacity] of [[.055,.72],[.18,.12]]) {
+    const geometry = new THREE.TubeGeometry(flightCurve, 320, radius, 6, false);
+    const vertices = geometry.attributes.position, uv = geometry.attributes.uv;
+    for (let i=0;i<vertices.count;i++) vertices.setY(i, vertices.getY(i) - traceDrop(uv.getX(i)));
+    geometry.computeBoundingSphere();
+    trace.add(new THREE.Mesh(geometry, new THREE.ShaderMaterial({
+      uniforms:{ progress:traceProgress, phase:tracePhase, strength:{value:opacity} },
+      vertexShader:'varying float along; void main(){ along=uv.x; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+      fragmentShader:`
+        varying float along; uniform float progress; uniform float phase; uniform float strength;
+        void main(){
+          float ahead=smoothstep(progress+.004,progress+.025,along);
+          float distanceFade=1.0-smoothstep(progress+.20,progress+.43,along);
+          float glint=pow(.5+.5*sin(along*240.0-phase*3.0),10.0);
+          vec3 color=mix(vec3(.40,.77,.69),vec3(.91,1.0,.84),glint);
+          gl_FragColor=vec4(color,ahead*distanceFade*(.30+glint*.70)*strength);
+        }`,
+      transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
+    })));
+  }
   const planetGeometry = new THREE.SphereGeometry(1, 56, 36), moonGeometry = new THREE.IcosahedronGeometry(.32, 2);
   const palettes = [['#275358','#4e8580','#8eaa85','#cad1af'],['#3b485b','#73838c','#a4b8ab','#c7c8ab'],['#533e38','#966b4e','#b69667','#d4bc91'],['#344749','#647d6b','#adc19b','#d1d2ad']];
   function surface(palette, index) {
@@ -271,7 +291,7 @@ async function createScene() {
   });
   let travel = scrollToTravel(progress), targetTravel = travel, selectedMoon = null;
   let frame = 0, lastFrame = 0, lost = false, operation = null, path = null, pathProgress = 0;
-  const projected = new THREE.Vector3(), focus = new THREE.Vector3(), moonPosition = new THREE.Vector3();
+  const focus = new THREE.Vector3(), moonPosition = new THREE.Vector3();
   const homePosition = new THREE.Vector3(), homeRotation = new THREE.Quaternion();
   const homeRight = new THREE.Vector3();
   const lookMatrix = new THREE.Matrix4(), lookRotation = new THREE.Quaternion();
@@ -309,18 +329,11 @@ async function createScene() {
       viewOffset.set(-pointer.y * .008, pointer.x * .012, bank, 'YXZ');
       camera.quaternion.multiply(viewRotation.setFromEuler(viewOffset));
     }
+    trace.visible = !path && travel < 3.995;
+    traceProgress.value = travelToDistance(travel);
+    if (!minimal) tracePhase.value += seconds;
+    else tracePhase.value = 0;
     renderer.render(world, camera);
-    const bounds = host.getBoundingClientRect();
-    document.querySelectorAll('.moon-label').forEach((button, index) => {
-      const visible = currentStop === 1 && !detail.open && selectedMoon === null && Math.abs(travel - 1) < .25;
-      button.hidden = !visible;
-      if (visible) {
-        moons[index].getWorldPosition(projected); projected.project(camera);
-        button.hidden = projected.z < -1 || projected.z > 1 || Math.abs(projected.x) > .94 || Math.abs(projected.y) > .75;
-        button.style.left = `${bounds.left + (projected.x + 1) / 2 * bounds.width}px`;
-        button.style.top = `${bounds.top + (-projected.y + 1) / 2 * bounds.height + 28}px`;
-      }
-    });
     completed?.(true);
     if (operation || (!path && Math.abs(travel - targetTravel) > .00001) || Math.abs(pointer.x - pointerTarget.x) > .001 || Math.abs(pointer.y - pointerTarget.y) > .001) render();
     else lastFrame = 0;
