@@ -16,7 +16,7 @@ test('published cockpit resolves its assets, module graph and portfolio links un
     const url = new URL(node.getAttribute('src') || node.getAttribute('href'), base);
     if (url.origin === base.origin) await access(local(url));
   }
-  for (const file of ['prototype.js', 'flight-path.js', 'vendor/three/three.module.js', 'vendor/three/three.core.js']) {
+  for (const file of ['prototype.js', 'flight-path.js', 'project-moons.js', 'vendor/three/three.module.js', 'vendor/three/three.core.js']) {
     const contents = await readFile(new URL(`cockpit/${file}`, root), 'utf8');
     assert(!contents.includes('node_modules/'), `${file} imports an unpublished dependency`);
     for (const [, specifier] of contents.matchAll(/\b(?:from\s+|import\s*\()\s*['"]([^'"]+)['"]/g)) {

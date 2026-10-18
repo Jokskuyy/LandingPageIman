@@ -268,3 +268,25 @@ body[data-variant] .guide-speech>p:last-child {
   body[data-variant] .guide-speech { right:-5px; width:215px; bottom:-86px; }
   .holo-projector { width:138px; }
 }
+
+/* Project moons use the same accent in the window and accessible controls. */
+.project-picks .moon-dot {
+  position:relative; width:25px; height:25px; flex-basis:25px;
+  border:1px solid color-mix(in srgb,var(--moon),transparent 45%);
+  background:radial-gradient(ellipse at 65% 36%,#06121d75 0 12%,transparent 14%),
+    radial-gradient(ellipse at 33% 65%,#06121d90 0 9%,transparent 12%),
+    radial-gradient(circle at 30% 25%,color-mix(in srgb,var(--moon),#fff 18%),color-mix(in srgb,var(--moon),#142b3d 55%) 56%,#07111e 90%);
+  box-shadow:0 0 13px color-mix(in srgb,var(--moon),transparent 88%);
+}
+.project-picks button:nth-child(n) .moon-dot { filter:none; }
+.project-picks button:nth-child(2) .moon-dot::after,
+.project-picks button:nth-child(4) .moon-dot::after {
+  content:''; position:absolute; inset:7px -6px; border:1px solid var(--moon);
+  border-radius:50%; transform:rotate(-28deg); opacity:.7;
+}
+.project-picks button[data-targeted],.project-picks button:focus-visible {
+  border-color:var(--moon); background:#102732e8;
+  box-shadow:inset 2px 0 var(--moon);
+}
+body[data-variant='A'] .detail-panel { width:min(780px,62vw); }
+.detail-panel::backdrop { background:#010a1259; }

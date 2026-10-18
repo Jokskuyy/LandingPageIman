@@ -30,10 +30,6 @@ export const planetSpecs = [2.4, 3.1, 2.75, 3.4].map((radius, index) => {
   position.addScaledVector(new Vector3(0,1,0).applyQuaternion(heading), index === 0 ? -3.4 : -.4);
   return { position, radius, tilt: [.28, -.38, .16, -.25][index] };
 });
-export const moonOffsets = [
-  new Vector3(-4.2, 1.8, 2.8), new Vector3(2.8, 2.7, 3.8),
-  new Vector3(-2.7, -2.2, 3.5), new Vector3(4.4, -1.4, 2)
-];
 const arrivalRotations = planetSpecs.map((planet,index) => {
   sampleCourse(index+1,new Vector3(),heading);
   const right = new Vector3(1,0,0).applyQuaternion(heading);
@@ -41,6 +37,12 @@ const arrivalRotations = planetSpecs.map((planet,index) => {
   const focus = planet.position.clone().addScaledVector(right,-4.8).addScaledVector(localUp,1.2);
   return new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(waypoints[index+1],focus,up));
 });
+// Place all four project moons in the open window at Work, including tall views.
+const workRight=new Vector3(1,0,0).applyQuaternion(arrivalRotations[0]);
+const workUp=new Vector3(0,1,0).applyQuaternion(arrivalRotations[0]);
+const workForward=new Vector3(0,0,-1).applyQuaternion(arrivalRotations[0]);
+export const moonOffsets = [[-3.8,2.4,1.7],[-.7,4,1.1],[-4.1,-.7,1.9],[1.8,2.9,1.7]].map(([x,y,z])=>
+  workRight.clone().multiplyScalar(x).addScaledVector(workUp,y).addScaledVector(workForward,-z));
 
 export function scrollToTravel(progress) {
   return MathUtils.clamp(progress,0,4);
@@ -69,7 +71,7 @@ export function moonTour(homePosition, moonPosition) {
   const outside = fromPlanet.clone().add(toMoon).normalize();
   const waypoint = planet.position.clone().addScaledVector(outside, planet.radius + 7);
   waypoint.y += 1.5;
-  const approach = moonPosition.clone().sub(waypoint).normalize().multiplyScalar(-3.4);
+  const approach = moonPosition.clone().sub(waypoint).normalize().multiplyScalar(-6);
   const orbitEnd = approach.clone().applyAxisAngle(up, -.42);
   return new CatmullRomCurve3([
     homePosition.clone(), waypoint,

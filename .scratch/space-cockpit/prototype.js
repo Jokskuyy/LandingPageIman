@@ -8,7 +8,7 @@ const slugs = ['opening', 'selected-work', 'capabilities', 'about-experience', '
 const variants = { A: 'Panoramic bridge', B: 'Command console', C: 'Navigation chart' };
 const dialogues = [
   'Captain, follow the light to explore the work.',
-  'Captain, four project moons are ready to inspect.',
+  "Captain, choose a project. I'll bring its moon into view.",
   'Captain, these are the capabilities behind the work.',
   'Captain, here are my background and experience.',
   'Captain, ready for a new mission? Open a channel.'
@@ -18,6 +18,7 @@ let variant = 'A', currentStop = -1, progress = 0, sectionTravel = 0, source, so
 let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
 let snapTimer, scrollDirection = 0, lastScrollY = scrollY, crossedStop = null;
 const detail = $('#project-detail');
+const moonAccents = ['#81cae8','#78e6bc','#ffb56d','#c3b5ff'];
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
   document.body.dataset.calm = String(isReduced());
@@ -92,7 +93,15 @@ document.addEventListener('click', event => {
   if (event.target.closest('[data-retry-source]')) { sourceError = false; loadSource().catch(sourceFailure); }
 });
 
-const picks = () => `<div class="project-picks">${projects.map((project, i) => `<button type="button" data-project="${i}"><span class="moon-dot" aria-hidden="true"></span><span>${project.name}</span></button>`).join('')}</div>`;
+const picks = () => `<div class="project-picks">${projects.map((project, i) => `<button type="button" data-project="${i}" style="--moon:${moonAccents[i]}"><span class="moon-dot" aria-hidden="true"></span><span>${project.name}</span></button>`).join('')}</div>`;
+for (const type of ['pointerover','focusin']) $('#briefing-content').addEventListener(type, event => {
+  const button=event.target.closest('[data-project]');
+  if (button && !button.disabled) scene?.highlightMoon(Number(button.dataset.project),type==='focusin'?'focus':'pointer');
+});
+for (const type of ['pointerout','focusout']) $('#briefing-content').addEventListener(type, event => {
+  const button=event.target.closest('[data-project]');
+  if (button && !button.contains(event.relatedTarget)) scene?.highlightMoon(null,type==='focusout'?'focus':'pointer');
+});
 function renderStop(index, announce = true) {
   const previousStop = currentStop;
   currentStop = index;
@@ -279,7 +288,8 @@ function sceneFailure() {
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./node_modules/three/build/three.module.js');
-  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-flow-v8');
+  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261019-moons-v13');
+  const { createProjectMoons } = await import('./project-moons.js?v=20261019-moons-v13');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
@@ -375,7 +385,7 @@ async function createScene() {
       transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
     })));
   }
-  const planetGeometry = new THREE.SphereGeometry(1, 56, 36), moonGeometry = new THREE.IcosahedronGeometry(.32, 2);
+  const planetGeometry = new THREE.SphereGeometry(1, 56, 36);
   const palettes = [['#275358','#4e8580','#8eaa85','#cad1af'],['#3b485b','#73838c','#a4b8ab','#c7c8ab'],['#533e38','#966b4e','#b69667','#d4bc91'],['#344749','#647d6b','#adc19b','#d1d2ad']];
   function surface(palette, index) {
     const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 128;
@@ -391,7 +401,7 @@ async function createScene() {
     texture.magFilter = THREE.NearestFilter;
     return texture;
   }
-  const moons = [];
+  const projectMoons=createProjectMoons(moonOffsets,moonAccents), moons=projectMoons.moons;
   palettes.forEach((palette, i) => {
     const spec = planetSpecs[i];
     const system = new THREE.Group(); system.position.copy(spec.position); world.add(system);
@@ -408,20 +418,41 @@ async function createScene() {
       const ring = new THREE.Mesh(new THREE.RingGeometry(spec.radius * 1.25, spec.radius * 1.85, 96), new THREE.MeshBasicMaterial({ color: i === 0 ? 0xa6bda2 : 0xb3a286, transparent: true, opacity: .25, side: THREE.DoubleSide, depthWrite: false }));
       ring.rotation.set(1.05, .18, spec.tilt); system.add(ring);
     }
-    if (i === 0) {
-      moonOffsets.forEach((position,j) => {
-        const moon = new THREE.Mesh(moonGeometry, new THREE.MeshStandardMaterial({ color: [0xabb4a0,0x8c9eac,0xbbaa86,0x9b9eae][j], roughness: 1 })); moon.position.copy(position); system.add(moon); moons.push(moon);
-      });
-    }
+    if (i === 0) system.add(projectMoons.group);
   });
   let travel = scrollToTravel(progress), targetTravel = travel, selectedMoon = null;
   let frame = 0, lastFrame = 0, lost = false, operation = null, path = null, pathProgress = 0;
   const focus = new THREE.Vector3(), moonPosition = new THREE.Vector3();
   const homePosition = new THREE.Vector3(), homeRotation = new THREE.Quaternion();
-  const homeRight = new THREE.Vector3();
   const lookMatrix = new THREE.Matrix4(), lookRotation = new THREE.Quaternion();
   const viewOffset = new THREE.Euler(), viewRotation = new THREE.Quaternion();
   const pointer = new THREE.Vector2(), pointerTarget = new THREE.Vector2();
+  const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+  let highlightedMoon=null, pointedMoon=null, focusedMoon=null, width=0, height=0;
+
+  function highlightMoon(index,source='pointer') {
+    if (lost) { focusedMoon=pointedMoon=null; index=null; }
+    if (source==='focus') { focusedMoon=index; if(index!==null) pointedMoon=null; }
+    else pointedMoon=index;
+    const next=pointedMoon ?? focusedMoon;
+    $('#cockpit').style.cursor=pointedMoon===null?'':'pointer';
+    if (highlightedMoon===next) return;
+    highlightedMoon=next;
+    document.querySelectorAll('.project-picks button').forEach((button,i)=>button.toggleAttribute('data-targeted',i===next));
+    render();
+  }
+  function pickMoon(event) {
+    if (lost || path || currentStop!==1 || document.body.dataset.travel!=='holding' || event.target.closest('a,button,summary,details,.briefing')) return null;
+    const bounds=host.getBoundingClientRect();
+    mouse.set((event.clientX-bounds.left)/bounds.width*2-1,1-(event.clientY-bounds.top)/bounds.height*2);
+    raycaster.setFromCamera(mouse,camera);
+    return raycaster.intersectObjects(projectMoons.bodies,false)[0]?.object.userData.project ?? null;
+  }
+  function frameMoon(blend=0) {
+    const x=THREE.MathUtils.lerp(variant==='A'?-.03:0,-.32,blend)*width;
+    const y=THREE.MathUtils.lerp(.08,.16,blend)*height;
+    if (camera.view?.offsetX!==x || camera.view?.offsetY!==y) camera.setViewOffset(width,height,x,y,width,height);
+  }
 
   function render() { if (!frame && !lost && !document.hidden) frame = requestAnimationFrame(draw); }
   function draw(time) {
@@ -443,7 +474,7 @@ async function createScene() {
     if (path) {
       path.getPoint(pathProgress, camera.position);
       moons[selectedMoon].getWorldPosition(moonPosition);
-      focus.copy(moonPosition).addScaledVector(homeRight, -.6);
+      focus.copy(moonPosition);
       lookRotation.setFromRotationMatrix(lookMatrix.lookAt(camera.position, focus, camera.up));
       camera.quaternion.copy(homeRotation).slerp(lookRotation, THREE.MathUtils.smootherstep(pathProgress, 0, .65));
       if (!operation && pathProgress === 0) { path = null; selectedMoon = null; }
@@ -454,11 +485,13 @@ async function createScene() {
       viewOffset.set(-pointer.y * .008, pointer.x * .012, bank, 'YXZ');
       camera.quaternion.multiply(viewRotation.setFromEuler(viewOffset));
     }
+    frameMoon(path?THREE.MathUtils.smootherstep(pathProgress,0,1):0);
     trace.visible = !path && travel < 3.995;
     traceProgress.value = travelToDistance(travel);
     if (!minimal) tracePhase.value += seconds;
     else tracePhase.value = 0;
     updateAmbient(seconds,minimal);
+    projectMoons.update(ambientTime,camera,selectedMoon ?? highlightedMoon);
     renderer.render(world, camera);
     if (!path && !operation) syncSection(travel);
     const stop = Math.round(travel);
@@ -468,9 +501,10 @@ async function createScene() {
     else lastFrame = 0;
   }
   function resize() {
-    const { width, height } = host.getBoundingClientRect();
+    ({width,height}=host.getBoundingClientRect());
     renderer.setSize(width, height, false); camera.aspect = width / height;
-    camera.setViewOffset(width, height, variant === 'A' ? -width * .03 : 0, height * .08, width, height);
+    camera.setViewOffset(width,height,0,0,width,height);
+    frameMoon(path?THREE.MathUtils.smootherstep(pathProgress,0,1):0);
     camera.updateProjectionMatrix(); render();
   }
   function setMoon(index) {
@@ -479,7 +513,6 @@ async function createScene() {
     if (index !== null) {
       selectedMoon = index;
       homePosition.copy(camera.position); homeRotation.copy(camera.quaternion);
-      homeRight.set(1,0,0).applyQuaternion(homeRotation);
       moons[index].getWorldPosition(moonPosition);
       path = moonTour(homePosition, moonPosition); pathProgress = 0;
     }
@@ -492,22 +525,31 @@ async function createScene() {
   addEventListener('resize', resize);
   reduced.addEventListener('change', render);
   $('#cockpit').addEventListener('pointermove', event => {
-    if (isReduced() || detail.open || path) return;
+    if (detail.open || path) return;
+    const button=event.target.closest('[data-project]');
+    highlightMoon(button && !button.disabled?Number(button.dataset.project):pickMoon(event));
+    if (isReduced()) return;
     const bounds = host.getBoundingClientRect();
     pointerTarget.set(THREE.MathUtils.clamp((event.clientX - bounds.left) / bounds.width * 2 - 1, -1, 1), THREE.MathUtils.clamp((event.clientY - bounds.top) / bounds.height * 2 - 1, -1, 1));
     render();
   });
-  $('#cockpit').addEventListener('pointerleave', () => { pointerTarget.set(0,0); render(); });
+  $('#cockpit').addEventListener('pointerleave', () => { pointerTarget.set(0,0); highlightMoon(null); render(); });
+  $('#cockpit').addEventListener('click', event => {
+    const index=pickMoon(event);
+    const button=index===null?null:document.querySelector(`.project-picks [data-project="${index}"]`);
+    if (button && !button.disabled) openMoon(index,button);
+  });
   addEventListener('visibilitychange', () => { lastFrame = 0; if (!document.hidden) render(); });
   renderer.domElement.addEventListener('webglcontextlost', event => {
     event.preventDefault(); lost = true; cancelAnimationFrame(frame); frame = 0;
+    highlightMoon(null);
     operation?.resolve(true); operation = null; sceneFailure();
   });
   resize();
   $('#scene-status').hidden = true;
   $('#window-mode').textContent = '3D ONLINE';
   sceneFailed = false;
-  return { resize, render, setProgress(value, immediate = false) { targetTravel = scrollToTravel(value); if (immediate) travel = targetTravel; render(); }, setMoon };
+  return { resize, render, highlightMoon, setProgress(value, immediate = false) { targetTravel = scrollToTravel(value); if (immediate) travel = targetTravel; if(value!==1) { focusedMoon=null; highlightMoon(null); } render(); }, setMoon };
 }
 createScene().then(result => { scene = result; updateRoute(); }).catch(error => {
   if (!String(error).includes('fallback preview')) console.error(error);
