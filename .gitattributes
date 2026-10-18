@@ -3,3 +3,7 @@
 
 # Preserve generated PDF bytes across Windows and Unix checkouts.
 *.pdf binary
+
+# Preserve upstream Three.js formatting and collapse it in GitHub reviews.
+cockpit/vendor/three/* linguist-vendored
+cockpit/vendor/three/*.js -whitespace
