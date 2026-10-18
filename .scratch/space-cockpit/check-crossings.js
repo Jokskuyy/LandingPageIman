@@ -11,13 +11,22 @@ async page => {
     await page.goto(base+`?variant=A&revision=crossings-v12${mode==='fallback'?'&scene=off':''}#opening`);
     await page.reload();
     if(mode!=='fallback') await page.waitForFunction(()=>document.querySelector('#window-mode').textContent==='3D ONLINE');
+    await page.evaluate(()=>addEventListener('scrollend',()=>{
+      if(Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-window.stationTarget)<.001) window.stationScrollEnded=true;
+    }));
     const parked=async stop=>{
       try { await page.waitForFunction(index=>document.body.dataset.travel==='holding' && document.querySelector('.destination-nav [aria-current]').dataset.stop===String(index) && Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-index)<.001,stop,{timeout:4000}); }
       catch { throw new Error(`${mode} did not park at ${stop}: `+JSON.stringify(await page.evaluate(()=>({progress:scrollY/(document.documentElement.scrollHeight-innerHeight)*4,section:document.querySelector('.destination-nav [aria-current]').dataset.stop,status:document.querySelector('#travel-status').textContent,hash:location.hash})))); }
     };
     const navigate=async stop=>{
+      await page.evaluate(index=>{
+        window.stationTarget=index;
+        window.stationScrollEnded=Math.abs(scrollY/(document.documentElement.scrollHeight-innerHeight)*4-index)<.001;
+      },stop);
       await page.locator('.destination-nav [data-stop="'+stop+'"]').click();
       await parked(stop);
+      // A rounded arrival can precede the browser's final smooth-scroll frame.
+      await page.waitForFunction(()=>window.stationScrollEnded);
     };
     await parked(0);
     const leg=await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4);

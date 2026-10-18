@@ -33,7 +33,16 @@ console projector, plus a dark teal dialogue panel with a neon edge.
 The scroll hint and existing route progress now sit inside the central console's
 black display, using the same cyan lighting. The hint is real HTML text.
 
-The owner subsequently approved online testing at `/cockpit/` on the existing
+On 2026-10-19 the owner asked for more interesting project moons. This refines
+the selected space/pixel-art direction: four textured worlds with matching
+control colors, a survey satellite, communication orbit, mineral fragments and
+ice rings. These are fictional visual motifs, not claims about the projects.
+All four moons remain visible at Work. Hover or keyboard focus identifies the
+corresponding moon; clicking a moon opens the same archive as its named button.
+During a visit the camera frames the moon in the right window beside a narrower
+A reading panel. Reduced/Minimal motion freezes rotation and decoration.
+
+The owner approved online testing at `/cockpit/` on the existing
 GitHub Pages production site. `npm run build:cockpit` publishes an explicit
 static copy there, with adjusted project-relative URLs and self-hosted Three.js.
 The main portfolio and this local design reference remain separate.
@@ -108,7 +117,7 @@ Summary content is grounded in that page. The new scene, physical ceiling/deck,
 the three compositions, forward/backward route, moon panels, direct navigation,
 motion control and recovery demonstrate the design direction.
 
-Moon entry now follows a curved approach and short orbital arc (1450 ms), then
+Moon entry follows a curved approach and short orbital arc (1450 ms), then
 opens the project panel. Return reverses that path (950 ms); Escape can cancel
 an approach. Route keys are held during moon travel; direct navigation cancels
 the approach and waits for the return before departing. Focus, station and
@@ -138,11 +147,13 @@ Flight-curve regression: `npm.cmd test --prefix .scratch/space-cockpit`.
 Browser check, with the local server running:
 
 ```powershell
-npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview open http://127.0.0.1:43188/.scratch/space-cockpit/ --browser msedge
+npm.cmd run build:cockpit
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview open http://127.0.0.1:43188/cockpit/ --browser msedge
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-browser.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-stations.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-arrivals.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-crossings.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-moons.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
@@ -159,6 +170,10 @@ in minimal motion, actual moon approach/return, navigation during
 approach, reverse travel, keyboard stations and cancellation of pending snaps.
 Geometry checks include 942 projections of the future route through the window
 and the bounds of each arrival planet in all three layouts at both desktop sizes.
+They also protect visibility of the four moon bodies at four A desktop sizes,
+clear moon approaches and an unobstructed final view past the parent planet.
+The moon browser check covers 16 project visits with direct raycast selection,
+keyboard focus that survives pointer movement, reduced motion and text fallback.
 External destinations are preserved,
 not sent messages or submitted forms. A preview pass is not a production
 acceptance or a final 60fps benchmark.

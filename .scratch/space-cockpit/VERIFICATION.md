@@ -97,7 +97,7 @@ performance acceptance have not been completed.
 ## Approved online test route
 
 The owner approved publishing `/cockpit/` to the existing GitHub Pages site;
-the main portfolio remains the archive source and homepage. The static build
+the main portfolio remains the archive source and homepage. The initial static build
 uses an explicit nine-file allowlist, rewrites the relative root/CV URLs for
 the shallower route and includes Three.js's module/core files and MIT license.
 The hidden design workspace, preview server and checks remain outside the
@@ -185,6 +185,57 @@ regression, JavaScript syntax and diff checks pass. The browser matrix now
 waits for HOLDING after closing a moon panel, because a hidden dialog can
 precede its queued return handler; this avoids starting the next project
 while the previous return is still beginning.
+
+## Project moons — 2026-10-19
+
+Four plain .32-unit moons have become larger textured worlds with crater rims,
+small emissive details and different silhouettes: a blue survey moon, a green
+communication orbit, a copper mineral moon and an icy violet ring system.
+Their fictional motifs do not change project facts. A dedicated browser module
+owns these visuals; the allowlisted static bundle now contains ten files.
+
+Moon anchors are composed in the Work camera's frame so all four remain in the
+open window, including 1068×955. A six-unit approach distance and a gradual
+lens offset frame the visited moon at the right side of the window. The A
+archive panel is narrower and the backdrop lighter, preserving a visible moon
+beside readable project evidence. Route positions and snap policy are unchanged.
+
+Hovering or focusing a named project highlights its moon. Direct raycast clicks
+open that same archive and return focus to its named button. Focus and pointer
+targets are recorded separately: independent review found that pointer movement
+over empty space erased the keyboard target; its regression now preserves the
+focused project. A departing route or context loss clears stale targeting.
+Rotation and decorative orbits use the existing ambient clock, respecting
+Minimal/reduced motion and hidden/context-lost scheduling.
+
+The sixteen-case moon browser check exercises each project in normal motion,
+a tall viewport, reduced motion and text fallback. It checks direct 3D clicks,
+focus/hover association, project evidence, panel overflow and return/focus/station
+restoration. Geometry checks also cover visible moon bounds at four A sizes,
+approaches clear of other moons and the final line of sight past their parent.
+Independent targeted review passed all four direct clicks, focus regression,
+resize during approach/detail, Escape cancellation and real context loss with
+continued project access in text fallback. No uncaught page errors were found.
+The entry, stylesheet, flight geometry and moon module use `20261019-moons-v13`.
+
+The crossing suite's fallback departure exposed a pre-existing test race:
+rounded HOLDING can precede native smooth-scroll completion. An event trace
+reproduced two swallowed 24 px gestures in three immediate departures, without
+a snap call or prevented wheel event. Waiting for the target's native scrollend
+produced three FREE departures at the expected position. The test now awaits
+that event after navigation; its departure distance and assertions are unchanged.
+
+The generated local route passed all 16 moon, 41 crossing and 16 arrival cases,
+the twelve layout/size browser matrix and normal-motion station flow. All 54
+root tests, the CSS build, extended geometry check, syntax and diff checks pass.
+
+The existing Nielsen table also applies to these states: the active moon is
+recognizable (#1/#6), named buttons remain keyboard alternatives (#3/#7), color
+is paired with names/silhouettes (#4), transit guards prevent stale entry (#5),
+the window stays free of permanent labels (#8), fallback retains the archive
+(#9) and the guide explains project selection (#2/#10). Actual motion/render
+verification is desktop only; there is no new accessibility-conformance or
+hardware frame-rate claim.
 
 ## Remaining implementation work after layout choice
 
