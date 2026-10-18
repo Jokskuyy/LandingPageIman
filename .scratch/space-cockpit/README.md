@@ -45,6 +45,14 @@ chat before the full implementation, per the owner's UI guide.
   beside the arrival direction, preserving the view of the route and a clear
   reading area. The first leg is level and the first planet sits lower so it is
   visible through the canopy from Opening as well as Work.
+- The owner clarified that smooth travel must still snap to each planet and
+  section. Four equal scroll legs now join five exact camera waypoints. After
+  wheel input pauses for 180 ms, native smooth scrolling settles at a station;
+  a short gesture advances one station instead of falling back to the old one.
+  During travel the camera follows the trace, then eases into the planet's
+  arrival composition. Content, active navigation and the URL hash update
+  together only after the camera arrives. Page Up/Down, Home/End and body Space
+  also navigate stations. Reverse travel uses the same route and poses.
 - The route uses two lightweight Three.js tubes with a soft glow and glints.
   Arc-length mapping keeps the trace aligned with the camera's position. It
   sits below the ship and rises toward its endpoint, then clears at Contact.
@@ -64,7 +72,10 @@ motion control and recovery demonstrate the design direction.
 
 Moon entry now follows a curved approach and short orbital arc (1450 ms), then
 opens the project panel. Return reverses that path (950 ms); Escape can cancel
-an approach. Minimal motion skips the journey. Rendering stops when settled.
+an approach. Route keys are held during moon travel; direct navigation cancels
+the approach and waits for the return before departing. Focus, station and
+holding status are restored after return, including a resized viewport.
+Minimal motion skips the journey. Rendering stops when settled.
 
 This is not the production migration. Complete skills/background migration,
 all original fragment aliases, production progressive enhancement, final
@@ -85,7 +96,7 @@ Browser check, with the local server running:
 ```powershell
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview open http://127.0.0.1:43188/.scratch/space-cockpit/ --browser msedge
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-browser.js
-npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-motion.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-stations.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
@@ -94,8 +105,9 @@ projects, panel scrolling, keyboard entry/Escape, focus and scroll restoration,
 forward/stop/reverse, direct destinations, contact href, keyboard access to the
 collapsed menus and physical controls,
 reduced motion, 3D fallback/retry and context-loss recovery on a fragment URL.
-The standard-motion check exercises all five destinations via gradual wheel
-input, a settled render counter, actual moon approach, return and reverse travel.
+The standard-motion check exercises short wheel gestures to all five exact
+stations, stable idle rendering, actual moon approach/return, navigation during
+approach, reverse travel, keyboard stations and cancellation of pending snaps.
 Geometry checks include 942 projections of the future route through the window
 and the bounds of each arrival planet in all three layouts at both desktop sizes.
 External destinations are preserved,

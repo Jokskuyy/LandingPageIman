@@ -15,7 +15,8 @@ const dialogues = [
 ];
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, source, sourceError = false, projects = [], scene;
-let routeImmediate = false, stopTimer, returnFocus, savedScroll = 0, moonRequest = 0;
+let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
+let snapTimer, wheelOrigin = null, wheelDirection = 0, wheelAt = 0;
 const detail = $('#project-detail');
 $('#cockpit-interior').addEventListener('error', () => $('#cockpit').dataset.interior = 'fallback');
 function updateMotionControl() {
@@ -50,30 +51,38 @@ $('#next-variant').addEventListener('click', () => cycleVariant(1));
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && document.body.dataset.approaching) { cancelApproach(); return; }
   if (detail.open || event.target.closest('input,textarea,select,[contenteditable],nav')) return;
+  if (['PageDown','PageUp','Home','End'].includes(event.key) || (event.key===' ' && event.target===document.body)) {
+    event.preventDefault();
+    if (document.body.dataset.approaching || document.body.dataset.returning) return;
+    const index = event.key==='Home' ? 0 : event.key==='End' ? 4 : currentStop + (event.key==='PageUp' || event.shiftKey ? -1 : 1);
+    goToStop(Math.max(0,Math.min(4,index)));
+    return;
+  }
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
     cycleVariant(event.key === 'ArrowLeft' ? -1 : 1);
   }
 });
 
-function goToStop(index, focus = true, immediate = false) {
+async function goToStop(index, focus = true, immediate = false) {
+  if (document.body.dataset.approaching) await cancelApproach();
+  if (detail.open || document.body.dataset.returning) return;
+  clearTimeout(snapTimer); wheelOrigin = null; wheelDirection = 0;
   const max = document.documentElement.scrollHeight - innerHeight;
-  scrollTo({ top: (index === 0 ? 0 : (index + .12) / 5) * max, behavior: isReduced() || immediate ? 'instant' : 'smooth' });
+  scrollTo({ top: index / 4 * max, behavior: isReduced() || immediate ? 'instant' : 'smooth' });
   if (isReduced() || immediate) { routeImmediate = true; updateRoute(); routeImmediate = false; }
-  history.replaceState(null, '', `${location.pathname}${location.search}#${slugs[index]}`);
   if (focus) $('#briefing-title').focus({ preventScroll: true });
 }
 document.addEventListener('click', event => {
   const destination = event.target.closest('[data-stop]');
   if (destination && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
     event.preventDefault();
-    if (document.body.dataset.approaching) cancelApproach();
     goToStop(Number(destination.dataset.stop));
   }
   const moon = event.target.closest('[data-project]');
   if (moon) openMoon(Number(moon.dataset.project), moon);
   const step = event.target.closest('[data-route-step]');
-  if (step) { if (document.body.dataset.approaching) cancelApproach(); goToStop(Math.max(0, Math.min(4, currentStop + Number(step.dataset.routeStep)))); }
+  if (step) goToStop(Math.max(0, Math.min(4, currentStop + Number(step.dataset.routeStep))));
   if (event.target.closest('[data-retry-source]')) { sourceError = false; loadSource().catch(sourceFailure); }
 });
 
@@ -89,6 +98,7 @@ function renderStop(index, announce = true) {
   ];
   const titleFocused = document.activeElement?.id === 'briefing-title';
   $('#briefing-content').innerHTML = views[index];
+  document.querySelectorAll('.project-picks button').forEach(button => button.disabled = document.body.dataset.travel === 'transit');
   if (titleFocused) $('#briefing-title').focus({ preventScroll: true });
   $('#briefing').scrollTop = 0;
   $('#guide-dialogue').textContent = dialogues[index];
@@ -108,29 +118,60 @@ function renderStop(index, announce = true) {
   scene?.render();
 }
 
+function arriveAtStop(index) {
+  if (index !== currentStop) renderStop(index);
+  document.body.dataset.travel = 'holding';
+  $('.officer').dataset.state = index === 0 ? 'idle' : 'explaining';
+  $('#travel-status').textContent = 'HOLDING POSITION';
+  document.querySelectorAll('.project-picks button').forEach(button => button.disabled = false);
+  document.querySelectorAll('.route-track b').forEach((dot,i) => dot.classList.toggle('reached',i<=index));
+  history.replaceState(null,'',`${location.pathname}${location.search}#${slugs[index]}`);
+}
 function updateRoute() {
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const max = document.documentElement.scrollHeight - innerHeight;
-  progress = Math.min(4.999, (scrollY / Math.max(1, max)) * 5);
-  const index = Math.floor(progress), fraction = progress - index;
-  const departing = fraction > .2 && index < 4;
-  if (index !== currentStop) renderStop(index);
-  const percent = Math.round(Math.min(1, progress / 4) * 100);
+  progress = Math.max(0, Math.min(4, scrollY / Math.max(1, max) * 4));
+  const index = Math.round(progress), atStop = Math.abs(progress-index)<.002;
+  const percent = Math.round(progress / 4 * 100);
   $('#route-percent').innerHTML = `${percent}<span>%</span>`;
   $('#route-fill').style.width = `${percent}%`;
-  document.querySelectorAll('.route-track b').forEach((dot, i) => dot.classList.toggle('reached', i <= index));
-  $('#travel-status').textContent = departing ? 'IN TRANSIT' : 'HOLDING POSITION';
-  $('.officer').dataset.state = departing ? 'traveling' : index === 0 ? 'idle' : 'arriving';
-  clearTimeout(stopTimer);
-  stopTimer = setTimeout(() => {
-    if (!detail.open && !document.body.dataset.approaching && !document.body.dataset.returning) {
-      $('.officer').dataset.state = currentStop === 0 ? 'idle' : 'explaining';
-      $('#travel-status').textContent = 'HOLDING POSITION';
-    }
-  }, 650);
+  if (!atStop || index !== currentStop) {
+    document.body.dataset.travel = 'transit';
+    $('#travel-status').textContent = 'IN TRANSIT';
+    $('.officer').dataset.state = 'traveling';
+    document.querySelectorAll('.project-picks button').forEach(button => button.disabled = true);
+  }
+  if (atStop && (!scene || sceneFailed || routeImmediate || isReduced())) arriveAtStop(index);
   scene?.setProgress(progress, routeImmediate || isReduced());
 }
 addEventListener('scroll', updateRoute, { passive: true });
+function finishScroll() {
+  if (wheelDirection && performance.now()-wheelAt<170) return;
+  clearTimeout(snapTimer);
+  if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
+  const value = Math.max(0,Math.min(4,scrollY / Math.max(1,document.documentElement.scrollHeight-innerHeight)*4));
+  let stop = Math.round(value);
+  if (wheelOrigin!==null && stop===wheelOrigin && Math.abs(value-wheelOrigin)>.005) stop=Math.max(0,Math.min(4,wheelOrigin+wheelDirection));
+  wheelOrigin=null; wheelDirection=0;
+  if (Math.abs(value-stop)>.0002) goToStop(stop,false);
+}
+document.addEventListener('scrollend',finishScroll);
+addEventListener('wheel',event => {
+  if (!event.deltaY || event.ctrlKey || detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
+  const panel = event.target.closest('#briefing');
+  if (panel && panel.scrollHeight>panel.clientHeight+1 && (event.deltaY>0 ? panel.scrollTop<panel.scrollHeight-panel.clientHeight-1 : panel.scrollTop>1)) return;
+  if (!wheelDirection) wheelOrigin=currentStop;
+  wheelDirection=Math.sign(event.deltaY);
+  wheelAt=performance.now();
+  clearTimeout(snapTimer); snapTimer=setTimeout(finishScroll,180);
+},{passive:true});
+addEventListener('resize',()=>{
+  if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) {
+    savedScroll=currentStop/4*(document.documentElement.scrollHeight-innerHeight);
+    return;
+  }
+  goToStop(currentStop,false,true);
+});
 
 async function loadSource() {
   const sourceURL = new URL('../../index.html', location.href);
@@ -147,7 +188,6 @@ async function loadSource() {
 async function openMoon(index, origin) {
   if (!projects[index] || detail.open || document.body.dataset.approaching || document.body.dataset.returning) return;
   const request = ++moonRequest;
-  clearTimeout(stopTimer);
   returnFocus = origin;
   savedScroll = scrollY;
   document.body.style.overflow = 'hidden';
@@ -180,10 +220,12 @@ async function returnFromMoon() {
   returnFocus?.focus({ preventScroll: true });
   $('#travel-status').textContent = 'RETURNING TO ROUTE';
   await scene?.setMoon(null);
+  scrollTo({ top: savedScroll, behavior: 'instant' });
   delete document.body.dataset.returning;
+  arriveAtStop(currentStop);
   updateRoute();
 }
-function cancelApproach() { moonRequest++; returnFromMoon(); }
+function cancelApproach() { moonRequest++; return returnFromMoon(); }
 $('#return-to-planet').addEventListener('click', () => detail.close());
 detail.addEventListener('close', returnFromMoon);
 
@@ -199,16 +241,18 @@ $('#retry-scene').addEventListener('click', () => {
   location.reload();
 });
 function sceneFailure() {
+  sceneFailed = true;
   $('#scene-status').hidden = false;
   $('#scene-status span').textContent = '3D is unavailable. You can still explore the content.';
   $('#retry-scene').hidden = false;
   $('#window-mode').textContent = 'TEXT VIEW';
+  updateRoute();
 }
 
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./node_modules/three/build/three.module.js');
-  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-framing-v5');
+  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261018-stations-v6');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
@@ -334,6 +378,8 @@ async function createScene() {
     if (!minimal) tracePhase.value += seconds;
     else tracePhase.value = 0;
     renderer.render(world, camera);
+    const stop = Math.round(travel);
+    if (!path && !operation && Math.abs(travel-stop)<.0002 && Math.abs(targetTravel-stop)<.0002 && (currentStop!==stop || document.body.dataset.travel!=='holding')) arriveAtStop(stop);
     completed?.(true);
     if (operation || (!path && Math.abs(travel - targetTravel) > .00001) || Math.abs(pointer.x - pointerTarget.x) > .001 || Math.abs(pointer.y - pointerTarget.y) > .001) render();
     else lastFrame = 0;
@@ -377,6 +423,7 @@ async function createScene() {
   resize();
   $('#scene-status').hidden = true;
   $('#window-mode').textContent = '3D ONLINE';
+  sceneFailed = false;
   return { resize, render, setProgress(value, immediate = false) { targetTravel = scrollToTravel(value); if (immediate) travel = targetTravel; render(); }, setMoon };
 }
 createScene().then(result => { scene = result; updateRoute(); }).catch(error => {

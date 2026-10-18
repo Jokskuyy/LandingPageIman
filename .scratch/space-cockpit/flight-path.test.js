@@ -4,10 +4,12 @@ import { waypoints, planetSpecs, moonOffsets, flightCurve, sampleFlight, scrollT
 
 const position = new Vector3(), rotation = new Quaternion();
 for (let i = 0; i < waypoints.length; i++) {
+  assert(scrollToTravel(i)===i,'A snapped section must use its exact camera waypoint');
   sampleFlight(i, position, rotation);
   assert(position.distanceTo(waypoints[i]) < 1e-8, 'Arrival must reach its waypoint');
   assert(Math.abs(rotation.length() - 1) < 1e-8);
 }
+assert(scrollToTravel(-1)===0 && scrollToTravel(5)===4,'Scroll must stay within the five stations');
 const line = waypoints[4].clone().sub(waypoints[0]).normalize();
 assert(waypoints.some(point => point.clone().sub(waypoints[0]).cross(line).length() > 20), 'Route regressed to a straight line');
 assert(Math.max(...waypoints.map(p => p.y)) - Math.min(...waypoints.map(p => p.y)) > 12, 'Route lost vertical depth');

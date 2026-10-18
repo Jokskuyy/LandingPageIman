@@ -53,11 +53,13 @@ async (page) => {
   await page.mouse.move(750,400);
   await page.mouse.wheel(0,850);
   await page.waitForFunction(y => scrollY > y+100,before);
+  await page.waitForFunction(()=>document.body.dataset.travel==='holding');
   const stopped = await page.evaluate(() => scrollY);
   await page.waitForTimeout(350);
   check(await page.evaluate(() => scrollY) === stopped,'Route drifts after scrolling stops');
   await page.mouse.wheel(0,-850);
   await page.waitForFunction(y => scrollY < y-100,stopped);
+  await page.waitForFunction(()=>document.body.dataset.travel==='holding');
   for (const label of ['Capabilities','About & experience','Contact']) await destination(label).click();
   check(await page.getByRole('link',{name:'Discuss a Project',exact:true}).getAttribute('href') === 'mailto:imannnnugraha@gmail.com','Contact destination changed the address');
   await page.locator('.flight-tools summary').focus();

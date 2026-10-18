@@ -23,7 +23,7 @@ export function traceDrop(distance) {
 const ahead = new Vector3(), view = new Matrix4(), heading = new Quaternion();
 const distances = [22, 24, 23, 28], sides = [7, 6.5, 6.5, 7];
 export const planetSpecs = [2.4, 3.1, 2.75, 3.4].map((radius, index) => {
-  sampleFlight(index + 1, new Vector3(), heading);
+  sampleCourse(index + 1, new Vector3(), heading);
   const forward = new Vector3(0,0,-1).applyQuaternion(heading);
   const right = new Vector3(1,0,0).applyQuaternion(heading);
   const position = waypoints[index + 1].clone().addScaledVector(forward, distances[index]).addScaledVector(right, sides[index]);
@@ -34,22 +34,34 @@ export const moonOffsets = [
   new Vector3(-4.2, 1.8, 2.8), new Vector3(2.8, 2.7, 3.8),
   new Vector3(-2.7, -2.2, 3.5), new Vector3(4.4, -1.4, 2)
 ];
+const arrivalRotations = planetSpecs.map((planet,index) => {
+  sampleCourse(index+1,new Vector3(),heading);
+  const right = new Vector3(1,0,0).applyQuaternion(heading);
+  const localUp = new Vector3(0,1,0).applyQuaternion(heading);
+  const focus = planet.position.clone().addScaledVector(right,-4.8).addScaledVector(localUp,1.2);
+  return new Quaternion().setFromRotationMatrix(new Matrix4().lookAt(waypoints[index+1],focus,up));
+});
 
 export function scrollToTravel(progress) {
-  const bounded = MathUtils.clamp(progress, 0, 4.999);
+  const bounded = MathUtils.clamp(progress, 0, 4);
   const index = Math.floor(bounded);
-  return Math.min(4, index + MathUtils.smootherstep(bounded - index, .2, 1));
+  return Math.min(4, index + MathUtils.smootherstep(bounded - index, 0, 1));
 }
 export function dampTravel(current, target, seconds, immediate = false) {
   if (immediate || Math.abs(target - current) < .0001) return target;
   return MathUtils.damp(current, target, 10, MathUtils.clamp(seconds, 0, .05));
 }
-export function sampleFlight(travel, position, quaternion) {
+function sampleCourse(travel, position, quaternion) {
   const value = MathUtils.clamp(travel, 0, 4);
   flightCurve.getPoint(value / 4, position);
   flightCurve.getPointAt(Math.min(1, travelToDistance(value) + .055), ahead);
   if (ahead.distanceToSquared(position) < .0001) ahead.copy(position).add(flightCurve.getTangent(1));
   quaternion.setFromRotationMatrix(view.lookAt(position, ahead, up));
+}
+export function sampleFlight(travel, position, quaternion) {
+  sampleCourse(travel,position,quaternion);
+  const stop = Math.round(MathUtils.clamp(travel,0,4));
+  if (stop>0) quaternion.slerp(arrivalRotations[stop-1],1-MathUtils.smootherstep(Math.abs(travel-stop),0,.24));
 }
 
 export function moonTour(homePosition, moonPosition) {
