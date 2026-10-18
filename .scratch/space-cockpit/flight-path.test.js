@@ -57,6 +57,28 @@ for (const offset of moonOffsets) {
   assert(tour.getPoint(1).distanceTo(moon) > 3, 'Moon approach gets too close');
   for (let i = 0; i <= 200; i++) assert(tour.getPoint(i / 200).distanceTo(planetSpecs[0].position) > planetSpecs[0].radius + .5, 'Moon tour intersects its parent planet');
 }
+for (const [width,height] of [[1440,900],[1280,720],[1290,955],[1068,955]]) {
+  const camera=new PerspectiveCamera(43,width/height,.1,160), projected=new Vector3();
+  sampleFlight(1,camera.position,camera.quaternion);
+  camera.setViewOffset(width,height,-width*.03,height*.08,width,height); camera.updateMatrixWorld();
+  const right=new Vector3(1,0,0).applyQuaternion(camera.quaternion), vertical=new Vector3(0,1,0).applyQuaternion(camera.quaternion);
+  for (const offset of moonOffsets) {
+    const moon=planetSpecs[0].position.clone().add(offset);
+    assert(offset.length()>planetSpecs[0].radius+.7,'A moon intersects its parent');
+    for (const edge of [right,right.clone().negate(),vertical,vertical.clone().negate()]) {
+      projected.copy(moon).addScaledVector(edge,.67).project(camera);
+      assert(projected.x>.04 && projected.x<.9 && projected.y>-.24 && projected.y<.6 && projected.z<1,`${width}x${height}: project moon clips the open window`);
+    }
+    const tour=moonTour(waypoints[1],moon);
+    for (let i=0;i<=200;i++) for (const other of moonOffsets) {
+      assert(tour.getPoint(i/200).distanceTo(planetSpecs[0].position.clone().add(other))>1,'Moon tour intersects another moon');
+    }
+    for (let i=0;i<=40;i++) {
+      projected.lerpVectors(tour.getPoint(1),moon,i/40);
+      assert(projected.distanceTo(planetSpecs[0].position)>planetSpecs[0].radius+.15,'Parent planet hides the selected moon at the end of its approach');
+    }
+  }
+}
 for (const boundary of [1, 2, 3]) {
   const before = flightCurve.getTangent(boundary / 4 - 1e-5), after = flightCurve.getTangent(boundary / 4 + 1e-5);
   assert(before.angleTo(after) < .01, 'Route has an abrupt corner');
@@ -68,4 +90,4 @@ assert(Math.abs(current - 1) < .0001, 'Motion does not settle after input stops'
 assert(dampTravel(.2, 2, .016, true) === 2, 'Reduced motion must be immediate');
 assert(dampTravel(1, 0, .016) < 1 && dampTravel(1, 0, .016) > 0, 'Reverse motion must ease without overshooting');
 assert(Math.abs(dampTravel(0, 1, 1 / 30) - dampTravel(dampTravel(0, 1, 1 / 60), 1, 1 / 60)) < 1e-8, 'Damping depends on frame rate');
-console.log(`Flight path passed: 1001 route samples, 804 moon samples, ${framed} window-framing cases; minimum planetary clearance ${clearance.toFixed(2)} units; aligned trace, visible arrivals, reversible scroll and frame-independent settling.`);
+console.log(`Flight path passed: 1001 route samples, 804 moon samples, ${framed} window-framing cases; four project moons visible at four desktop sizes with clear approaches; minimum planetary clearance ${clearance.toFixed(2)} units; aligned trace, visible arrivals, reversible scroll and frame-independent settling.`);

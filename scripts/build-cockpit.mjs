@@ -6,7 +6,7 @@ const output = new URL('../cockpit/', import.meta.url);
 await mkdir(new URL('assets/', output), { recursive: true });
 await mkdir(new URL('vendor/three/', output), { recursive: true });
 
-for (const name of ['index.html', 'prototype.css', 'prototype.js', 'flight-path.js']) {
+for (const name of ['index.html', 'prototype.css', 'prototype.js', 'flight-path.js', 'project-moons.js']) {
   const contents = await readFile(new URL(name, source), 'utf8');
   await writeFile(new URL(name, output), contents
     .replaceAll('../../', '../')
