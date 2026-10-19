@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges" role="img" aria-label="Iman Nugraha spaceship">
+  <path fill="#07151f" d="M4 0h24v2h2v2h2v24h-2v2h-2v2H4v-2H2v-2H0V4h2V2h2Z"/>
+  <path fill="#b9f5de" d="M14 3h4v5h2v6h4v4h4v6h-6v-2h-2v4h-8v-4h-2v2H4v-6h4v-4h4V8h2Z"/>
+  <path fill="#158f9c" d="M14 10h4v8h-4Z"/>
+  <path fill="#65ffe1" d="M14 26h4v4h-4Z"/>
+  <path fill="#5a9186" d="M6 20h4v2H6Zm16 0h4v2h-4Z"/>
+</svg>
