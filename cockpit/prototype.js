@@ -1,5 +1,6 @@
 // Three layouts of the same real portfolio. Read-only prototype, not production.
 const $ = selector => document.querySelector(selector);
+const recoveringScene = history.state?.recoverScene === true;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 let calm = false;
 const isReduced = () => reduced.matches || calm;
@@ -279,7 +280,7 @@ loadSource().catch(sourceFailure);
 $('#retry-scene').addEventListener('click', () => {
   const url = new URL(location.href);
   url.searchParams.delete('scene');
-  history.replaceState(null, '', url);
+  history.replaceState({ recoverScene: true }, '', url);
   location.reload();
 });
 function sceneFailure() {
@@ -570,7 +571,8 @@ createScene().then(result => { scene = result; updateRoute(); }).catch(error => 
   if (!String(error).includes('fallback preview')) console.error(error);
   sceneFailure();
 });
-const initialStop = slugs.indexOf(location.hash.slice(1));
+const initialStop = !recoveringScene && performance.getEntriesByType('navigation')[0]?.type === 'reload'
+  ? 0 : slugs.indexOf(location.hash.slice(1));
 history.scrollRestoration = 'manual';
 requestAnimationFrame(() => goToStop(Math.max(0, initialStop), false, true));
 addEventListener('hashchange', () => {

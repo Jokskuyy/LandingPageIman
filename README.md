@@ -77,6 +77,7 @@ preview server, test scripts or workspace logs are included. Keep the original
 Jekyll build excludes that hidden directory. Do not add `.nojekyll` to publish it.
 
 The existing `.scratch/space-cockpit/check-browser.js`, `check-stations.js`,
-`check-arrivals.js`, `check-crossings.js`, `check-moons.js` and `check-responsive.js`
+`check-arrivals.js`, `check-crossings.js`, `check-moons.js`, `check-responsive.js`
+and `check-reload.js`
 use the browser tab's current directory as their base. Open the packaged route
 before running them to check the published files rather than the workspace.
