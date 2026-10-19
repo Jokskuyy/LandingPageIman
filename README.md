@@ -60,8 +60,9 @@ portfolio screenshot only after checking the released calculator.
 The owner approved publishing the selected Panoramic bridge at
 `https://jokskuyy.github.io/LandingPageIman/cockpit/` for testing. The main
 portfolio remains at the project root and supplies the project archive and CV.
-This is a desktop prototype; mobile adaptation and the full production redesign
-remain separate work.
+The selected bridge adapts to desktop, tablet and phone screens. Portrait views
+keep the sky above a scrolling reading console; compact landscape views use a
+split layout. The full production redesign remains separate work.
 
 ```sh
 npm ci --prefix .scratch/space-cockpit --ignore-scripts --no-audit --no-fund
@@ -76,6 +77,6 @@ preview server, test scripts or workspace logs are included. Keep the original
 Jekyll build excludes that hidden directory. Do not add `.nojekyll` to publish it.
 
 The existing `.scratch/space-cockpit/check-browser.js`, `check-stations.js`,
-`check-arrivals.js`, `check-crossings.js` and `check-moons.js`
+`check-arrivals.js`, `check-crossings.js`, `check-moons.js` and `check-responsive.js`
 use the browser tab's current directory as their base. Open the packaged route
 before running them to check the published files rather than the workspace.

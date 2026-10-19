@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0b141c">
   <title>Iman — Cockpit design exploration</title>
@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="prototype.css?v=20261019-moons-v13">
-  <script type="module" src="prototype.js?v=20261019-moons-v13"></script>
+  <link rel="stylesheet" href="prototype.css?v=20261019-responsive-v14">
+  <script type="module" src="prototype.js?v=20261019-responsive-v14"></script>
 </head>
 <body data-variant="A">
   <a class="skip-link" href="#briefing-title">Skip to destination information</a>
@@ -45,7 +45,7 @@
       <a href="#about-experience" data-stop="3"><span class="nav-index">03</span><span>About &amp; experience</span></a>
       <a href="#contact" data-stop="4"><span class="nav-index">04</span><span>Contact</span></a>
     </nav>
-    <main class="briefing" id="briefing" aria-labelledby="briefing-title">
+    <main class="briefing" id="briefing" aria-labelledby="briefing-title" tabindex="0">
       <div id="briefing-content">
         <p class="eyebrow">MUHAMMAD IMAN NUGRAHA · JUNIOR FULLSTACK DEVELOPER</p>
         <h1 id="briefing-title" tabindex="-1">Your next idea.<br><em>Ready for orbit.</em></h1>
@@ -72,7 +72,7 @@
       <div class="guide-speech"><span class="holo-label" aria-hidden="true">IMAN <span>HOLO LINK</span></span><p id="guide-dialogue">Captain, follow the light to explore the work.</p></div>
     </aside>
     <footer class="flight-console" aria-label="Flight guidance">
-      <p class="console-hint">SCROLL TO FOLLOW THE LIGHT</p>
+      <p class="console-hint"><span class="scroll-hint">SCROLL</span><span class="swipe-hint">SWIPE</span> TO FOLLOW THE LIGHT</p>
       <div class="console-note"><p class="eyebrow">YOUR ROUTE</p><p>Explore. Inspect. Connect.</p><small>Scroll to travel · Stop to read</small></div>
       <div class="route-instrument"><div class="route-track" aria-hidden="true"><span id="route-fill"></span><b></b><b></b><b></b><b></b><b></b></div><div class="route-labels"><span>Opening</span><span>Work</span><span>Capabilities</span><span>About</span><span>Contact</span></div></div>
       <div class="progress-readout"><strong id="route-percent">0<span>%</span></strong><small id="travel-status" role="status">HOLDING POSITION</small></div>

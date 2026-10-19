@@ -51,6 +51,18 @@ export function dampTravel(current, target, seconds, immediate = false) {
   if (immediate || Math.abs(target - current) < .0001) return target;
   return MathUtils.damp(current, target, 10, MathUtils.clamp(seconds, 0, .05));
 }
+// Keep a useful horizontal field of view when the cockpit becomes a portrait console.
+export function frameWindow(camera,width,height,variant='A',moonBlend=0) {
+  const stacked=height>=width;
+  const aspect=width/height;
+  const fov=MathUtils.radToDeg(2*Math.atan(Math.tan(MathUtils.degToRad(43/2))*Math.max(1,(stacked?1.35:0)/aspect)));
+  const x=MathUtils.lerp(stacked ? .12 : variant==='A' ? -.03 : 0,stacked ? 0 : -.32,moonBlend)*width;
+  const windowY=stacked ? width<=420?.22:.18 : width<=1000?.04:.08;
+  const y=MathUtils.lerp(windowY,stacked ? .24 : .16,moonBlend)*height;
+  if(camera.aspect===aspect && camera.fov===fov && camera.view?.offsetX===x && camera.view?.offsetY===y && camera.view?.fullWidth===width && camera.view?.fullHeight===height) return;
+  camera.fov=fov;
+  camera.setViewOffset(width,height,x,y,width,height);
+}
 function sampleCourse(travel, position, quaternion) {
   const value = MathUtils.clamp(travel, 0, 4);
   flightCurve.getPoint(value / 4, position);
@@ -64,14 +76,14 @@ export function sampleFlight(travel, position, quaternion) {
   if (stop>0) quaternion.slerp(arrivalRotations[stop-1],1-MathUtils.smootherstep(Math.abs(travel-stop),0,.24));
 }
 
-export function moonTour(homePosition, moonPosition) {
+export function moonTour(homePosition, moonPosition, distance=6) {
   const planet = planetSpecs[0];
   const fromPlanet = homePosition.clone().sub(planet.position).normalize();
   const toMoon = moonPosition.clone().sub(planet.position).normalize();
   const outside = fromPlanet.clone().add(toMoon).normalize();
   const waypoint = planet.position.clone().addScaledVector(outside, planet.radius + 7);
   waypoint.y += 1.5;
-  const approach = moonPosition.clone().sub(waypoint).normalize().multiplyScalar(-6);
+  const approach = moonPosition.clone().sub(waypoint).normalize().multiplyScalar(-distance);
   const orbitEnd = approach.clone().applyAxisAngle(up, -.42);
   return new CatmullRomCurve3([
     homePosition.clone(), waypoint,

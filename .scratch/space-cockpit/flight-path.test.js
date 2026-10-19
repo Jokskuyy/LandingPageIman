@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { Vector3, Quaternion, PerspectiveCamera } from './node_modules/three/build/three.module.js';
-import { waypoints, planetSpecs, moonOffsets, flightCurve, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } from './flight-path.js';
+import { waypoints, planetSpecs, moonOffsets, flightCurve, sampleFlight, scrollToTravel, dampTravel, frameWindow, moonTour, travelToDistance, traceDrop } from './flight-path.js';
 
 const position = new Vector3(), rotation = new Quaternion();
 for (let i = 0; i < waypoints.length; i++) {
@@ -79,6 +79,37 @@ for (const [width,height] of [[1440,900],[1280,720],[1290,955],[1068,955]]) {
     }
   }
 }
+// Exercise the runtime framing helper at phone/tablet sizes and after rotation.
+let responsiveFrames=0;
+for(const [width,height] of [[320,568],[390,844],[430,932],[768,1024],[1024,1366],[844,390],[667,375]]) {
+  const camera=new PerspectiveCamera(43,width/height,.1,160), projected=new Vector3(), portrait=height>width;
+  frameWindow(camera,width,height);
+  for(let i=0;i<=156;i++) {
+    const travel=i/40;
+    sampleFlight(travel,camera.position,camera.quaternion);camera.updateMatrixWorld();
+    let visible=0;
+    for(let j=1;j<=40;j++) {
+      const distance=travelToDistance(travel)+j*.004;if(distance>1)continue;
+      flightCurve.getPointAt(distance,projected);projected.y-=traceDrop(distance);projected.project(camera);
+      if(Math.abs(projected.x)<.9 && projected.y>(portrait?-.1:-.6) && projected.y<(portrait?.8:.42) && projected.z>-1 && projected.z<1)visible++;
+    }
+    assert(visible>=5,`${width}x${height}: route leaves the window at ${travel}`);responsiveFrames++;
+  }
+  sampleFlight(1,camera.position,camera.quaternion);camera.updateMatrixWorld();
+  for(const offset of moonOffsets) {
+    const moon=planetSpecs[0].position.clone().add(offset);
+    projected.copy(moon).project(camera);
+    assert(Math.abs(projected.x)<.9 && projected.y>(portrait?-.15:-.3) && projected.y<.85 && projected.z<1,`${width}x${height}: moon left the window`);
+    const tour=moonTour(waypoints[1],moon,portrait?4.2:6);
+    for(let i=0;i<=200;i++) {
+      const point=tour.getPoint(i/200);
+      assert(point.distanceTo(planetSpecs[0].position)>planetSpecs[0].radius+.5,'Responsive moon tour intersects its parent');
+      for(const other of moonOffsets) assert(point.distanceTo(planetSpecs[0].position.clone().add(other))>1,'Responsive moon tour intersects another moon');
+    }
+  }
+  frameWindow(camera,1440,900);assert.equal(camera.fov,43,'Rotation must restore the desktop lens');
+  frameWindow(camera,width,height,'A',1);assert([...camera.projectionMatrix.elements].every(Number.isFinite),'Moon framing must remain finite after rotation');
+}
 for (const boundary of [1, 2, 3]) {
   const before = flightCurve.getTangent(boundary / 4 - 1e-5), after = flightCurve.getTangent(boundary / 4 + 1e-5);
   assert(before.angleTo(after) < .01, 'Route has an abrupt corner');
@@ -90,4 +121,4 @@ assert(Math.abs(current - 1) < .0001, 'Motion does not settle after input stops'
 assert(dampTravel(.2, 2, .016, true) === 2, 'Reduced motion must be immediate');
 assert(dampTravel(1, 0, .016) < 1 && dampTravel(1, 0, .016) > 0, 'Reverse motion must ease without overshooting');
 assert(Math.abs(dampTravel(0, 1, 1 / 30) - dampTravel(dampTravel(0, 1, 1 / 60), 1, 1 / 60)) < 1e-8, 'Damping depends on frame rate');
-console.log(`Flight path passed: 1001 route samples, 804 moon samples, ${framed} window-framing cases; four project moons visible at four desktop sizes with clear approaches; minimum planetary clearance ${clearance.toFixed(2)} units; aligned trace, visible arrivals, reversible scroll and frame-independent settling.`);
+console.log(`Flight path passed: 1001 route samples, 804 moon samples, ${framed} desktop and ${responsiveFrames} responsive window-framing cases; project moons visible at four desktop and seven compact sizes with clear approaches; minimum planetary clearance ${clearance.toFixed(2)} units; aligned trace, visible arrivals, reversible scroll and frame-independent settling.`);
