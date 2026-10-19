@@ -308,6 +308,37 @@ retains its existing outdated Browserslist-data notice. The static bundle stays
 at ten allowlisted files; the original homepage and its stylesheet are unchanged.
 The entry, stylesheet and flight module cache key is `20261019-responsive-v14`.
 
+## Tab identity and refresh — 2026-10-19
+
+The tab now reads **Iman Nugraha — Space Portfolio** and uses its own pixel
+spaceship SVG, shipped as the eleventh allowlisted static file. The root
+portfolio title/favicon are separate. Entry JavaScript uses `20261019-tab-v15`.
+
+Refresh initializes Opening through the existing immediate route/arrival path,
+so scroll, camera, briefing, hash and 0% agree. Initial direct fragment links
+and later hash navigation still work. Retry 3D stores a one-use history marker
+before its internal reload; startup captures it before clearing history state,
+so recovery retains the station and a later ordinary refresh starts over.
+
+`check-reload.js` passes standard/reduced motion, a phone viewport and text
+fallback. It refreshes Contact, an open project and paused free flight; checks
+Opening/0%/closed modal/current text; exercises direct fragments, hash changes,
+Retry and the next manual refresh. Title and favicon HTTP checks pass, with
+zero page/console errors. Read-only independent review found no issue in the
+initialization/recovery ordering or test coverage, and confirmed source/public
+SVG equality and the publishing asset test.
+
+The final local run also passes all 54 root tests, CSS build, flight geometry,
+syntax/diff checks, twelve desktop layout combinations, station flow, 16 arrival
+cases, 41 crossing cases, 16 moon visits and the seven-size responsive check.
+
+The existing Nielsen review remains applicable: #1 status and #2 identity are
+updated together; #3 direct navigation, #4 consistent icon/title, #5 consumed
+recovery state and #6 identifiable tab are verified by the reload check.
+#7 refresh is immediate; #8 adds no visible page UI; #9 Retry preserves recovery;
+#10 existing route guidance remains available. Each is a scoped pass; this is
+not a new full accessibility or physical-browser conformance claim.
+
 ## Remaining implementation work after layout choice
 
 - Migrate all original factual content and links into production progressive

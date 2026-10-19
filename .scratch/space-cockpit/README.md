@@ -47,6 +47,13 @@ GitHub Pages production site. `npm run build:cockpit` publishes an explicit
 static copy there, with adjusted project-relative URLs and self-hosted Three.js.
 The main portfolio and this local design reference remain separate.
 
+The cockpit tab is titled **Iman Nugraha — Space Portfolio**, with a dedicated
+pixel spaceship favicon. Browser refresh restarts the route at Opening and 0%.
+Direct fragment links and in-page navigation still select their destination.
+Retry 3D uses a one-use recovery marker to restore the current station; the next
+ordinary refresh starts over. `check-reload.js` covers these paths. The favicon
+is included as the eleventh allowlisted static file.
+
 ## Confirmed decisions
 
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
@@ -166,6 +173,7 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-co
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-crossings.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-moons.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-responsive.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-reload.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.

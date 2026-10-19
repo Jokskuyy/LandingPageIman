@@ -12,7 +12,7 @@ for (const name of ['index.html', 'prototype.css', 'prototype.js', 'flight-path.
     .replaceAll('../../', '../')
     .replaceAll('./node_modules/three/build/', './vendor/three/'));
 }
-for (const name of ['cockpit-interior-v1.png', 'officer-sheet-v1.png']) {
+for (const name of ['cockpit-interior-v1.png', 'officer-sheet-v1.png', 'cockpit-favicon-v1.svg']) {
   await copyFile(new URL(`assets/${name}`, source), new URL(`assets/${name}`, output));
 }
 for (const name of ['three.module.js', 'three.core.js']) {
