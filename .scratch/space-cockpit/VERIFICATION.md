@@ -237,6 +237,77 @@ the window stays free of permanent labels (#8), fallback retains the archive
 verification is desktop only; there is no new accessibility-conformance or
 hardware frame-rate claim.
 
+## Responsive bridge — 2026-10-19
+
+The owner's new request extends the selected Panoramic A test route to phone
+and tablet; it supersedes the earlier desktop-only scope. Portrait screens use
+an open upper window and lower reading console, with a horizontal destination
+strip, compact hologram/projector and a scrolling project sheet. Landscape
+screens up to 1000px use a split console. Safe-area insets and dynamic viewport
+height are applied without changing the five-station scroll/snap policy.
+
+`check-responsive.js` passed in touch-enabled Edge 155.0.4283.62 contexts at
+320×568, 390×844, 430×932, 768×1024, 1024×1366, 844×390 and 667×375. Each size
+checks five destinations, section/hash alignment, active-nav visibility,
+horizontal overflow, 44px primary targets, all four visible moon bodies,
+project sheet bounds and native tap/open/return focus. Native touch input also
+exercises sky travel that remains FREE FLIGHT, horizontal navigation, reading
+and project scrolling isolated from route position, keyboard reading, rotation,
+text fallback and Retry 3D. No page exceptions or unexpected console errors
+were recorded by the final check. A closed dialog can precede its queued return
+handler, so the check waits for HOLDING before inspecting the restored station.
+The moon check samples the center and four body edges against both UI bounds
+and the actual cockpit PNG alpha mask. Screenshot review prompted a lower
+tablet/compact-landscape framing so upper moons clear the ceiling and nav;
+small portrait screens retain the higher framing that clears the reader.
+
+The geometry check adds 1099 responsive route projections, moon bounds and
+clearance at the same seven sizes. Portrait framing keeps horizontal coverage
+and raises the Work moon group clear of the reader; the approach is 4.2 units
+for portrait and six for landscape. Phone rendering is capped at 1.25 device
+pixels per CSS pixel. This is a resolution budget, not a measured frame rate.
+
+Independent read-only review found two valid defects: 1024px portrait initially
+retained desktop framing, and rotation could leave the selected destination
+outside the navigation strip. Portrait layout now follows orientation and
+navigation recenters on resize as well as section changes. Targeted retests
+closed both findings. At 320×568 the top moon body starts below navigation
+(112.75px vs 101.6px) and the lowest ends above the reader (195.78px vs 200px).
+The reviewer also verified a 20px coarse-pointer miss still selects its moon,
+real context loss, rotation/return/focus and native route swipes; page errors: 0.
+
+One exploratory Chromium `synthesizeScrollGesture` call emitted pointer events
+without useful scrolling and a later call stalled. That probe was stopped.
+The final regression uses native `dispatchTouchEvent` start/move/end input;
+actual touchmove and scroll events verified route movement (0 to 115px) and
+FREE FLIGHT. No runtime wheel/touch interception was added to work around the
+tool's synthesis behavior.
+
+| Nielsen heuristic | Status | Responsive evidence |
+| --- | --- | --- |
+| 1. System status | Pass | Current destination, hash, route status and Retry state follow actual arrival/recovery. |
+| 2. Familiar language | Pass | Named destinations/projects and SWIPE guidance describe the available actions. |
+| 3. Control and freedom | Pass | Free route swipe, independent panel scroll, Return and preserved station/focus. |
+| 4. Consistency | Pass | Existing palette/projector, native nav/dialog and 44px primary controls retained. |
+| 5. Error prevention | Pass | Disabled project entry in transit; gestures in panels do not move the route. |
+| 6. Recognition | Pass | All four project buttons visible in portrait; active destination stays in the nav after rotation. |
+| 7. Efficiency | Pass | Native touch travel, direct navigation, named buttons, 3D tapping and keyboard reading. |
+| 8. Focus | Pass | Compact controls preserve the sky; project sheet replaces cramped desktop overlay. |
+| 9. Recovery | Pass | Text fallback retains project access; Retry restores 3D; context-loss return independently verified. |
+| 10. Help | Pass | Existing guide and console provide selection/travel cues; controls remain available from the header. |
+
+These are scoped interaction/visual checks, not full accessibility conformance.
+Physical phone/tablet hardware, Safari, cutout rendering and device frame timing
+remain unverified; the evidence is Chromium touch/viewport emulation.
+
+The final generated local route also passes the existing twelve desktop
+layout/size combinations, normal-motion station flow, 41 crossing cases,
+16 arrival cases and 16 moon visits. All 54 root tests, root CSS build,
+geometry regression, JavaScript syntax and diff checks pass. The root CSS build
+retains its existing outdated Browserslist-data notice. The static bundle stays
+at ten allowlisted files; the original homepage and its stylesheet are unchanged.
+The entry, stylesheet and flight module cache key is `20261019-responsive-v14`.
+
 ## Remaining implementation work after layout choice
 
 - Migrate all original factual content and links into production progressive

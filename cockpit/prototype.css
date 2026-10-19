@@ -290,3 +290,127 @@ body[data-variant] .guide-speech>p:last-child {
 }
 body[data-variant='A'] .detail-panel { width:min(780px,62vw); }
 .detail-panel::backdrop { background:#010a1259; }
+
+.swipe-hint { display:none; }
+/* A compact bridge: open sky above a readable lower console. */
+@media(max-width:1000px),(orientation:portrait) {
+  html { scroll-padding-top:0; }
+  body[data-variant] .cockpit {
+    inset:0; width:100%; height:100dvh; min-width:0;
+    touch-action:pan-y pinch-zoom;
+  }
+  .scroll-track { height:780svh; }
+  body[data-variant] .space,body[data-variant] .window-tint,
+  body[data-variant] .cockpit-frame,body[data-variant] .cockpit-interior {
+    inset:0; width:100%; height:100%;
+  }
+  body[data-variant] .cockpit-interior { object-fit:cover; }
+  body[data-variant] .identity-bar { top:max(6px,env(safe-area-inset-top)); left:max(16px,env(safe-area-inset-left)); right:max(16px,env(safe-area-inset-right)); gap:12px; }
+  body[data-variant] .brand,body[data-variant] .contact-shortcut { min-height:44px; display:flex; align-items:center; font-size:10px; }
+  body[data-variant] .destination-nav {
+    top:calc(56px + env(safe-area-inset-top)); left:max(16px,env(safe-area-inset-left)); right:max(16px,env(safe-area-inset-right));
+    width:auto; max-width:none; gap:20px; flex-wrap:nowrap; padding:0 8px;
+    overflow-x:auto; scrollbar-width:none; touch-action:pan-x pinch-zoom;
+    background:#06131ae8; border:1px solid #2b454c;
+  }
+  .destination-nav::-webkit-scrollbar { display:none; }
+  body[data-variant] .destination-nav a { min-height:44px; flex:0 0 auto; font-size:11px; white-space:nowrap; }
+  body[data-variant] .briefing {
+    inset:auto max(16px,env(safe-area-inset-right)) calc(132px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left)); width:auto; max-width:none;
+    height:clamp(220px,36dvh,400px); max-height:calc(100dvh - 260px);
+    padding:16px; background:linear-gradient(130deg,#081b27f5,#07121ff2);
+    border:1px solid #344e57; border-top:2px solid #678d87;
+    box-shadow:0 10px 26px #0006; overscroll-behavior:contain; touch-action:pan-y pinch-zoom;
+  }
+  body[data-variant] #briefing-content { display:block; }
+  body[data-variant] .briefing h1,body[data-variant] .briefing:has(.project-picks) h1 {
+    font-size:clamp(34px,6vw,48px); line-height:1.02; margin:8px 0 12px;
+  }
+  .briefing .eyebrow { font-size:9px; line-height:1.6; }
+  .briefing .body-copy { font-size:13px; line-height:1.7; max-width:60ch; }
+  .briefing-actions { margin-top:14px; gap:8px 16px; }
+  .briefing .button,.briefing .text-link { min-height:44px; font-size:10px; }
+  .briefing .footnote { display:none; }
+  body[data-variant] .project-picks { margin:12px 0 0; gap:8px; }
+  .project-picks button { min-height:52px; min-width:0; padding:9px; gap:9px; font-size:10px; }
+  .project-picks button>span:last-child { overflow-wrap:anywhere; }
+  .capability-list { gap:10px; margin-top:12px; }
+  .capability-row { padding-top:9px; }
+  .capability-row h2 { font-size:13px; }
+  .capability-row p,.experience-summary p { font-size:12px; }
+  .contact-links { gap:20px; flex-wrap:wrap; margin-top:12px; }
+  .contact-links a,.email-address { min-height:44px; display:inline-flex; align-items:center; }
+  body[data-variant] .guide {
+    --officer-height:86px; right:calc(14px + env(safe-area-inset-right)); bottom:calc(12px + env(safe-area-inset-bottom));
+    width:84px; height:116px;
+  }
+  body[data-variant] .officer { bottom:28px; }
+  .holo-beam { bottom:17px; width:74px; height:calc(var(--officer-height) + 24px); }
+  .holo-projector { width:82px; }
+  body[data-variant] .guide-speech {
+    right:calc(100% + 8px); bottom:44px; width:min(260px,calc(100vw - 132px));
+    padding:7px 9px; min-height:50px;
+  }
+  body[data-variant] .guide-speech::before { top:50%; right:-10px; left:auto; width:9px; height:1px; }
+  .holo-label { margin-bottom:4px; font-size:7px; }
+  .holo-label>span { display:none; }
+  body[data-variant] .guide-speech>p:last-child { font-size:10px; line-height:1.5; }
+  body[data-variant] .flight-console {
+    inset:auto auto calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left)); transform:none;
+    width:calc(100% - 132px - env(safe-area-inset-left) - env(safe-area-inset-right)); height:38px; padding:3px 8px; gap:2px 9px;
+    background:#061a22ee; border:1px solid #294d52; box-shadow:inset 0 0 14px #32ddca0a;
+  }
+  .console-hint { font-size:8px; line-height:1.5; letter-spacing:.03em; }
+  body[data-variant] .progress-readout strong { font-size:10px; }
+  .scroll-hint { display:none; }.swipe-hint { display:inline; }
+  .flight-tools { right:calc(88px + env(safe-area-inset-right)); bottom:auto; top:max(6px,env(safe-area-inset-top)); }
+  .flight-tools>summary { min-height:44px; width:72px; padding:13px 3px; background:#06131ae0; font-size:0; }
+  .flight-tools>summary::before { content:'Controls ▾'; font:9px/18px var(--mono); }
+  .flight-tools-panel { top:48px; bottom:auto; width:min(280px,calc(100vw - 32px)); max-height:calc(100dvh - 180px); overflow:auto; }
+  body[data-variant] .manual-control button,#motion-mode { min-height:44px; }
+  .scene-status { top:calc(112px + env(safe-area-inset-top)); left:16px; right:16px; width:auto; max-width:none; transform:none; font-size:11px; }
+  .scene-status button { min-height:44px; margin:8px 0 0; }
+  .prototype-bar { display:none; }
+  body[data-variant] .detail-panel {
+    inset:36dvh max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); margin:0; width:auto;
+    height:auto; max-height:none; max-width:none; padding:16px;
+    touch-action:pan-y pinch-zoom;
+  }
+  .detail-top { top:-16px; padding:10px 0 14px; display:grid; gap:12px; }
+  .detail-top h2 { font-size:26px; overflow-wrap:anywhere; }
+  .return-button { justify-self:start; min-height:44px; }
+  .detail-panel .project-overview,.detail-panel .case-study-grid { grid-template-columns:1fr; gap:18px; }
+  .detail-panel .project-title { font-size:27px; }
+  .detail-panel .project-stack,.detail-panel .project-index { font-size:10px; }
+  .detail-panel .project-links a,.detail-panel .evidence-links a { min-height:44px; display:inline-flex; align-items:center; }
+  .detail-panel .case-study p { line-height:1.75; }
+}
+@media(max-width:1000px) and (orientation:landscape) {
+  body[data-variant] .cockpit-interior { object-fit:fill; }
+  body[data-variant] .identity-bar { top:0; left:max(5%,env(safe-area-inset-left)); right:max(5%,env(safe-area-inset-right)); }
+  body[data-variant] .destination-nav { top:48px; left:max(5%,env(safe-area-inset-left)); right:max(5%,env(safe-area-inset-right)); }
+  body[data-variant] .briefing { inset:104px auto max(22px,env(safe-area-inset-bottom)) max(5%,env(safe-area-inset-left)); width:44%; height:auto; max-height:none; padding:12px; }
+  body[data-variant] .briefing h1,body[data-variant] .briefing:has(.project-picks) h1 { font-size:32px; }
+  .briefing .body-copy { font-size:12px; line-height:1.6; }
+  .briefing-actions { margin-top:10px; }
+  body[data-variant] .guide { right:6%; bottom:110px; }
+  body[data-variant] .guide-speech { right:0; bottom:-50px; width:min(250px,40vw); min-height:0; padding:5px 8px; }
+  .holo-label { display:none; }
+  body[data-variant] .guide-speech::before { display:none; }
+  body[data-variant] .flight-console { left:55%; width:25%; bottom:12px; }
+  .flight-tools { right:max(4%,env(safe-area-inset-right)); top:auto; bottom:max(8px,env(safe-area-inset-bottom)); }
+  .flight-tools>summary { width:auto; min-width:78px; }
+  .flight-tools-panel { top:auto; bottom:48px; }
+  .scene-status { top:110px; left:53%; right:4%; }
+  body[data-variant] .detail-panel { inset:16px auto max(16px,env(safe-area-inset-bottom)) max(4%,env(safe-area-inset-left)); width:65%; }
+  .detail-top { display:flex; flex-wrap:wrap; }
+  .detail-panel .project-overview { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:420px) and (orientation:portrait) {
+  body[data-variant] .briefing:has(.project-picks) { height:clamp(236px,36dvh,360px); }
+  body[data-variant] .briefing:has(.project-picks) h1 { font-size:30px; }
+  .briefing:has(.project-picks) h1 br { display:none; }
+  .briefing:has(.project-picks) h1 em { margin-left:.15em; }
+  .project-picks button { padding:7px; gap:6px; }
+  .project-picks .moon-dot { width:20px; height:20px; flex-basis:20px; }
+}

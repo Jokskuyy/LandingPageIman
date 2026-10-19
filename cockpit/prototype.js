@@ -57,7 +57,7 @@ function updateStepControls() {
 }
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && document.body.dataset.approaching) { cancelApproach(); return; }
-  if (detail.open || event.target.closest('input,textarea,select,[contenteditable],nav')) return;
+  if (detail.open || event.target===$('#briefing') || event.target.closest('input,textarea,select,[contenteditable],nav')) return;
   if (['PageDown','PageUp','Home','End'].includes(event.key) || (event.key===' ' && event.target===document.body)) {
     event.preventDefault();
     if (document.body.dataset.approaching || document.body.dataset.returning) return;
@@ -102,6 +102,10 @@ for (const type of ['pointerout','focusout']) $('#briefing-content').addEventLis
   const button=event.target.closest('[data-project]');
   if (button && !button.contains(event.relatedTarget)) scene?.highlightMoon(null,type==='focusout'?'focus':'pointer');
 });
+function frameNavigation() {
+  const navigation=$('.destination-nav'), active=navigation.querySelector('[aria-current]');
+  if (active && navigation.scrollWidth>navigation.clientWidth) navigation.scrollTo({left:active.offsetLeft-(navigation.clientWidth-active.clientWidth)/2,behavior:isReduced()?'instant':'smooth'});
+}
 function renderStop(index, announce = true) {
   const previousStop = currentStop;
   currentStop = index;
@@ -121,6 +125,7 @@ function renderStop(index, announce = true) {
     if (Number(link.dataset.stop) === index) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
   });
+  frameNavigation();
   updateStepControls();
   if (announce) $('#destination-announcement').textContent = `Arrived at ${stops[index]}.`;
   $('#prototype-state').textContent = stateText();
@@ -198,6 +203,7 @@ function finishScroll() {
   else $('#travel-status').textContent='FREE FLIGHT';
 }
 addEventListener('resize',()=>{
+  frameNavigation();
   if (detail.open || document.body.dataset.approaching || document.body.dataset.returning) {
     savedScroll=currentStop/4*(document.documentElement.scrollHeight-innerHeight);
     return;
@@ -288,7 +294,7 @@ function sceneFailure() {
 async function createScene() {
   if (new URLSearchParams(location.search).get('scene') === 'off') throw new Error('3D disabled for fallback preview');
   const THREE = await import('./vendor/three/three.module.js');
-  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261019-moons-v13');
+  const { flightCurve, planetSpecs, moonOffsets, sampleFlight, scrollToTravel, dampTravel, frameWindow, moonTour, travelToDistance, traceDrop } = await import('./flight-path.js?v=20261019-responsive-v14');
   const { createProjectMoons } = await import('./project-moons.js?v=20261019-moons-v13');
   const host = $('#space');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -427,7 +433,7 @@ async function createScene() {
   const lookMatrix = new THREE.Matrix4(), lookRotation = new THREE.Quaternion();
   const viewOffset = new THREE.Euler(), viewRotation = new THREE.Quaternion();
   const pointer = new THREE.Vector2(), pointerTarget = new THREE.Vector2();
-  const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+  const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2(), touchTarget=new THREE.Vector3();
   let highlightedMoon=null, pointedMoon=null, focusedMoon=null, width=0, height=0;
 
   function highlightMoon(index,source='pointer') {
@@ -446,12 +452,21 @@ async function createScene() {
     const bounds=host.getBoundingClientRect();
     mouse.set((event.clientX-bounds.left)/bounds.width*2-1,1-(event.clientY-bounds.top)/bounds.height*2);
     raycaster.setFromCamera(mouse,camera);
-    return raycaster.intersectObjects(projectMoons.bodies,false)[0]?.object.userData.project ?? null;
+    const hit=raycaster.intersectObjects(projectMoons.bodies,false)[0]?.object.userData.project;
+    if (hit!==undefined) return hit;
+    if (event.pointerType==='touch' || matchMedia('(pointer:coarse)').matches) {
+      let closest=null, distance=24;
+      moons.forEach((moon,index)=>{
+        moon.getWorldPosition(touchTarget).project(camera);
+        const pixels=Math.hypot((touchTarget.x+1)*bounds.width/2-(event.clientX-bounds.left),(1-touchTarget.y)*bounds.height/2-(event.clientY-bounds.top));
+        if (touchTarget.z>-1 && touchTarget.z<1 && pixels<distance) { closest=index; distance=pixels; }
+      });
+      return closest;
+    }
+    return null;
   }
   function frameMoon(blend=0) {
-    const x=THREE.MathUtils.lerp(variant==='A'?-.03:0,-.32,blend)*width;
-    const y=THREE.MathUtils.lerp(.08,.16,blend)*height;
-    if (camera.view?.offsetX!==x || camera.view?.offsetY!==y) camera.setViewOffset(width,height,x,y,width,height);
+    frameWindow(camera,width,height,variant,blend);
   }
 
   function render() { if (!frame && !lost && !document.hidden) frame = requestAnimationFrame(draw); }
@@ -502,8 +517,8 @@ async function createScene() {
   }
   function resize() {
     ({width,height}=host.getBoundingClientRect());
-    renderer.setSize(width, height, false); camera.aspect = width / height;
-    camera.setViewOffset(width,height,0,0,width,height);
+    renderer.setPixelRatio(Math.min(devicePixelRatio,width<=700?1.25:1.5));
+    renderer.setSize(width,height,false);
     frameMoon(path?THREE.MathUtils.smootherstep(pathProgress,0,1):0);
     camera.updateProjectionMatrix(); render();
   }
@@ -514,7 +529,7 @@ async function createScene() {
       selectedMoon = index;
       homePosition.copy(camera.position); homeRotation.copy(camera.quaternion);
       moons[index].getWorldPosition(moonPosition);
-      path = moonTour(homePosition, moonPosition); pathProgress = 0;
+      path = moonTour(homePosition, moonPosition,height>=width?4.2:6); pathProgress = 0;
     }
     if (!path) return Promise.resolve(true);
     return new Promise(resolve => {
@@ -528,7 +543,7 @@ async function createScene() {
     if (detail.open || path) return;
     const button=event.target.closest('[data-project]');
     highlightMoon(button && !button.disabled?Number(button.dataset.project):pickMoon(event));
-    if (isReduced()) return;
+    if (isReduced() || event.pointerType!=='mouse') return;
     const bounds = host.getBoundingClientRect();
     pointerTarget.set(THREE.MathUtils.clamp((event.clientX - bounds.left) / bounds.width * 2 - 1, -1, 1), THREE.MathUtils.clamp((event.clientY - bounds.top) / bounds.height * 2 - 1, -1, 1));
     render();

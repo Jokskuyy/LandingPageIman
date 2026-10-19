@@ -107,7 +107,18 @@ The main portfolio and this local design reference remain separate.
   emitter gives it a visible source on the console. System and local Minimal
   motion stop both the floating sprite and the beam glow. The projector and
   light beam are decorative and do not add keyboard stops or announcements.
-- Mobile adaptation is a future phase, outside this prototype and current scope.
+- The owner extended the selected A prototype to phone/tablet on 2026-10-19.
+  Portrait screens use a lower reading console, horizontal destination strip,
+  compact hologram/projector and a project bottom sheet. Compact landscape
+  screens (up to 1000px wide) use a split console. Larger landscape screens
+  retain the existing panoramic composition. Safe-area insets and dynamic
+  viewport height protect the controls around browser chrome and cutouts.
+  Native swipes in the sky move the route; reading and project panels scroll
+  independently. The current destination scrolls into the navigation strip.
+  Project buttons remain generous touch alternatives to the small 3D moons.
+  Portrait camera framing retains horizontal coverage, raises the moon group
+  clear of the reader, and uses a closer approach for the project sheet.
+  Mobile render resolution is capped at 1.25 device pixels per CSS pixel.
 
 ## Scope and source
 
@@ -154,6 +165,7 @@ npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-co
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-arrivals.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-crossings.js
 npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-moons.js
+npx.cmd --yes --package @playwright/cli playwright-cli -s=cockpit-preview run-code --filename .scratch/space-cockpit/check-responsive.js
 ```
 
 Screenshots and temporary browser logs go in ignored `tmp/cockpit-preview/`.
@@ -174,6 +186,13 @@ They also protect visibility of the four moon bodies at four A desktop sizes,
 clear moon approaches and an unobstructed final view past the parent planet.
 The moon browser check covers 16 project visits with direct raycast selection,
 keyboard focus that survives pointer movement, reduced motion and text fallback.
+The responsive check creates touch-enabled contexts at 320×568, 390×844,
+430×932, 768×1024, 1024×1366, 844×390 and 667×375. It exercises all five
+destinations, visible moon targets, modal bounds and return focus; native touch
+gestures cover route travel, horizontal navigation, isolated reading/project
+scrolling, rotation and fallback/retry. An additional 1099 geometry projections
+protect responsive route framing and moon approaches. Emulation does not prove
+physical-device performance, Safari behavior or hardware cutout rendering.
 External destinations are preserved,
 not sent messages or submitted forms. A preview pass is not a production
 acceptance or a final 60fps benchmark.
