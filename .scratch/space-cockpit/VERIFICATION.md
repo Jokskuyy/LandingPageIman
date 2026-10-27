@@ -339,6 +339,78 @@ recovery state and #6 identifiable tab are verified by the reload check.
 #10 existing route guidance remains available. Each is a scoped pass; this is
 not a new full accessibility or physical-browser conformance claim.
 
+## Orbital Initialization — local verification, 2026-10-27
+
+The supplied OldMasters reference was adapted to the existing vanilla JS,
+Barlow Condensed / IBM Plex Mono and sage/brass bridge identity. This changes
+the `/cockpit/` entrance, not the root portfolio or factual content.
+
+- `npm.cmd test`: 62 passed, including eight intro lifecycle tests.
+- `npm.cmd run build` and `npm.cmd run build:cockpit`: passed. Tailwind reports
+  the existing outdated caniuse-lite database notice; no dependency update was
+  made for this intro.
+- `npm.cmd test --prefix .scratch/space-cockpit`: passed the existing route,
+  moon approach and responsive projection checks.
+- Real Chromium on `http://127.0.0.1:43188/cockpit/`: `check-intro.js` passed
+  fifteen scenarios. They cover keyboard/button entry, pointer parallax and
+  neutral settling, stable controls, forward wheel plus continued momentum,
+  Skip while preparing and after ready fallback, reload/session behavior,
+  unavailable sessionStorage, delayed imports and their 10s text fallback,
+  late scene recovery, archive timeout/retry, failed interior/SVG fallback,
+  Skip before the intro module arrives, cold/warm deep links, real WebGL
+  context loss, native touch entry and subsequent navigation.
+- Intro render inspection: 1440x900, 820x1180, 390x844 and 844x390. Essential
+  controls remain inside each viewport. Screenshots were inspected, including
+  the expanding window and the revealed bridge. One WebGL context is created;
+  completed overlay removal and aborted event signals were checked in-browser.
+- Intro console capture: no uncaught page exceptions. The two console errors
+  are deliberately injected archive timeout and failed interior requests;
+  ordinary cases emitted no console errors or warnings in this run.
+- Independent read-only review found a cold-load flash and first-frame
+  deep-link race. Both were fixed, followed by passing cold/warm browser cases
+  and the reviewer's nine targeted tests. Follow-up review has no remaining
+  concrete finding. The reviewer did not independently run the browser suite.
+- Existing cockpit browser regression scripts all passed: `check-browser.js`,
+  `check-stations.js`, `check-arrivals.js`, `check-crossings.js`, `check-moons.js`,
+  `check-responsive.js` and `check-reload.js`. The seven-size responsive suite
+  explicitly seeds the completed-session key to test the underlying cockpit;
+  its first-visit intro coverage is in the fifteen-scenario suite above.
+
+The three-second fill is fiction, has no numeric loading percentage or
+progressbar role, and does not enable entry. First painted scene or fallback,
+interior or fallback, and archives or retry state must all be available.
+The intro reuses planet meshes/materials and the existing WebGL renderer with
+a temporary orthographic diorama; it restores the parked cockpit render before
+opening the aperture. Skip exposes the existing loading/recovery controls.
+
+Scoped Nielsen/a11y review for the changed entrance:
+
+| # | Result | Evidence |
+| --- | --- | --- |
+| 1 Status visibility | Pass | Stage labels; readiness held beyond 3s; actual fallback status remains after Skip. |
+| 2 Familiar language | Pass | Existing English bridge/Captain vocabulary; clear Enter/Skip actions. |
+| 3 Control and freedom | Pass | Visible Skip from first HTML paint; original portfolio link; Retry 3D / archives. |
+| 4 Consistency | Pass | Existing typefaces, colors and button treatment; cockpit destinations unchanged. |
+| 5 Error prevention | Pass | Entry disabled until both gates; wheel/touch quarantine; one completion write. |
+| 6 Recognition | Pass | Primary action and forward-scroll hint appear together; no remembered commands. |
+| 7 Efficiency | Pass | Keyboard, click, wheel, native swipe and per-tab bypass; storage failure remains functional. |
+| 8 Focus and hierarchy | Pass | Actual screenshots at four sizes; stable word/control layer; decoration is aria-hidden. |
+| 9 Error recovery | Pass | Import delay/context loss/interior failure/archive timeout exercised with their recovery paths. |
+| 10 Assistance | Pass | Scroll hint, existing flight controls and readable-portfolio recovery link. |
+
+Visible focus, semantic buttons/dialog/status, background inertness and focus
+restoration were inspected/tested. Reduced motion freezes pointer/decorative
+motion and uses short fades. These are scoped checks, not a full WCAG or
+screen-reader certification. Physical phones/tablets, Safari/WebKit and GPU
+frame-time/memory profiling remain unverified. Failure/slow cases use local
+browser request interception, not an outage of the live website.
+
+GitHub Pages is configured to publish only `main`. `vercel.json` disables
+Vercel Git deployments for this feature branch and `staging`, per the official
+[Git configuration](https://vercel.com/docs/project-configuration/git-configuration).
+This guard does not claim to disable manual/provider deployment outside Git.
+No staging hosting or production release is part of this change.
+
 ## Remaining implementation work after layout choice
 
 - Migrate all original factual content and links into production progressive

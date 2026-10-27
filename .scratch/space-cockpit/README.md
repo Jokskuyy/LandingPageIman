@@ -56,6 +56,14 @@ is included as the eleventh allowlisted static file.
 
 ## Confirmed decisions
 
+The 2026-10-27 Orbital Initialization brief adds an intro to the selected bridge
+identity. It uses the existing void/sage/brass palette and Barlow Condensed /
+IBM Plex Mono typography. The signature is the holographic IMAN fill surrounded
+by orbital navigation rings and reused 3D worlds, followed by a one-second
+window reveal. OldMastersPreloader supplied the composition, layered entrance,
+fill and pointer-depth reference; its React/shadcn/TypeScript setup is not used.
+The bridge and portfolio content remain the factual and visual source of truth.
+
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
 - Three.js supplies actual 3D planets and moons. No frontend framework is added.
 - The client-facing route is Opening → Selected Work → Capabilities → About &

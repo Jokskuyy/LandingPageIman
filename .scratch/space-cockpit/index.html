@@ -5,15 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0b141c">
+  <script>
+    // Paint the dark stage before optional modules arrive. Skip remains usable.
+    try {
+      if (sessionStorage.getItem('iman:orbital-intro:v1') !== 'complete') document.documentElement.dataset.orbitalGate = 'intro';
+    } catch { document.documentElement.dataset.orbitalGate = 'intro'; }
+    function skipBeforeModules(event) {
+      if (event.target.closest('#orbital-skip') && document.documentElement.dataset.orbitalGate === 'intro') {
+        document.documentElement.dataset.orbitalGate = 'skipped';
+        document.querySelector('#briefing-title')?.focus({ preventScroll:true });
+      }
+    }
+    document.addEventListener('click', skipBeforeModules);
+    document.addEventListener('orbital:claimed', () => document.removeEventListener('click', skipBeforeModules), { once:true });
+  </script>
   <title>Iman Nugraha — Space Portfolio</title>
   <link rel="icon" href="assets/cockpit-favicon-v1.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="prototype.css?v=20261019-responsive-v14">
-  <script type="module" src="prototype.js?v=20261019-tab-v15"></script>
+  <link rel="stylesheet" href="orbital-intro.css?v=20261027-orbital-v1">
+  <script type="module" src="prototype.js?v=20261027-orbital-v1"></script>
 </head>
 <body data-variant="A">
+  <section class="orbital-intro" id="orbital-intro" role="dialog" aria-modal="true" aria-labelledby="orbital-title" hidden>
+    <h2 class="sr-only" id="orbital-title">IMAN — Orbital Initialization</h2>
+    <div class="orbital-curtain" id="orbital-curtain" aria-hidden="true"></div>
+    <div class="orbital-stars orbital-art" aria-hidden="true"></div>
+    <header class="orbital-header orbital-chrome">
+      <p>IMAN NUGRAHA<span>ORBITAL INITIALIZATION</span></p>
+      <button id="orbital-skip" type="button">Skip Intro <span aria-hidden="true">↗</span></button>
+    </header>
+    <div class="orbital-ring orbital-art" id="orbital-ring" aria-hidden="true">
+      <svg viewBox="0 0 700 700" fill="none">
+        <circle cx="350" cy="350" r="308" stroke="currentColor" stroke-width=".7"/>
+        <circle cx="350" cy="350" r="324" stroke="currentColor" stroke-width="9" stroke-dasharray="1 41.4"/>
+        <circle cx="350" cy="350" r="290" stroke="currentColor" stroke-width="1.5" stroke-dasharray="108 347 36 237 310 784"/>
+        <ellipse cx="350" cy="350" rx="344" ry="188" transform="rotate(-24 350 350)" stroke="currentColor" stroke-width=".7"/>
+        <ellipse cx="350" cy="350" rx="272" ry="338" transform="rotate(32 350 350)" stroke="currentColor" stroke-width=".4"/>
+        <path d="M350 7V30M350 670V693M7 350H30M670 350H693" stroke="currentColor"/>
+        <path d="M342 42H358M350 34V50M342 658H358M350 650V666" stroke="currentColor"/>
+        <circle cx="90" cy="185" r="4" fill="currentColor"/>
+        <circle cx="637" cy="463" r="3" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="orbital-word orbital-art" aria-hidden="true"><span>IMAN</span><span class="orbital-word-light">IMAN</span></div>
+    <div class="orbital-canvas orbital-art" id="orbital-canvas" aria-hidden="true"></div>
+    <div class="orbital-markings orbital-chrome" aria-hidden="true">
+      <span class="orbital-mark orbital-mark-a">+ INITIAL ORBIT</span>
+      <span class="orbital-mark orbital-mark-b">PORTFOLIO / FLIGHT SYSTEM</span>
+      <span class="orbital-mark orbital-mark-c">+ BRIDGE APPROACH</span>
+    </div>
+    <div class="orbital-controls orbital-chrome">
+      <p class="orbital-status" id="orbital-status" role="status" aria-live="polite">Power Online</p>
+      <p class="orbital-note" id="orbital-note">Orbital initialization sequence</p>
+      <button class="button button-primary orbital-enter" id="orbital-enter" type="button" disabled hidden>Enter the Bridge <span aria-hidden="true">→</span></button>
+      <p class="orbital-hint" id="orbital-hint" hidden><span aria-hidden="true">↓</span> Scroll to enter</p>
+    </div>
+    <footer class="orbital-footer orbital-chrome" aria-hidden="true"><span>AN IMAN NUGRAHA EXPERIENCE</span><span>SPACE PORTFOLIO</span></footer>
+  </section>
   <a class="skip-link" href="#briefing-title">Skip to destination information</a>
   <div id="cockpit" class="cockpit">
     <div id="space" class="space" aria-hidden="true"></div>
@@ -87,7 +138,7 @@
         <div class="manual-control" aria-label="Manual flight controls"><div><button type="button" data-route-step="-1">◀ Previous</button><button type="button" data-route-step="1">Next ▶</button></div></div>
       </div>
     </details>
-    <div class="scene-status" id="scene-status" role="status"><span>Preparing the viewing window…</span><button id="retry-scene" hidden>Retry 3D</button></div>
+    <div class="scene-status" id="scene-status" role="status"><span>Preparing the viewing window…</span><button id="retry-scene" hidden>Retry 3D</button><a class="scene-recovery" href="../../index.html">Read the portfolio →</a></div>
   </div>
   <div class="scroll-track" aria-hidden="true"></div>
   <p class="sr-only" id="destination-announcement" role="status" aria-live="polite"></p>
