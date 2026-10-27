@@ -22,6 +22,7 @@ async page => {
     await page.waitForTimeout(300);
   };
   await page.waitForFunction(()=>document.querySelector('#window-mode').textContent==='3D ONLINE');
+  check(await page.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count()===0,'Mini Me elements remain in the cockpit');
   await parked(0);
   const leg=await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4);
   await page.mouse.move(720,400);
@@ -52,7 +53,7 @@ async page => {
   await page.waitForTimeout(500);
   check(await page.evaluate(()=>scrollY)===workY,'Parked scroll drifts');
   check(await page.evaluate(()=>stationFrames)>frames,'Ambient motion stopped at the station');
-  check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)!=='none','Standard motion did not animate the hologram beam');
+  check(await page.locator('body').getAttribute('data-calm')==='false' && await page.locator('#motion-mode').getAttribute('aria-pressed')==='false','Standard motion state does not match the scene');
   check(await page.locator('#travel-status').innerText()==='HOLDING POSITION','Ambient motion moved the station');
   await page.locator('.flight-tools summary').click();
   await page.locator('#motion-mode').click();
@@ -60,8 +61,9 @@ async page => {
   const calmFrames=await page.evaluate(()=>stationFrames);
   await page.waitForTimeout(500);
   check(await page.evaluate(()=>stationFrames)===calmFrames,'Minimal motion kept rendering ambient effects');
-  check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)==='none','Minimal motion kept the hologram beam animated');
+  check(await page.locator('body').getAttribute('data-calm')==='true' && await page.locator('#motion-mode').getAttribute('aria-pressed')==='true','Minimal motion state does not match the scene');
   await page.locator('#motion-mode').click();
+  check(await page.locator('body').getAttribute('data-calm')==='false' && await page.locator('#motion-mode').getAttribute('aria-pressed')==='false','Motion toggle did not restore standard motion');
   await page.locator('.flight-tools summary').click();
   await page.screenshot({path:'tmp/cockpit-preview/stations-work-C.png'});
   const moon=page.locator('.project-picks button').first();
@@ -119,5 +121,5 @@ async page => {
   const tallLeg=await page.evaluate(()=>(document.documentElement.scrollHeight-innerHeight)/4);
   await page.mouse.move(650,380); await page.mouse.wheel(0,Math.round(tallLeg*.84)); await parked(1);
   check(errors.length===0,errors.join('; '));
-  return {result:'passed',browser:page.context().browser().version(),checks:'small/continuous/reverse free flight; paused resize position/status; directional snap; native scroll-pixel arrival; keyboard and physical controls after passing stations; section/hash alignment; ambient/minimal motion; moon approach/return/focus; direct navigation cancels pending snap',errors};
+  return {result:'passed',browser:page.context().browser().version(),checks:'Mini Me absent; small/continuous/reverse free flight; paused resize position/status; directional snap; native scroll-pixel arrival; keyboard and physical controls after passing stations; section/hash alignment; ambient/minimal rendering and motion toggle state; moon approach/return/focus; direct navigation cancels pending snap',errors};
 }

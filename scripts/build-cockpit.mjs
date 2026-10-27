@@ -1,5 +1,5 @@
 // Publish only the browser files; keep the design workspace outside Pages.
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 
 const source = new URL('../.scratch/space-cockpit/', import.meta.url);
 const output = new URL('../cockpit/', import.meta.url);
@@ -12,7 +12,9 @@ for (const name of ['index.html', 'prototype.css', 'prototype.js', 'orbital-intr
     .replaceAll('../../', '../')
     .replaceAll('./node_modules/three/build/', './vendor/three/'));
 }
-for (const name of ['cockpit-interior-v1.png', 'officer-sheet-v1.png', 'cockpit-favicon-v1.svg']) {
+// Retire the generated sprite even when building over an older cockpit package.
+await rm(new URL('assets/officer-sheet-v1.png', output), { force:true });
+for (const name of ['cockpit-interior-v1.png', 'cockpit-favicon-v1.svg']) {
   await copyFile(new URL(`assets/${name}`, source), new URL(`assets/${name}`, output));
 }
 for (const name of ['three.module.js', 'three.core.js']) {

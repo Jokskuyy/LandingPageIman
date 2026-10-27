@@ -58,7 +58,7 @@ async (page) => {
     await tab.goto(base,{ waitUntil:'domcontentloaded' });
     check(await tab.locator('#orbital-enter').isHidden(),'Entry enabled before timeline');
     check(await tab.locator('#cockpit').getAttribute('inert') !== null,'Cockpit must be inert');
-    check(await tab.locator('.guide').evaluate(node => getComputedStyle(node).visibility) === 'hidden','Guide visible during intro');
+    check(await tab.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count() === 0,'Mini Me elements remain during intro');
     check(await tab.locator('#destination-announcement').textContent() === '','Underlying destination announced too early');
     await tab.keyboard.press('PageDown');
     check(await tab.evaluate(() => scrollY) === 0,'Keyboard advanced route during intro');
@@ -81,8 +81,8 @@ async (page) => {
     await gone(tab);
     check(await tab.evaluate(() => document.activeElement.id) === 'briefing-title','Handoff lost keyboard focus');
     check(await tab.locator('#route-percent').innerText() === '0%','Entry advanced route');
-    check(await tab.locator('#guide-dialogue').innerText() === 'Captain, welcome aboard. Navigation is ready.','Welcome not coordinated with handoff');
-    check(await tab.locator('.guide').isVisible(),'Guide not revealed after handoff');
+    check(await tab.locator('#destination-announcement').textContent() === 'Arrived at Opening.','Handoff did not announce the current destination');
+    check(await tab.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count() === 0,'Mini Me elements returned after handoff');
     await cleaned(tab);
     check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === 'complete','Completion not stored');
     check(await tab.evaluate(() => window.__completionWrites) === 1,'Handoff completed more than once');
@@ -123,7 +123,8 @@ async (page) => {
     await pending.continue();
     await tab.waitForFunction(() => document.querySelector('#window-mode').textContent === '3D ONLINE');
     await cleaned(tab);
-    check(await tab.locator('#guide-dialogue').innerText() === 'Captain, welcome aboard. Navigation is ready.','Late archive refresh erased welcome');
+    check((await tab.locator('#briefing-title').innerText()).includes('Your next idea'),'Late initialization replaced the Opening view');
+    check(await tab.locator('#route-percent').innerText() === '0%','Late initialization advanced the Opening route');
     check(await tab.locator('#orbital-intro').count() === 0,'Late initialization reopened intro');
     check(await tab.evaluate(() => window.__contexts.size) === 1,'Late initialization created duplicate contexts');
   });
@@ -200,7 +201,7 @@ async (page) => {
     await tab.goto(base,{ waitUntil:'commit' });
     await tab.locator('#orbital-skip').waitFor({ state:'visible' });
     check(await tab.locator('#cockpit').evaluate(node => getComputedStyle(node).visibility) === 'hidden','Cockpit flashed before modules arrived');
-    check(await tab.locator('.guide').evaluate(node => getComputedStyle(node).visibility) === 'hidden','Guide flashed before intro module');
+    check(await tab.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count() === 0,'Mini Me elements remain before the intro module arrives');
     await tab.locator('#orbital-skip').click();
     check(await tab.locator('#orbital-intro').isHidden(),'Early Skip depends on optional module');
     check(await tab.locator('.scene-recovery').isVisible(),'Early Skip has no readable fallback');
@@ -220,7 +221,7 @@ async (page) => {
     await tab.goto(base+'?warm=1#contact'); await ready(tab);
     check(await tab.locator('#route-percent').innerText() === '100%','Warm deep link overwritten');
     await tab.locator('#orbital-enter').click(); await gone(tab); await cleaned(tab);
-    check(await tab.locator('#guide-dialogue').innerText() === 'Captain, ready for a new mission? Open a channel.','Deep link dialogue replaced by Opening welcome');
+    check(await tab.locator('#destination-announcement').textContent() === 'Arrived at Contact.','Deep-link handoff announced the wrong destination');
   },{ reduced:true });
 
   await run('lost WebGL context during intro hands off into normal recovery', async tab => {
