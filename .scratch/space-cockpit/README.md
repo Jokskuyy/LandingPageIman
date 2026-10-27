@@ -64,6 +64,12 @@ window reveal. OldMastersPreloader supplied the composition, layered entrance,
 fill and pointer-depth reference; its React/shadcn/TypeScript setup is not used.
 The bridge and portfolio content remain the factual and visual source of truth.
 
+The startup timing correction (2026-10-27) holds that initial outlined stage
+while the existing scene/assets and all intro materials warm up. It then runs
+the complete fill from zero using visible frame time. Preparing time, hidden
+tab time and large main-thread stalls do not fast-forward the sequence.
+Run `check-startup.js` after opening the packaged route to measure startup.
+
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
 - Three.js supplies actual 3D planets and moons. No frontend framework is added.
 - The client-facing route is Opening → Selected Work → Capabilities → About &
