@@ -81,3 +81,37 @@ The existing `.scratch/space-cockpit/check-browser.js`, `check-stations.js`,
 and `check-reload.js`
 use the browser tab's current directory as their base. Open the packaged route
 before running them to check the published files rather than the workspace.
+
+### Orbital Initialization
+
+The cockpit opens with a three-second fictional orbital sequence: illuminated
+IMAN lettering, navigation rings and the bridge's procedural planets. Readiness
+is separate from this timeline: entry waits for the first rendered 3D frame (or
+the text fallback), the interior image (or SVG fallback), and project archives
+(or their existing retry state). Interior/archive deadlines are eight seconds;
+the optional 3D import has a ten-second fallback deadline. Skip Intro is usable
+even before the modules arrive and reveals the normal preparing/recovery view.
+
+The DOM controller is authored in `.scratch/space-cockpit/orbital-intro.js`, with
+isolated styles in `orbital-intro.css`. It shares the cockpit's renderer and
+planet geometry/materials. Enter returns that renderer to its original host
+before opening the orbital aperture; the camera remains at its route position.
+The guide and welcome are revealed after handoff, and continued wheel/touch
+input is consumed until it has been quiet for 350ms. Reduced motion uses a
+180ms initialization and 120ms fade without parallax.
+
+Successful entry/skip stores `iman:orbital-intro:v1=complete` in sessionStorage.
+Reloads then bypass the intro while preserving the existing Opening reset,
+deliberate fragment links and one-use Retry 3D recovery rule. If storage is
+blocked, entry still works and the next visit can show the intro again.
+
+`npm test` includes controller lifecycle checks. Run `check-intro.js` with the
+existing Playwright CLI against `/cockpit/` for first-session and failure cases.
+The responsive cockpit suite intentionally bypasses the intro; its first-visit
+layouts are covered by `check-intro.js`. The static allowlist now packages
+thirteen files and continues to exclude the source workspace and browser tests.
+
+Local-only staging is enforced for `feat/orbital-intro` and `staging` with
+[`git.deploymentEnabled`](https://vercel.com/docs/project-configuration/git-configuration#git.deploymentenabled)
+in `vercel.json`. GitHub Pages still publishes only `main`; releasing that
+branch requires the owner's approval.

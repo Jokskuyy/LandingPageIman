@@ -6,6 +6,8 @@ async page=>{
   const sizes=[[320,568],[390,844],[430,932],[768,1024],[1024,1366],[844,390],[667,375]];
   for(const [width,height] of sizes) {
     const context=await page.context().browser().newContext({viewport:{width,height},isMobile:true,hasTouch:true,deviceScaleFactor:2,reducedMotion:'reduce'});
+    // This suite covers the cockpit after entry; check-intro.js covers first visits.
+    await context.addInitScript(() => sessionStorage.setItem('iman:orbital-intro:v1','complete'));
     try {
       const p=await context.newPage();p.on('pageerror',error=>errors.push(error.message));
       p.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
@@ -64,6 +66,7 @@ async page=>{
   }
   // Use Chromium's native touch input, not dispatched DOM events, for scrolling.
   const context=await page.context().browser().newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2,reducedMotion:'reduce'});
+  await context.addInitScript(() => sessionStorage.setItem('iman:orbital-intro:v1','complete'));
   try {
     const p=await context.newPage(),cdp=await context.newCDPSession(p);
     p.on('pageerror',error=>errors.push(error.message));
