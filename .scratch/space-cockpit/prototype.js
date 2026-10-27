@@ -1,4 +1,4 @@
-import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v1';
+import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v2';
 
 // Three layouts of the same real portfolio. Read-only prototype, not production.
 const $ = selector => document.querySelector(selector);
@@ -489,12 +489,17 @@ async function createScene() {
       orbitalWorld.add(body);
       return { ...spec, body };
     });
-    orbitalView = { world:orbitalWorld, camera:orbitalCamera, host:introHost, visual, bodies, time:0 };
+    let resolveWarmup;
+    const prepared = new Promise(resolve => { resolveWarmup = resolve; });
+    orbitalView = { world:orbitalWorld, camera:orbitalCamera, host:introHost, visual, bodies, time:0, resolveWarmup };
+    introHost.style.visibility = 'hidden';
     introHost.append(renderer.domElement);
     resize();
+    return prepared;
   }
   function endIntro() {
     if (!orbitalView) return;
+    orbitalView.resolveWarmup?.(false);
     orbitalView.world.clear();
     orbitalView = null;
     renderer.renderLists.dispose();
@@ -508,7 +513,9 @@ async function createScene() {
     const view = orbitalView, { visual } = view;
     if (!minimal) view.time += seconds;
     for (const spec of view.bodies) {
-      const reveal = THREE.MathUtils.smoothstep(visual.progress,spec.delay,spec.delay+.2);
+      // Warm every planet/material before its timed entrance, including
+      // bodies that were outside the cockpit camera's initial frustum.
+      const reveal = view.resolveWarmup ? 1 : THREE.MathUtils.smoothstep(visual.progress,spec.delay,spec.delay+.2);
       spec.body.visible = reveal > 0;
       const radius = Math.min(width*.1,height*spec.radius);
       spec.body.scale.setScalar(radius / planetSpecs[spec.index].radius * (.88 + reveal*.12));
@@ -517,6 +524,13 @@ async function createScene() {
       spec.body.rotation.y = minimal ? 0 : view.time*.025*(spec.index%2?1:-1);
     }
     renderer.render(view.world,view.camera);
+    if (view.resolveWarmup) {
+      for (const spec of view.bodies) spec.body.visible = false;
+      renderer.render(view.world,view.camera);
+      view.host.style.visibility = '';
+      view.resolveWarmup(true);
+      view.resolveWarmup = null;
+    }
     if (!minimal || visual.progress < 1) render();
     else lastFrame = 0;
   }
@@ -575,7 +589,11 @@ async function createScene() {
     const seconds = lastFrame ? Math.min((time - lastFrame) / 1000, .05) : 1 / 60;
     lastFrame = time;
     const minimal = isReduced();
-    if (orbitalView) { drawOrbital(seconds,minimal); return; }
+    if (orbitalView) {
+      try { drawOrbital(seconds,minimal); }
+      catch (error) { console.error(error); sceneFailure(); }
+      return;
+    }
     if (minimal) pointerTarget.set(0,0);
     pointer.x = minimal ? 0 : THREE.MathUtils.damp(pointer.x, pointerTarget.x, 8, seconds);
     pointer.y = minimal ? 0 : THREE.MathUtils.damp(pointer.y, pointerTarget.y, 8, seconds);

@@ -92,6 +92,14 @@ the text fallback), the interior image (or SVG fallback), and project archives
 the optional 3D import has a ten-second fallback deadline. Skip Intro is usable
 even before the modules arrive and reveals the normal preparing/recovery view.
 
+The stage stays outlined at `Preparing Bridge` until that preparation and an
+intro warmup pass have finished. The shared renderer draws all intro materials
+while hidden, then clears to the outlined starting frame. Only then does the
+three-second fill/reveal start. Its clock follows presented animation frames,
+caps a delayed frame at 50ms and pauses in hidden tabs, so loading or shader
+work cannot consume the beginning. A slow device can stretch the sequence;
+Skip remains available throughout.
+
 The DOM controller is authored in `.scratch/space-cockpit/orbital-intro.js`, with
 isolated styles in `orbital-intro.css`. It shares the cockpit's renderer and
 planet geometry/materials. Enter returns that renderer to its original host
@@ -107,6 +115,8 @@ blocked, entry still works and the next visit can show the intro again.
 
 `npm test` includes controller lifecycle checks. Run `check-intro.js` with the
 existing Playwright CLI against `/cockpit/` for first-session and failure cases.
+`check-startup.js` measures the fill before the celestial scene is prepared and
+its largest frame step under normal, delayed-import and CPU-throttled startup.
 The responsive cockpit suite intentionally bypasses the intro; its first-visit
 layouts are covered by `check-intro.js`. The static allowlist now packages
 thirteen files and continues to exclude the source workspace and browser tests.

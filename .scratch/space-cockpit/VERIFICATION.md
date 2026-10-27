@@ -411,6 +411,66 @@ Vercel Git deployments for this feature branch and `staging`, per the official
 This guard does not claim to disable manual/provider deployment outside Git.
 No staging hosting or production release is part of this change.
 
+## Startup clock correction — 2026-10-27
+
+The reported missing fill/planet animation was reproduced before the fix.
+`node --test --test-name-pattern='preparing the application' tests/orbital-intro.test.js`
+failed with progress `0.5` instead of `0` while initialization was still pending.
+Browser sampling of production `2317366` confirmed fill before the celestial
+canvas and large single-frame jumps:
+
+| Profile | Fill consumed before scene | Largest fill step |
+| --- | --- | --- |
+| Normal | 6.08 percentage points | 42.83 percentage points |
+| Three.js import delayed 1400ms | 57.48 | 25.93 |
+| CPU throttled 6x | 26.78 | 72.75 |
+
+The controller previously advanced a wall clock from construction. Procedural
+scene creation and shader/texture first use blocked that clock's RAF delivery,
+then the next callback caught up and skipped the entrance. The fix holds the
+outlined `Preparing Bridge` stage until application readiness and an intro
+warmup render complete. All celestial materials are rendered hidden once,
+then the canvas is cleared before it is revealed. The cinematic clock starts
+at zero, advances by delivered frame deltas capped at 50ms and pauses in hidden
+tabs. Skip/error/context-loss still settle the preparation and release work.
+
+`check-startup.js` passed on the local packaged route after the fix:
+
+| Profile | Fill before prepared scene | Largest fill step | Observed cinematic interval |
+| --- | --- | --- | --- |
+| Normal | 0 | 1.39 percentage points | 2972ms |
+| Import delayed 1400ms | 0 | 1.67 | 2979ms |
+| CPU throttled 6x | 0 | 1.67 | 3208ms |
+
+The sampled interval starts when the observer first sees `initializing`, so it
+can omit the first observation frame. These measurements demonstrate preserved
+animation time, not a general FPS or load-speed improvement. Initialization
+can still take longer on slow hardware; that time is now outside the sequence.
+The before run used production and the after run used local files, so no
+network/loading-time speedup is claimed.
+
+- 68 root tests passed, including 14 controller lifecycle/timing tests.
+- Route/moon geometry checks and both builds passed. The existing Browserslist
+  database notice remains; dependencies were not changed.
+- All 15 intro browser scenarios passed. No uncaught page exceptions; console
+  errors were limited to the deliberately injected archive timeout/image fail.
+- All seven existing cockpit browser suites passed, plus a separate same-scene
+  test of all four moon visits after intro handoff, Contact, focus/position
+  return and reload/session bypass. These cases produced no errors.
+- Independent read-only review is clear and its 14 targeted tests passed.
+- The browser CLI initially had an `about:blank` selected tab after closing
+  temporary profiling pages. Reopening the packaged URL fixed this harness
+  precondition; no application change was made for that tooling error.
+
+Scoped Nielsen review remains pass for all ten entrance heuristics: #1 now
+shows preparation before the fictional sequence; #2 uses the same language;
+#3 retains Skip/recovery; #4 retains the same design; #5 prevents skipped
+animation and early entry; #6 retains visible actions; #7 retains input/session
+paths; #8 preserves composition; #9 recovery remains tested; #10 existing hints
+remain. Keyboard/reduced-motion, responsive layouts and cleanup passed the
+same browser coverage. Physical devices, Safari/WebKit and GPU profiling remain
+unverified. This is a local/staging fix, not evidence of a new production deploy.
+
 ## Remaining implementation work after layout choice
 
 - Migrate all original factual content and links into production progressive
