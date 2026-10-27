@@ -30,3 +30,16 @@ test('published cockpit resolves its assets, module graph and portfolio links un
   await access(local(new URL('../output/pdf/muhammad-iman-nugraha-cv.pdf', base)));
   assert((await readFile(new URL('cockpit/vendor/three/LICENSE.txt', root), 'utf8')).includes('MIT License'));
 });
+
+test('the cockpit omits Mini Me and no longer publishes its sprite', async () => {
+  for (const path of ['../.scratch/space-cockpit/index.html','../cockpit/index.html']) {
+    const html = await readFile(new URL(path,import.meta.url),'utf8');
+    const document = new JSDOM(html).window.document;
+    assert.equal(document.querySelector('.guide,.officer,.holo-beam,.holo-projector,#guide-dialogue'),null);
+    assert.equal(document.querySelector('img[src*="officer-sheet"]'),null);
+    assert.equal(document.querySelector('#orbital-skip'),null);
+    assert(document.querySelector('.destination-nav'));
+    assert(document.querySelector('#destination-announcement'));
+  }
+  await assert.rejects(access(new URL('../cockpit/assets/officer-sheet-v1.png',import.meta.url)),{code:'ENOENT'});
+});

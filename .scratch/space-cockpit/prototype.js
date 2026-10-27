@@ -1,4 +1,4 @@
-import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v1';
+import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v3';
 
 // Three layouts of the same real portfolio. Read-only prototype, not production.
 const $ = selector => document.querySelector(selector);
@@ -9,23 +9,13 @@ const isReduced = () => reduced.matches || calm;
 const stops = ['Opening', 'Selected work', 'Capabilities', 'About & experience', 'Contact'];
 const slugs = ['opening', 'selected-work', 'capabilities', 'about-experience', 'contact'];
 const variants = { A: 'Panoramic bridge', B: 'Command console', C: 'Navigation chart' };
-const dialogues = [
-  'Captain, follow the light to explore the work.',
-  "Captain, choose a project. I'll bring its moon into view.",
-  'Captain, these are the capabilities behind the work.',
-  'Captain, here are my background and experience.',
-  'Captain, ready for a new mission? Open a channel.'
-];
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, sectionTravel = 0, source, sourceError = false, projects = [], scene;
-let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0, welcomed = false;
+let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
 let snapTimer, scrollDirection = 0, lastScrollY = scrollY, crossedStop = null;
 const detail = $('#project-detail');
 const moonAccents = ['#81cae8','#78e6bc','#ffb56d','#c3b5ff'];
 const intro = createOrbitalIntro({ onHandoff() {
-  welcomed = true;
-  $('#guide-dialogue').textContent = currentStop === 0
-    ? 'Captain, welcome aboard. Navigation is ready.' : dialogues[currentStop];
   announceDestination(`Arrived at ${stops[currentStop]}.`);
 } });
 const bridgeParts = { interior:null, source:null, scene:null };
@@ -152,7 +142,6 @@ function renderStop(index, announce = true) {
   document.querySelectorAll('.project-picks button').forEach(button => button.disabled = document.body.dataset.travel === 'transit');
   if (titleFocused) $('#briefing-title').focus({ preventScroll: true });
   $('#briefing').scrollTop = 0;
-  if (!intro.active && !(welcomed && index === 0 && previousStop === 0)) $('#guide-dialogue').textContent = dialogues[index];
   document.querySelectorAll('[data-stop]').forEach(link => {
     if (Number(link.dataset.stop) === index) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
@@ -165,7 +154,6 @@ function renderStop(index, announce = true) {
     const panel = $('#briefing-content');
     panel.getAnimations().forEach(animation => animation.cancel());
     panel.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}], {duration:520,easing:'cubic-bezier(.2,.7,.2,1)'});
-    $('#guide-dialogue').animate([{opacity:.15},{opacity:1}], {duration:600});
   }
   scene?.render();
 }
@@ -175,7 +163,6 @@ function arriveAtStop(index) {
   crossedStop = null;
   sectionTravel = index;
   document.body.dataset.travel = 'holding';
-  $('.officer').dataset.state = index === 0 ? 'idle' : 'explaining';
   $('#travel-status').textContent = 'HOLDING POSITION';
   document.querySelectorAll('.project-picks button').forEach(button => button.disabled = false);
   document.querySelectorAll('.route-track b').forEach((dot,i) => dot.classList.toggle('reached',i<=index));
@@ -212,7 +199,6 @@ function updateRoute() {
   if (!atStop || index !== currentStop) {
     document.body.dataset.travel = 'transit';
     $('#travel-status').textContent = 'IN TRANSIT';
-    $('.officer').dataset.state = 'traveling';
     document.querySelectorAll('.project-picks button').forEach(button => button.disabled = true);
   }
   if (atStop && (!scene || sceneFailed || routeImmediate || isReduced())) arriveAtStop(index);
@@ -271,7 +257,6 @@ async function openMoon(index, origin) {
   savedScroll = scrollY;
   document.body.style.overflow = 'hidden';
   document.body.dataset.approaching = 'true';
-  $('.officer').dataset.state = 'traveling';
   $('#travel-status').textContent = 'APPROACHING · ESC TO CANCEL';
   await scene?.setMoon(index);
   if (request !== moonRequest || !document.body.dataset.approaching) return;
@@ -287,7 +272,6 @@ async function openMoon(index, origin) {
   if (!isReduced()) detail.animate([{opacity:0,transform:'translateX(-8px)'},{opacity:1,transform:'translateX(0)'}], {duration:420,easing:'cubic-bezier(.2,.7,.2,1)'});
   detail.scrollTop = 0;
   $('#return-to-planet').focus();
-  $('.officer').dataset.state = 'explaining';
   $('#travel-status').textContent = 'READING PROJECT';
   delete document.body.dataset.approaching;
 }
@@ -489,12 +473,17 @@ async function createScene() {
       orbitalWorld.add(body);
       return { ...spec, body };
     });
-    orbitalView = { world:orbitalWorld, camera:orbitalCamera, host:introHost, visual, bodies, time:0 };
+    let resolveWarmup;
+    const prepared = new Promise(resolve => { resolveWarmup = resolve; });
+    orbitalView = { world:orbitalWorld, camera:orbitalCamera, host:introHost, visual, bodies, time:0, resolveWarmup };
+    introHost.style.visibility = 'hidden';
     introHost.append(renderer.domElement);
     resize();
+    return prepared;
   }
   function endIntro() {
     if (!orbitalView) return;
+    orbitalView.resolveWarmup?.(false);
     orbitalView.world.clear();
     orbitalView = null;
     renderer.renderLists.dispose();
@@ -508,7 +497,9 @@ async function createScene() {
     const view = orbitalView, { visual } = view;
     if (!minimal) view.time += seconds;
     for (const spec of view.bodies) {
-      const reveal = THREE.MathUtils.smoothstep(visual.progress,spec.delay,spec.delay+.2);
+      // Warm every planet/material before its timed entrance, including
+      // bodies that were outside the cockpit camera's initial frustum.
+      const reveal = view.resolveWarmup ? 1 : THREE.MathUtils.smoothstep(visual.progress,spec.delay,spec.delay+.2);
       spec.body.visible = reveal > 0;
       const radius = Math.min(width*.1,height*spec.radius);
       spec.body.scale.setScalar(radius / planetSpecs[spec.index].radius * (.88 + reveal*.12));
@@ -517,6 +508,13 @@ async function createScene() {
       spec.body.rotation.y = minimal ? 0 : view.time*.025*(spec.index%2?1:-1);
     }
     renderer.render(view.world,view.camera);
+    if (view.resolveWarmup) {
+      for (const spec of view.bodies) spec.body.visible = false;
+      renderer.render(view.world,view.camera);
+      view.host.style.visibility = '';
+      view.resolveWarmup(true);
+      view.resolveWarmup = null;
+    }
     if (!minimal || visual.progress < 1) render();
     else lastFrame = 0;
   }
@@ -575,7 +573,11 @@ async function createScene() {
     const seconds = lastFrame ? Math.min((time - lastFrame) / 1000, .05) : 1 / 60;
     lastFrame = time;
     const minimal = isReduced();
-    if (orbitalView) { drawOrbital(seconds,minimal); return; }
+    if (orbitalView) {
+      try { drawOrbital(seconds,minimal); }
+      catch (error) { console.error(error); sceneFailure(); }
+      return;
+    }
     if (minimal) pointerTarget.set(0,0);
     pointer.x = minimal ? 0 : THREE.MathUtils.damp(pointer.x, pointerTarget.x, 8, seconds);
     pointer.y = minimal ? 0 : THREE.MathUtils.damp(pointer.y, pointerTarget.y, 8, seconds);
@@ -683,6 +685,7 @@ const sceneDeadline = setTimeout(sceneFailure, 10000);
 createScene().then(result => {
   clearTimeout(sceneDeadline);
   scene = result; sceneFailed = false;
+  if ($('#scene-status').contains(document.activeElement)) $('#briefing-title').focus({ preventScroll:true });
   $('#scene-status').hidden = true; $('#window-mode').textContent = '3D ONLINE';
   intro.setScene(scene);
   settleBridge('scene'); updateRoute();

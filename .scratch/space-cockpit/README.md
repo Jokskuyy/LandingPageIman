@@ -22,6 +22,19 @@ chat before the full implementation, per the owner's UI guide.
 | B — Command console | Compact navigation and reading console on the left | Consistent reading area; narrower exterior view |
 | C — Navigation chart | Thin navigation, open central window, wide lower briefing | More room for the flight path; less height for detailed text |
 
+## Current refinement — 2026-10-27
+
+The owner requested removing Mini Me. The holographic character, projector,
+beam and dialogue are no longer part of the bridge. Their runtime state,
+animation rules and published sprite are removed. Navigation, the flight path,
+project moons, reading content, status announcements and the orbital intro
+remain. The guide choices recorded below describe earlier iterations.
+
+The owner also removed Skip Intro. Entry uses Enter the Bridge, forward scroll
+or touch after readiness. Initial keyboard focus moves from the intro title
+to Enter when ready. A module failure or ten-second bootstrap deadline reveals
+the existing portfolio recovery link automatically.
+
 ## Selected direction — 2026-10-18
 
 The owner selected **A — Panoramic bridge** through chat. Carry its broad front
@@ -63,6 +76,12 @@ by orbital navigation rings and reused 3D worlds, followed by a one-second
 window reveal. OldMastersPreloader supplied the composition, layered entrance,
 fill and pointer-depth reference; its React/shadcn/TypeScript setup is not used.
 The bridge and portfolio content remain the factual and visual source of truth.
+
+The startup timing correction (2026-10-27) holds that initial outlined stage
+while the existing scene/assets and all intro materials warm up. It then runs
+the complete fill from zero using visible frame time. Preparing time, hidden
+tab time and large main-thread stalls do not fast-forward the sequence.
+Run `check-startup.js` after opening the packaged route to measure startup.
 
 - Existing HTML, Tailwind CSS and vanilla JavaScript remain the production stack.
 - Three.js supplies actual 3D planets and moons. No frontend framework is added.

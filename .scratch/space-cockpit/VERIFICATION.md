@@ -411,7 +411,168 @@ Vercel Git deployments for this feature branch and `staging`, per the official
 This guard does not claim to disable manual/provider deployment outside Git.
 No staging hosting or production release is part of this change.
 
-## Remaining implementation work after layout choice
+## Startup clock correction — 2026-10-27
+
+The reported missing fill/planet animation was reproduced before the fix.
+`node --test --test-name-pattern='preparing the application' tests/orbital-intro.test.js`
+failed with progress `0.5` instead of `0` while initialization was still pending.
+Browser sampling of production `2317366` confirmed fill before the celestial
+canvas and large single-frame jumps:
+
+| Profile | Fill consumed before scene | Largest fill step |
+| --- | --- | --- |
+| Normal | 6.08 percentage points | 42.83 percentage points |
+| Three.js import delayed 1400ms | 57.48 | 25.93 |
+| CPU throttled 6x | 26.78 | 72.75 |
+
+The controller previously advanced a wall clock from construction. Procedural
+scene creation and shader/texture first use blocked that clock's RAF delivery,
+then the next callback caught up and skipped the entrance. The fix holds the
+outlined `Preparing Bridge` stage until application readiness and an intro
+warmup render complete. All celestial materials are rendered hidden once,
+then the canvas is cleared before it is revealed. The cinematic clock starts
+at zero, advances by delivered frame deltas capped at 50ms and pauses in hidden
+tabs. Skip/error/context-loss still settle the preparation and release work.
+
+`check-startup.js` passed on the local packaged route after the fix:
+
+| Profile | Fill before prepared scene | Largest fill step | Observed cinematic interval |
+| --- | --- | --- | --- |
+| Normal | 0 | 1.39 percentage points | 2972ms |
+| Import delayed 1400ms | 0 | 1.67 | 2979ms |
+| CPU throttled 6x | 0 | 1.67 | 3208ms |
+
+The sampled interval starts when the observer first sees `initializing`, so it
+can omit the first observation frame. These measurements demonstrate preserved
+animation time, not a general FPS or load-speed improvement. Initialization
+can still take longer on slow hardware; that time is now outside the sequence.
+The before run used production and the after run used local files, so no
+network/loading-time speedup is claimed.
+
+- 68 root tests passed, including 14 controller lifecycle/timing tests.
+- Route/moon geometry checks and both builds passed. The existing Browserslist
+  database notice remains; dependencies were not changed.
+- All 15 intro browser scenarios passed. No uncaught page exceptions; console
+  errors were limited to the deliberately injected archive timeout/image fail.
+- All seven existing cockpit browser suites passed, plus a separate same-scene
+  test of all four moon visits after intro handoff, Contact, focus/position
+  return and reload/session bypass. These cases produced no errors.
+- Independent read-only review is clear and its 14 targeted tests passed.
+- The browser CLI initially had an `about:blank` selected tab after closing
+  temporary profiling pages. Reopening the packaged URL fixed this harness
+  precondition; no application change was made for that tooling error.
+
+Scoped Nielsen review remains pass for all ten entrance heuristics: #1 now
+shows preparation before the fictional sequence; #2 uses the same language;
+#3 retains Skip/recovery; #4 retains the same design; #5 prevents skipped
+animation and early entry; #6 retains visible actions; #7 retains input/session
+paths; #8 preserves composition; #9 recovery remains tested; #10 existing hints
+remain. Keyboard/reduced-motion, responsive layouts and cleanup passed the
+same browser coverage. Physical devices, Safari/WebKit and GPU profiling remain
+unverified. This is a local/staging fix, not evidence of a new production deploy.
+
+## Mini Me removal — 2026-10-27
+
+The owner requested removing Mini Me. The bridge no longer renders the
+character, dialogue, hologram beam or projector. Their CSS and runtime state
+updates were deleted. The 1,060,637-byte officer sprite remains a historical
+source reference but is neither requested nor copied into the public package.
+The build removes that exact generated file from older output directories;
+the package now contains 12 files. Destination announcements, flight controls,
+route and moon interactions, factual content and the startup clock fix remain.
+
+Verified on the local packaged route `http://127.0.0.1:43188/cockpit/`:
+
+- All 69 root tests, route/moon geometry checks, `build:cockpit` and the root
+  build passed. The only build notice was the existing Browserslist database.
+- All 15 intro scenarios and seven cockpit browser suites passed. Coverage
+  includes 16 arrivals, 41 crossing cases, 16 moon cases, refresh/recovery,
+  keyboard/focus, reduced motion and seven responsive sizes from 320x568 to
+  1024x1366, including landscape and native Chromium touch input.
+- No uncaught page errors. The intro suite's console errors came only from
+  its deliberately injected archive timeout and interior-image failure;
+  the other seven suites returned empty error arrays.
+- Current desktop 1440x900, tablet 820x1180 and phone 390x844 screenshots were
+  inspected. Mini Me is absent; controls/content remain readable and no
+  horizontal overflow was found. All three recorded zero sprite requests.
+- Startup profiles again consumed zero fill before the prepared scene and
+  stayed at or below 1.67 percentage points per observed frame. Observed
+  cinematic intervals were 2965ms normally, 2972ms with a 1400ms delayed
+  Three.js import and 3354ms with 6x CPU throttling. These preserve animation
+  time; they do not establish a hardware FPS improvement.
+- Independent read-only review found no blockers. Its CSS AST comparison
+  confirmed that rules for other UI elements remain unchanged; all seven
+  authored/generated file pairs match the publish transform.
+
+Scoped Nielsen evaluation: **#1 pass** (arrival/live status remains), **#2
+pass** (existing route language), **#3 pass** (Skip, return and Retry), **#4
+pass** (same controls and visual tokens), **#5 pass** (no stale character
+callbacks or sprite output), **#6 pass** (visible destinations and project
+choices), **#7 pass** (keyboard, touch and motion preferences), **#8 pass**
+(removed the requested decorative guide while retaining the composition),
+**#9 pass** (fallback/context-loss recovery), **#10 pass** (scroll/swipe and
+flight-control hints remain). This is scoped browser evidence, not a complete
+accessibility certification. Physical devices, Safari/WebKit and hardware GPU
+profiling remain unverified. This change targets staging; no production
+release is included.
+
+## Skip Intro removal — 2026-10-27
+
+The owner requested removing the Skip Intro button. Its markup, styles,
+listener and pre-module click bypass were removed from authored and generated
+files. Initial keyboard focus is on the intro title; readiness moves it to
+Enter the Bridge. Tab and Shift+Tab stay on that available action. Entry by
+button, forward scroll or touch still waits for the prepared sequence.
+
+Removing the early bypass exposed a module-failure trap during independent
+review. The bootstrap now watches module load errors and a ten-second module
+deadline, then reveals and focuses the existing portfolio recovery link.
+Normal controller startup cancels the watch. Late modules honor the abandoned
+gate without reopening the intro or storing fictional completion. When the
+scene recovers, focus moves from the recovery status to the briefing heading
+before that status is hidden. Existing scene/archive/interior fallback paths
+and their deadlines remain in place.
+
+Validation on `http://127.0.0.1:43188/cockpit/`:
+
+- All 69 root tests, geometry checks, the cockpit build and root build passed.
+  The existing Browserslist database notice remains; no dependencies changed.
+- All 18 intro browser scenarios passed, including aborted main/controller
+  modules, the real ten-second pending-module deadline, late recovery/focus,
+  keyboard, storage failure, reduced motion, touch and session/deep links.
+- All seven cockpit browser suites passed: 16 arrival cases, 41 crossings,
+  16 moon cases, keyboard/focus, normal/minimal rendering, error recovery,
+  reload and seven touch-emulated sizes from 320x568 to 1024x1366.
+- No uncaught page errors. Console errors were limited to deliberately
+  injected archive timeout, image failure and two module request failures.
+- Current ready-state screenshots inspected at 1440x900, 820x1180, 390x844
+  and 844x390: no Skip control, no overflow, visible Enter focus and readable
+  status/actions. The published package remains 12 files; seven authored and
+  generated browser files match the publish transform.
+- All three startup profiles passed with zero fill before the prepared scene
+  and largest observed fill steps at most 1.67 percentage points. Sampled
+  cinematic intervals were 2959ms normal, 2986ms with a 1400ms delayed import
+  and 3042ms with 6x CPU throttling. These measure preserved sequence time,
+  not hardware FPS.
+- Independent read-only review is clear after addressing the bootstrap trap
+  and recovery focus. Four bootstrap checks passed. The first browser attempt
+  failed its momentum fixture while capturing an image inside the wheel loop;
+  a diagnostic recorded a 1345ms gap, beyond the 350ms quiet window. Removing
+  that capture keeps the continuous-input fixture continuous; product input
+  quarantine timing was not changed. The complete rerun passed.
+
+Scoped Nielsen review: **#1 pass** (preparing/ready/failure status), **#2 pass**
+(existing bridge language), **#3 pass** (requested Skip removal with bounded
+failure recovery and normal entry), **#4 pass** (same visual tokens/actions),
+**#5 pass** (no early entry or module-failure trap), **#6 pass** (visible Enter
+and scroll hint), **#7 pass** (keyboard, touch, session bypass and reduced
+motion), **#8 pass** (requested control removed), **#9 pass** (tested portfolio
+and 3D recovery), **#10 pass** (preparation note and entry hint). Physical
+devices, Safari/WebKit, screen-reader usability and hardware GPU profiling
+remain unverified. PR CI is not configured. This change targets staging and
+does not include a production release.
+
+## Historical implementation notes after layout choice
 
 - Migrate all original factual content and links into production progressive
   enhancement; preserve useful existing fragment links and CV behavior.

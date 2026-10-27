@@ -6,9 +6,9 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   const view = document.defaultView;
   const visual = { progress: 0, x: 0, y: 0 };
   let active = false, locked = false, ready = false, timelineComplete = false;
-  let scene, sceneMounted = false, frame = 0, quietTimer = 0, exitingAt = null;
-  let targetX = 0, targetY = 0, lastFrame = 0, touchY = null, exitMinimal = false;
-  let reduced, effects, guards, started, previousOverflow, inertElements;
+  let scene, sceneMounted = false, scenePrepared = true, frame = 0, quietTimer = 0, exitingAt = null;
+  let targetX = 0, targetY = 0, lastFrame = null, touchY = null, exitMinimal = false;
+  let reduced, effects, guards, cinematicTime = 0, sequenceStarted = false, previousOverflow, inertElements;
   const controller = {
     get active() { return active; },
     get locked() { return locked; },
@@ -20,39 +20,43 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
         ? 'Bridge available. Recovery controls are inside.'
         : 'A cinematic initialization sequence.';
       updateReady();
+      scheduleFrame();
     },
     setScene(value) {
-      if (!active || exitingAt !== null || scene) return;
+      if (!active || exitingAt !== null || scene || sequenceStarted) return;
       scene = value;
-      scene.beginIntro(root.querySelector('#orbital-canvas'), visual);
       sceneMounted = true;
+      const preparation = scene.beginIntro(root.querySelector('#orbital-canvas'), visual);
+      if (preparation?.then) {
+        scenePrepared = false;
+        Promise.resolve(preparation).then(() => {
+          scenePrepared = true;
+          scheduleFrame();
+        }, () => {
+          scenePrepared = true;
+          scheduleFrame();
+        });
+      }
     }
   };
 
   let completed = false;
   try { completed = view.sessionStorage.getItem(INTRO_SESSION_KEY) === 'complete'; } catch {}
-  const skippedEarly = document.documentElement.dataset.orbitalGate === 'skipped';
+  const unavailable = document.documentElement.dataset.orbitalGate === 'unavailable';
   delete document.documentElement.dataset.orbitalGate;
   document.dispatchEvent(new view.Event('orbital:claimed'));
-  if (!root || completed || skippedEarly) {
+  if (!root || completed || unavailable) {
     root?.remove();
-    if (skippedEarly) view.queueMicrotask(() => {
-      onHandoff();
-      try { view.sessionStorage.setItem(INTRO_SESSION_KEY, 'complete'); } catch {}
-      document.querySelector('#briefing-title')?.focus({ preventScroll:true });
-    });
     return controller;
   }
 
   const status = root.querySelector('#orbital-status');
   const enter = root.querySelector('#orbital-enter');
-  const skip = root.querySelector('#orbital-skip');
   const hint = root.querySelector('#orbital-hint');
   const ring = root.querySelector('#orbital-ring');
   reduced = view.matchMedia('(prefers-reduced-motion: reduce)');
   effects = new view.AbortController();
   guards = new view.AbortController();
-  started = view.performance.now();
   previousOverflow = document.body.style.overflow;
   inertElements = [...document.body.children].filter(element => element !== root)
     .map(element => [element, element.hasAttribute('inert')]);
@@ -60,12 +64,12 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   document.body.style.overflow = 'hidden';
   document.body.dataset.intro = 'active';
   root.hidden = false;
-  root.dataset.phase = 'initializing';
+  root.dataset.phase = 'preparing';
   enter.hidden = true;
   enter.disabled = true;
   hint.hidden = true;
   active = locked = true;
-  skip.focus({ preventScroll: true });
+  root.querySelector('#orbital-title').focus({ preventScroll: true });
 
   function announce(message) {
     if (status.textContent !== message) status.textContent = message;
@@ -77,6 +81,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
     enter.disabled = false;
     hint.hidden = false;
     announce('Bridge Ready');
+    if (root.contains(document.activeElement)) enter.focus({ preventScroll: true });
   }
   function scheduleFrame() {
     if (active && !frame) frame = view.requestAnimationFrame(draw);
@@ -151,8 +156,20 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
       return;
     }
 
+    // Initialization, shader/texture warmup and hidden-tab time are outside
+    // the cinematic clock. Visitors should see the complete fill/reveal.
+    if (!ready || !scenePrepared || document.hidden) {
+      lastFrame = null;
+      return;
+    }
+    if (!sequenceStarted) {
+      sequenceStarted = true;
+      root.dataset.phase = 'initializing';
+    }
     if (!timelineComplete) {
-      visual.progress = Math.min(1, (time - started) / (minimal ? 180 : 3000));
+      // A blocked main thread must not turn one presented frame into a cut.
+      cinematicTime += lastFrame !== null ? Math.max(0,Math.min(time-lastFrame,50)) : 0;
+      visual.progress = Math.min(1, cinematicTime / (minimal ? 180 : 3000));
       root.style.setProperty('--orb-fill', `${visual.progress * 100}%`);
       root.style.setProperty('--orb-light', String(.12 + visual.progress * .88));
       announce(visual.progress < .32 ? 'Power Online'
@@ -160,7 +177,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
       timelineComplete = visual.progress === 1;
       updateReady();
     }
-    const smoothing = 1 - Math.exp(-8 * (lastFrame ? Math.min((time - lastFrame) / 1000, .05) : 1 / 60));
+    const smoothing = 1 - Math.exp(-8 * (lastFrame !== null ? Math.min((time - lastFrame) / 1000, .05) : 1 / 60));
     lastFrame = time;
     if (minimal) targetX = targetY = visual.x = visual.y = 0;
     visual.x += (targetX - visual.x) * smoothing;
@@ -168,11 +185,10 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
     root.style.setProperty('--orb-x', `${visual.x * 14}px`);
     root.style.setProperty('--orb-y', `${visual.y * 10}px`);
     if (!timelineComplete || Math.abs(targetX - visual.x) > .001 || Math.abs(targetY - visual.y) > .001) scheduleFrame();
-    else lastFrame = 0;
+    else lastFrame = null;
   }
 
   enter.addEventListener('click', startEntry, { signal: effects.signal });
-  skip.addEventListener('click', handoff, { signal: effects.signal });
   root.addEventListener('pointermove', event => {
     if (reduced.matches || event.pointerType !== 'mouse' || exitingAt !== null) return;
     targetX = Math.max(-1, Math.min(1, event.clientX / view.innerWidth * 2 - 1));
@@ -186,6 +202,10 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   reduced.addEventListener('change', () => {
     if (reduced.matches) targetX = targetY = 0;
     scheduleFrame();
+  }, { signal: effects.signal });
+  document.addEventListener('visibilitychange', () => {
+    lastFrame = null;
+    if (!document.hidden) scheduleFrame();
   }, { signal: effects.signal });
 
   // Keep the input that enters (including trackpad momentum) out of the journey.
@@ -219,7 +239,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   view.addEventListener('keydown', event => {
     if (!locked) return;
     const routeKeys = ['PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', ' '];
-    const controls = [skip, enter].filter(button => !button.hidden && !button.disabled);
+    const controls = [enter].filter(button => !button.hidden && !button.disabled);
     if (active) {
       event.stopImmediatePropagation();
       if (event.key === 'Tab') {
@@ -235,7 +255,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
       event.stopImmediatePropagation();
     }
   }, { capture: true, signal: guards.signal });
-  announce('Power Online');
+  announce('Preparing Bridge');
   scheduleFrame();
   return controller;
 }

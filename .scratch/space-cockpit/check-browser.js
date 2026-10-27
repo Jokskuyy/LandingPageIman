@@ -21,14 +21,7 @@ async (page) => {
       await page.locator('.prototype-bar summary').click();
       check(await page.locator('body').getAttribute('data-variant') === key, 'Variant switch failed');
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Horizontal overflow at desktop viewport');
-      check(await page.locator('.guide').evaluate(node=>{
-        const figure=node.querySelector('.officer').getBoundingClientRect(), emitter=node.querySelector('.projector-light').getBoundingClientRect();
-        return Math.abs((figure.left+figure.right-emitter.left-emitter.right)/2)<2 && figure.bottom<(emitter.top+emitter.bottom)/2;
-      }),'Hologram is not aligned above its projector');
-      for(const selector of ['.holo-projector','.guide-speech'])check(await page.locator(selector).evaluate(node=>{
-        const box=node.getBoundingClientRect();return box.left>=0 && box.top>=0 && box.right<=innerWidth && box.bottom<=innerHeight;
-      }),`${selector} leaves the viewport`);
-      check(await page.locator('.holo-beam').evaluate(node=>getComputedStyle(node).animationName)==='none','Reduced motion animated the hologram beam');
+      check(await page.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count()===0,'Mini Me elements remain in the cockpit');
       await page.screenshot({path:`tmp/cockpit-preview/${key}-${width}x${height}-quiet.png`});
     }
   }
@@ -77,7 +70,8 @@ async (page) => {
   await page.getByRole('button',{name:'◀ Previous',exact:true}).click();
   await page.locator('.flight-tools summary').click();
   check((await page.locator('#briefing-title').innerText()).includes('person'),'Physical destination control failed');
-  check(await page.locator('.officer img').evaluate(node => getComputedStyle(node).animationName)==='none','Reduced motion ignored');
+  check(await page.locator('body').getAttribute('data-calm')==='true' && await page.locator('#motion-mode').getAttribute('aria-pressed')==='true','System reduced motion ignored');
+  check(await page.locator('#motion-mode').isDisabled(),'Motion control can override the system reduced-motion preference');
   await page.goto(base + '?variant=A&scene=off#opening');
   await page.getByRole('button',{name:'Retry 3D',exact:true}).waitFor();
   await destination('Contact').click();
@@ -95,5 +89,5 @@ async (page) => {
   await page.waitForFunction(() => document.querySelector('#briefing-title').textContent.includes('Your next idea'));
   await page.screenshot({path:'tmp/cockpit-preview/cockpit-quiet-final.png'});
   check(failures.length===0,`Uncaught browser errors: ${failures.join('; ')}`);
-  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720','1290x955','1068x955'],variants:3,projects:4,checks:'hologram/projector alignment and dialogue bounds; reduced hologram motion; collapsed menus and keyboard; forward/stop/reverse scroll; destinations; four moon panels and focus return; contact; 3D fallback/retry/context-loss; reload/hash',uncaughtErrors:failures};
+  return {result:'passed',browser:page.context().browser().version(),viewports:['1440x900','1280x720','1290x955','1068x955'],variants:3,projects:4,checks:'Mini Me absent; system reduced-motion state and control; collapsed menus and keyboard; forward/stop/reverse scroll; destinations; four moon panels and focus return; contact; 3D fallback/retry/context-loss; reload/hash',uncaughtErrors:failures};
 }

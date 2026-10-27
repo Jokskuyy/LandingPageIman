@@ -89,29 +89,46 @@ IMAN lettering, navigation rings and the bridge's procedural planets. Readiness
 is separate from this timeline: entry waits for the first rendered 3D frame (or
 the text fallback), the interior image (or SVG fallback), and project archives
 (or their existing retry state). Interior/archive deadlines are eight seconds;
-the optional 3D import has a ten-second fallback deadline. Skip Intro is usable
-even before the modules arrive and reveals the normal preparing/recovery view.
+the optional 3D import has a ten-second fallback deadline. There is no Skip
+Intro button; entry becomes available after the prepared cinematic completes.
+If the entry modules fail or remain unavailable for ten seconds, the bootstrap
+automatically reveals the existing portfolio recovery link. A late module
+continues into the cockpit without replaying the abandoned intro.
+
+The stage stays outlined at `Preparing Bridge` until that preparation and an
+intro warmup pass have finished. The shared renderer draws all intro materials
+while hidden, then clears to the outlined starting frame. Only then does the
+three-second fill/reveal start. Its clock follows presented animation frames,
+caps a delayed frame at 50ms and pauses in hidden tabs, so loading or shader
+work cannot consume the beginning. A slow device can stretch the sequence.
+Keyboard focus starts at the intro title and moves to Enter the Bridge when
+ready; the usual text/3D recovery controls remain available after entry.
 
 The DOM controller is authored in `.scratch/space-cockpit/orbital-intro.js`, with
 isolated styles in `orbital-intro.css`. It shares the cockpit's renderer and
 planet geometry/materials. Enter returns that renderer to its original host
 before opening the orbital aperture; the camera remains at its route position.
-The guide and welcome are revealed after handoff, and continued wheel/touch
-input is consumed until it has been quiet for 350ms. Reduced motion uses a
+Destination arrival is announced after handoff, and continued wheel/touch
+input is consumed until it has been quiet for 350ms. Mini Me, its dialogue and
+hologram projector have been removed from the cockpit. Reduced motion uses a
 180ms initialization and 120ms fade without parallax.
 
-Successful entry/skip stores `iman:orbital-intro:v1=complete` in sessionStorage.
+Successful entry stores `iman:orbital-intro:v1=complete` in sessionStorage.
 Reloads then bypass the intro while preserving the existing Opening reset,
 deliberate fragment links and one-use Retry 3D recovery rule. If storage is
 blocked, entry still works and the next visit can show the intro again.
 
 `npm test` includes controller lifecycle checks. Run `check-intro.js` with the
 existing Playwright CLI against `/cockpit/` for first-session and failure cases.
+`check-startup.js` measures the fill before the celestial scene is prepared and
+its largest frame step under normal, delayed-import and CPU-throttled startup.
 The responsive cockpit suite intentionally bypasses the intro; its first-visit
 layouts are covered by `check-intro.js`. The static allowlist now packages
-thirteen files and continues to exclude the source workspace and browser tests.
+twelve files and continues to exclude the source workspace and browser tests.
+The retired officer sprite remains only as a source reference; it is removed
+from generated output even when building over an older cockpit package.
 
-Local-only staging is enforced for `feat/orbital-intro` and `staging` with
+The task branches listed in `vercel.json` and `staging` disable Git deployments with
 [`git.deploymentEnabled`](https://vercel.com/docs/project-configuration/git-configuration#git.deploymentenabled)
 in `vercel.json`. GitHub Pages still publishes only `main`; releasing that
 branch requires the owner's approval.
