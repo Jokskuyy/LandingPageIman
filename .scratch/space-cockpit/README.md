@@ -30,6 +30,11 @@ animation rules and published sprite are removed. Navigation, the flight path,
 project moons, reading content, status announcements and the orbital intro
 remain. The guide choices recorded below describe earlier iterations.
 
+The owner also removed Skip Intro. Entry uses Enter the Bridge, forward scroll
+or touch after readiness. Initial keyboard focus moves from the intro title
+to Enter when ready. A module failure or ten-second bootstrap deadline reveals
+the existing portfolio recovery link automatically.
+
 ## Selected direction — 2026-10-18
 
 The owner selected **A — Panoramic bridge** through chat. Carry its broad front

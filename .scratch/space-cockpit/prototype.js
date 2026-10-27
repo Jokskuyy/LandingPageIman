@@ -1,4 +1,4 @@
-import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v2';
+import { createOrbitalIntro } from './orbital-intro.js?v=20261027-orbital-v3';
 
 // Three layouts of the same real portfolio. Read-only prototype, not production.
 const $ = selector => document.querySelector(selector);
@@ -685,6 +685,7 @@ const sceneDeadline = setTimeout(sceneFailure, 10000);
 createScene().then(result => {
   clearTimeout(sceneDeadline);
   scene = result; sceneFailed = false;
+  if ($('#scene-status').contains(document.activeElement)) $('#briefing-title').focus({ preventScroll:true });
   $('#scene-status').hidden = true; $('#window-mode').textContent = '3D ONLINE';
   intro.setScene(scene);
   settleBridge('scene'); updateRoute();

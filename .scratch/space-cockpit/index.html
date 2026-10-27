@@ -6,18 +6,34 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0b141c">
   <script>
-    // Paint the dark stage before optional modules arrive. Skip remains usable.
-    try {
-      if (sessionStorage.getItem('iman:orbital-intro:v1') !== 'complete') document.documentElement.dataset.orbitalGate = 'intro';
-    } catch { document.documentElement.dataset.orbitalGate = 'intro'; }
-    function skipBeforeModules(event) {
-      if (event.target.closest('#orbital-skip') && document.documentElement.dataset.orbitalGate === 'intro') {
-        document.documentElement.dataset.orbitalGate = 'skipped';
-        document.querySelector('#briefing-title')?.focus({ preventScroll:true });
+    // Paint the dark stage before optional modules arrive.
+    (() => {
+      const html = document.documentElement;
+      try {
+        if (sessionStorage.getItem('iman:orbital-intro:v1') !== 'complete') html.dataset.orbitalGate = 'intro';
+      } catch { html.dataset.orbitalGate = 'intro'; }
+      if (html.dataset.orbitalGate !== 'intro') return;
+      function cleanup() {
+        clearTimeout(deadline);
+        document.removeEventListener('error', moduleError, true);
+        document.removeEventListener('orbital:claimed', cleanup);
       }
-    }
-    document.addEventListener('click', skipBeforeModules);
-    document.addEventListener('orbital:claimed', () => document.removeEventListener('click', skipBeforeModules), { once:true });
+      function recover() {
+        if (html.dataset.orbitalGate !== 'intro') return;
+        html.dataset.orbitalGate = 'unavailable';
+        document.querySelector('#orbital-intro')?.setAttribute('hidden', '');
+        const status = document.querySelector('#scene-status span');
+        if (status) status.textContent = 'The bridge could not start. Read the portfolio below.';
+        document.querySelector('.scene-recovery')?.focus({ preventScroll:true });
+        cleanup();
+      }
+      function moduleError(event) {
+        if (event.target instanceof HTMLScriptElement && event.target.type === 'module') recover();
+      }
+      const deadline = setTimeout(recover, 10000);
+      document.addEventListener('error', moduleError, true);
+      document.addEventListener('orbital:claimed', cleanup, { once:true });
+    })();
   </script>
   <title>Iman Nugraha — Space Portfolio</title>
   <link rel="icon" href="assets/cockpit-favicon-v1.svg" type="image/svg+xml">
@@ -25,17 +41,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="prototype.css?v=20261027-no-guide-v1">
-  <link rel="stylesheet" href="orbital-intro.css?v=20261027-orbital-v2">
-  <script type="module" src="prototype.js?v=20261027-orbital-v3"></script>
+  <link rel="stylesheet" href="orbital-intro.css?v=20261027-orbital-v3">
+  <script type="module" src="prototype.js?v=20261027-orbital-v4"></script>
 </head>
 <body data-variant="A">
   <section class="orbital-intro" id="orbital-intro" role="dialog" aria-modal="true" aria-labelledby="orbital-title" hidden>
-    <h2 class="sr-only" id="orbital-title">IMAN — Orbital Initialization</h2>
+    <h2 class="sr-only" id="orbital-title" tabindex="-1">IMAN — Orbital Initialization</h2>
     <div class="orbital-curtain" id="orbital-curtain" aria-hidden="true"></div>
     <div class="orbital-stars orbital-art" aria-hidden="true"></div>
     <header class="orbital-header orbital-chrome">
       <p>IMAN NUGRAHA<span>ORBITAL INITIALIZATION</span></p>
-      <button id="orbital-skip" type="button">Skip Intro <span aria-hidden="true">↗</span></button>
     </header>
     <div class="orbital-ring orbital-art" id="orbital-ring" aria-hidden="true">
       <svg viewBox="0 0 700 700" fill="none">
@@ -59,7 +74,7 @@
     </div>
     <div class="orbital-controls orbital-chrome">
       <p class="orbital-status" id="orbital-status" role="status" aria-live="polite">Preparing Bridge</p>
-      <p class="orbital-note" id="orbital-note">Orbital initialization sequence</p>
+      <p class="orbital-note" id="orbital-note">Preparing the bridge. If loading fails, recovery opens automatically.</p>
       <button class="button button-primary orbital-enter" id="orbital-enter" type="button" disabled hidden>Enter the Bridge <span aria-hidden="true">→</span></button>
       <p class="orbital-hint" id="orbital-hint" hidden><span aria-hidden="true">↓</span> Scroll to enter</p>
     </div>

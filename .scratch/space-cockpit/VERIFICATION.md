@@ -516,6 +516,62 @@ accessibility certification. Physical devices, Safari/WebKit and hardware GPU
 profiling remain unverified. This change targets staging; no production
 release is included.
 
+## Skip Intro removal — 2026-10-27
+
+The owner requested removing the Skip Intro button. Its markup, styles,
+listener and pre-module click bypass were removed from authored and generated
+files. Initial keyboard focus is on the intro title; readiness moves it to
+Enter the Bridge. Tab and Shift+Tab stay on that available action. Entry by
+button, forward scroll or touch still waits for the prepared sequence.
+
+Removing the early bypass exposed a module-failure trap during independent
+review. The bootstrap now watches module load errors and a ten-second module
+deadline, then reveals and focuses the existing portfolio recovery link.
+Normal controller startup cancels the watch. Late modules honor the abandoned
+gate without reopening the intro or storing fictional completion. When the
+scene recovers, focus moves from the recovery status to the briefing heading
+before that status is hidden. Existing scene/archive/interior fallback paths
+and their deadlines remain in place.
+
+Validation on `http://127.0.0.1:43188/cockpit/`:
+
+- All 69 root tests, geometry checks, the cockpit build and root build passed.
+  The existing Browserslist database notice remains; no dependencies changed.
+- All 18 intro browser scenarios passed, including aborted main/controller
+  modules, the real ten-second pending-module deadline, late recovery/focus,
+  keyboard, storage failure, reduced motion, touch and session/deep links.
+- All seven cockpit browser suites passed: 16 arrival cases, 41 crossings,
+  16 moon cases, keyboard/focus, normal/minimal rendering, error recovery,
+  reload and seven touch-emulated sizes from 320x568 to 1024x1366.
+- No uncaught page errors. Console errors were limited to deliberately
+  injected archive timeout, image failure and two module request failures.
+- Current ready-state screenshots inspected at 1440x900, 820x1180, 390x844
+  and 844x390: no Skip control, no overflow, visible Enter focus and readable
+  status/actions. The published package remains 12 files; seven authored and
+  generated browser files match the publish transform.
+- All three startup profiles passed with zero fill before the prepared scene
+  and largest observed fill steps at most 1.67 percentage points. Sampled
+  cinematic intervals were 2959ms normal, 2986ms with a 1400ms delayed import
+  and 3042ms with 6x CPU throttling. These measure preserved sequence time,
+  not hardware FPS.
+- Independent read-only review is clear after addressing the bootstrap trap
+  and recovery focus. Four bootstrap checks passed. The first browser attempt
+  failed its momentum fixture while capturing an image inside the wheel loop;
+  a diagnostic recorded a 1345ms gap, beyond the 350ms quiet window. Removing
+  that capture keeps the continuous-input fixture continuous; product input
+  quarantine timing was not changed. The complete rerun passed.
+
+Scoped Nielsen review: **#1 pass** (preparing/ready/failure status), **#2 pass**
+(existing bridge language), **#3 pass** (requested Skip removal with bounded
+failure recovery and normal entry), **#4 pass** (same visual tokens/actions),
+**#5 pass** (no early entry or module-failure trap), **#6 pass** (visible Enter
+and scroll hint), **#7 pass** (keyboard, touch, session bypass and reduced
+motion), **#8 pass** (requested control removed), **#9 pass** (tested portfolio
+and 3D recovery), **#10 pass** (preparation note and entry hint). Physical
+devices, Safari/WebKit, screen-reader usability and hardware GPU profiling
+remain unverified. PR CI is not configured. This change targets staging and
+does not include a production release.
+
 ## Historical implementation notes after layout choice
 
 - Migrate all original factual content and links into production progressive

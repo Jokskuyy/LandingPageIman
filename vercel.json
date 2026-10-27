@@ -5,6 +5,7 @@
       "feat/orbital-intro": false,
       "fix/intro-frame-timing": false,
       "feat/remove-mini-me": false,
+      "feat/remove-intro-skip": false,
       "staging": false
     }
   }

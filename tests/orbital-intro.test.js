@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { createOrbitalIntro, INTRO_SESSION_KEY } from '../.scratch/space-cockpit/orbital-intro.js';
 
-function setup({ reduced = false, completed = false, storageUnavailable = false, skippedEarly = false, sceneWarmup = false } = {}) {
+function setup({ reduced = false, completed = false, storageUnavailable = false, gated = false, sceneWarmup = false } = {}) {
   const dom = new JSDOM(`<!doctype html><body style="overflow:clip">
     <main id="cockpit"><h1 id="briefing-title" tabindex="-1">Opening</h1><button>Destination</button></main>
     <aside id="already-inert" inert></aside>
     <section id="orbital-intro" hidden><div id="orbital-canvas"></div><div id="orbital-ring"></div>
+      <h2 id="orbital-title" tabindex="-1">Orbital Initialization</h2>
       <p id="orbital-status" role="status"></p><p id="orbital-note"></p>
-      <button id="orbital-skip">Skip Intro</button><button id="orbital-enter" hidden disabled>Enter the Bridge</button>
+      <button id="orbital-enter" hidden disabled>Enter the Bridge</button>
       <p id="orbital-hint" hidden>Scroll to enter</p></section></body>`, { url: 'https://example.test/cockpit/' });
   const { window } = dom;
   const document = window.document;
@@ -30,7 +31,7 @@ function setup({ reduced = false, completed = false, storageUnavailable = false,
   if (storageUnavailable) Object.defineProperty(window, 'sessionStorage', {
     get() { throw new window.DOMException('Storage disabled', 'SecurityError'); }
   });
-  if (skippedEarly) document.documentElement.dataset.orbitalGate = 'skipped';
+  if (gated) document.documentElement.dataset.orbitalGate = 'intro';
   const intro = createOrbitalIntro({ onHandoff() { handoffs++; } });
   const warmup = sceneWarmup ? new Promise(resolve => { resolveWarmup = resolve; }) : undefined;
   const scene = {
@@ -117,15 +118,27 @@ test('cinematic initialization starts after actual readiness and exits once, qua
   app.dom.window.close();
 });
 
-test('skip immediately reveals preparing content, remains functional without storage, and ignores late readiness or scenes', () => {
-  const app = setup({ storageUnavailable: true });
-  const skip = app.document.querySelector('#orbital-skip');
-  skip.click();
-  skip.click();
+test('there is no Skip control and entry waits for readiness even without session storage', () => {
+  const app = setup({ storageUnavailable: true, reduced: true });
+  const enter = app.document.querySelector('#orbital-enter');
+  assert.equal(app.document.querySelector('#orbital-skip'), null);
+  enter.click();
+  app.wheel();
+  app.playFor(5000);
+  assert.equal(app.handoffs, 0);
+  assert.equal(app.intro.active, true);
+  app.intro.setScene(app.scene);
+  app.intro.setReady();
+  app.advance(0);
+  app.playFor(180);
+  enter.click();
+  enter.click();
+  app.playFor(120);
   app.intro.setScene(app.scene);
   app.intro.setReady();
   assert.equal(app.handoffs, 1);
-  assert.equal(app.begins, 0);
+  assert.equal(app.begins, 1);
+  assert.equal(app.ends, 1);
   assert.equal(app.intro.active, false);
   assert.equal(app.frames.size, 0);
   app.advance(350);
@@ -133,14 +146,15 @@ test('skip immediately reveals preparing content, remains functional without sto
   app.dom.window.close();
 });
 
-test('skip after readiness returns the renderer once and completed sessions bypass without callbacks', () => {
+test('fallback entry returns the renderer once and completed sessions bypass without callbacks', () => {
   const app = setup();
   app.intro.setScene(app.scene);
   app.intro.setReady(true);
   app.advance(0);
   app.playFor(3000);
   assert.match(app.document.querySelector('#orbital-note').textContent, /Recovery controls/);
-  app.document.querySelector('#orbital-skip').click();
+  app.document.querySelector('#orbital-enter').click();
+  app.playFor(1000);
   assert.equal(app.ends, 1);
   assert.equal(app.handoffs, 1);
   app.advance(350);
@@ -158,7 +172,7 @@ test('skip after readiness returns the renderer once and completed sessions bypa
 
 test('keyboard focus stays in intro, route keys are blocked, and reduced motion uses a brief reveal', () => {
   const app = setup({ reduced: true });
-  assert.equal(app.document.activeElement.id, 'orbital-skip');
+  assert.equal(app.document.activeElement.id, 'orbital-title');
   const tab = new app.window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
   app.document.activeElement.dispatchEvent(tab);
   assert.equal(tab.defaultPrevented, true);
@@ -170,6 +184,13 @@ test('keyboard focus stays in intro, route keys are blocked, and reduced motion 
   app.advance(0);
   app.playFor(180);
   assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'ready');
+  assert.equal(app.document.activeElement.id, 'orbital-enter');
+  for (const shiftKey of [false, true]) {
+    const cycle = new app.window.KeyboardEvent('keydown', { key:'Tab', shiftKey, bubbles:true, cancelable:true });
+    app.document.activeElement.dispatchEvent(cycle);
+    assert.equal(cycle.defaultPrevented, true);
+    assert.equal(app.document.activeElement.id, 'orbital-enter');
+  }
   app.document.querySelector('#orbital-enter').click();
   app.advance(0);
   app.playFor(120);
@@ -198,7 +219,8 @@ test('reduced motion changes during initialization complete the sequence and neu
   assert.equal(app.intro.visual.y, 0);
   app.playFor(180);
   assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'ready');
-  app.document.querySelector('#orbital-skip').click();
+  app.document.querySelector('#orbital-enter').click();
+  app.playFor(120);
   app.advance(350);
   app.dom.window.close();
 });
@@ -233,23 +255,29 @@ test('Ctrl+wheel remains available for browser zoom without entering the bridge'
   app.window.dispatchEvent(zoom);
   assert.equal(zoom.defaultPrevented, false);
   assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'ready');
-  app.document.querySelector('#orbital-skip').click();
+  app.document.querySelector('#orbital-enter').click();
+  app.playFor(1000);
   app.advance(350);
   app.dom.window.close();
 });
 
-test('an early Skip is committed only after the real app claims the stage', async () => {
-  const app = setup({ skippedEarly:true });
+test('claiming the pre-module stage gate keeps the intro active until normal entry', () => {
+  const app = setup({ gated:true, reduced:true });
   assert.equal(app.document.documentElement.dataset.orbitalGate,undefined);
-  assert.equal(app.intro.active,false);
-  assert.equal(app.document.querySelector('#orbital-intro'),null);
+  assert.equal(app.intro.active,true);
+  assert.equal(app.document.querySelector('#orbital-intro').hidden,false);
   assert.equal(app.handoffs,0);
   assert.equal(app.window.sessionStorage.getItem(INTRO_SESSION_KEY),null);
-  await Promise.resolve();
+  app.intro.setReady();
+  app.advance(0);
+  app.playFor(180);
+  app.document.querySelector('#orbital-enter').click();
+  app.playFor(120);
   assert.equal(app.handoffs,1);
   assert.equal(app.window.sessionStorage.getItem(INTRO_SESSION_KEY),'complete');
   assert.equal(app.document.activeElement.id,'briefing-title');
   assert.equal(app.frames.size,0);
+  app.advance(350);
   assert.equal(app.timers.size,0);
   app.dom.window.close();
 });
@@ -271,8 +299,7 @@ test('preparing the application does not consume the visible cinematic sequence'
     assert.equal(app.intro.visual.progress, 0, 'The first ready frame must show the outlined wordmark');
     app.playFor(600);
     assert.ok(Math.abs(app.intro.visual.progress - .2) < .000001);
-    app.document.querySelector('#orbital-skip').click();
-    app.advance(350);
+    assert.equal(app.handoffs, 0);
   } finally { app.dom.window.close(); }
 });
 
@@ -294,8 +321,7 @@ test('the sequence awaits the shared scene first paint and starts with an unfill
     app.playFor(600);
     assert.ok(Math.abs(app.intro.visual.progress - .2) < .000001);
     assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'initializing');
-    app.document.querySelector('#orbital-skip').click();
-    app.advance(350);
+    assert.equal(app.handoffs, 0);
   } finally { app.dom.window.close(); }
 });
 
@@ -315,7 +341,8 @@ test('a delayed animation frame advances at most 1.7 percentage points instead o
     }
     app.playFor(3000);
     assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'ready');
-    app.document.querySelector('#orbital-skip').click();
+    app.document.querySelector('#orbital-enter').click();
+    app.playFor(1000);
     app.advance(350);
   } finally { app.dom.window.close(); }
 });
@@ -335,24 +362,29 @@ test('hidden-tab time is excluded and returning to the tab resumes from the same
     assert.equal(app.intro.visual.progress, before, 'The first visible frame must not catch up hidden time');
     app.playFor(160);
     assert.ok(Math.abs(app.intro.visual.progress - before - 160 / 3000) < .000001);
-    app.document.querySelector('#orbital-skip').click();
-    app.advance(350);
+    assert.equal(app.handoffs, 0);
   } finally { app.dom.window.close(); }
 });
 
-test('skipping during scene warmup cleans up once and late first-paint completion cannot restart the intro', async () => {
+test('entry waits for scene warmup, cleans up once and cannot restart after completion', async () => {
   const app = setup({ sceneWarmup: true });
   try {
     app.intro.setScene(app.scene);
     app.intro.setReady();
     app.playFor(500);
-    app.document.querySelector('#orbital-skip').click();
-    assert.equal(app.ends, 1);
-    assert.equal(app.handoffs, 1);
-    assert.equal(app.window.sessionStorage.getItem(INTRO_SESSION_KEY), 'complete');
+    app.document.querySelector('#orbital-enter').click();
+    assert.equal(app.ends, 0);
+    assert.equal(app.handoffs, 0);
+    assert.equal(app.window.sessionStorage.getItem(INTRO_SESSION_KEY), null);
     app.resolveWarmup();
     await Promise.resolve();
-    app.playFor(4000);
+    app.advance(0);
+    app.playFor(3000);
+    app.document.querySelector('#orbital-enter').click();
+    app.playFor(1000);
+    app.advance(350);
+    app.intro.setScene(app.scene);
+    app.intro.setReady();
     assert.equal(app.intro.active, false);
     assert.equal(app.intro.locked, false);
     assert.equal(app.document.querySelector('#orbital-intro'), null);
@@ -375,7 +407,8 @@ test('a scene arriving after the cinematic has started cannot appear halfway thr
     assert.equal(app.begins, 0);
     app.playFor(2500);
     assert.equal(app.document.querySelector('#orbital-intro').dataset.phase, 'ready');
-    app.document.querySelector('#orbital-skip').click();
+    app.document.querySelector('#orbital-enter').click();
+    app.playFor(1000);
     app.advance(350);
     assert.equal(app.ends, 0);
   } finally { app.dom.window.close(); }
