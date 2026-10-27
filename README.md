@@ -89,16 +89,20 @@ IMAN lettering, navigation rings and the bridge's procedural planets. Readiness
 is separate from this timeline: entry waits for the first rendered 3D frame (or
 the text fallback), the interior image (or SVG fallback), and project archives
 (or their existing retry state). Interior/archive deadlines are eight seconds;
-the optional 3D import has a ten-second fallback deadline. Skip Intro is usable
-even before the modules arrive and reveals the normal preparing/recovery view.
+the optional 3D import has a ten-second fallback deadline. There is no Skip
+Intro button; entry becomes available after the prepared cinematic completes.
+If the entry modules fail or remain unavailable for ten seconds, the bootstrap
+automatically reveals the existing portfolio recovery link. A late module
+continues into the cockpit without replaying the abandoned intro.
 
 The stage stays outlined at `Preparing Bridge` until that preparation and an
 intro warmup pass have finished. The shared renderer draws all intro materials
 while hidden, then clears to the outlined starting frame. Only then does the
 three-second fill/reveal start. Its clock follows presented animation frames,
 caps a delayed frame at 50ms and pauses in hidden tabs, so loading or shader
-work cannot consume the beginning. A slow device can stretch the sequence;
-Skip remains available throughout.
+work cannot consume the beginning. A slow device can stretch the sequence.
+Keyboard focus starts at the intro title and moves to Enter the Bridge when
+ready; the usual text/3D recovery controls remain available after entry.
 
 The DOM controller is authored in `.scratch/space-cockpit/orbital-intro.js`, with
 isolated styles in `orbital-intro.css`. It shares the cockpit's renderer and
@@ -109,7 +113,7 @@ input is consumed until it has been quiet for 350ms. Mini Me, its dialogue and
 hologram projector have been removed from the cockpit. Reduced motion uses a
 180ms initialization and 120ms fade without parallax.
 
-Successful entry/skip stores `iman:orbital-intro:v1=complete` in sessionStorage.
+Successful entry stores `iman:orbital-intro:v1=complete` in sessionStorage.
 Reloads then bypass the intro while preserving the existing Opening reset,
 deliberate fragment links and one-use Retry 3D recovery rule. If storage is
 blocked, entry still works and the next visit can show the intro again.

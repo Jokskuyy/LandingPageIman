@@ -39,7 +39,10 @@ async (page) => {
     });
     return tab;
   };
-  const ready = tab => tab.waitForFunction(() => document.querySelector('#orbital-intro')?.dataset.phase === 'ready');
+  const ready = async tab => {
+    await tab.waitForFunction(() => document.querySelector('#orbital-intro')?.dataset.phase === 'ready');
+    check(await tab.locator('#orbital-skip').count() === 0,'Skip Intro remains in the DOM');
+  };
   const gone = tab => tab.locator('#orbital-intro').waitFor({ state:'detached' });
   const cleaned = async tab => {
     await tab.waitForFunction(() => window.__introSignals.every(signal => signal.aborted));
@@ -57,6 +60,8 @@ async (page) => {
   await run('first visit, keyboard entry, focus, parallax, one context, session reload', async tab => {
     await tab.goto(base,{ waitUntil:'domcontentloaded' });
     check(await tab.locator('#orbital-enter').isHidden(),'Entry enabled before timeline');
+    check(await tab.locator('#orbital-skip').count() === 0,'Skip Intro remains during preparation');
+    check(await tab.evaluate(() => document.activeElement.id) === 'orbital-title','Preparation did not focus the intro title');
     check(await tab.locator('#cockpit').getAttribute('inert') !== null,'Cockpit must be inert');
     check(await tab.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count() === 0,'Mini Me elements remain during intro');
     check(await tab.locator('#destination-announcement').textContent() === '','Underlying destination announced too early');
@@ -73,10 +78,12 @@ async (page) => {
     await tab.mouse.move(-5,-5);
     await tab.waitForFunction(() => Math.abs(parseFloat(document.querySelector('#orbital-intro').style.getPropertyValue('--orb-x'))) < .1);
     await tab.screenshot({ path:'tmp/cockpit-preview/orbital-ready-desktop.png' });
-    await tab.locator('#orbital-skip').focus();
-    check(await tab.locator('#orbital-skip').evaluate(node => getComputedStyle(node).outlineStyle) !== 'none','Keyboard focus is invisible');
+    check(await tab.locator('#orbital-enter').evaluate(node => node === document.activeElement),'Ready state did not focus entry');
+    check(await tab.locator('#orbital-enter').evaluate(node => getComputedStyle(node).outlineStyle) !== 'none','Keyboard focus is invisible');
     await tab.keyboard.press('Tab');
     check(await tab.locator('#orbital-enter').evaluate(node => node === document.activeElement),'Tab order misses entry');
+    await tab.keyboard.press('Shift+Tab');
+    check(await tab.locator('#orbital-enter').evaluate(node => node === document.activeElement),'Reverse Tab leaves the intro');
     await tab.keyboard.press('Enter');
     await gone(tab);
     check(await tab.evaluate(() => document.activeElement.id) === 'briefing-title','Handoff lost keyboard focus');
@@ -99,10 +106,10 @@ async (page) => {
     await tab.goto(base); await ready(tab);
     await tab.mouse.move(760,430);
     await tab.mouse.wheel(0,180);
+    // Screenshots can outlast the 350ms quiet window; keep this input continuous.
     for (let i=0;i<14;i++) {
       await tab.mouse.wheel(0,90);
       await tab.waitForTimeout(100);
-      if (i === 2) await tab.screenshot({path:'tmp/cockpit-preview/orbital-window-reveal.png'});
       check(await tab.evaluate(() => scrollY) === 0,'Momentum advanced journey during handoff');
     }
     await gone(tab);
@@ -113,15 +120,18 @@ async (page) => {
     await tab.waitForFunction(() => scrollY > 0);
   });
 
-  await run('Skip during preparation, late initialization, no duplicate intro', async tab => {
+  await run('preparation has no Skip or early entry; delayed scene completes normally', async tab => {
     let pending;
     await tab.route('**/vendor/three/three.module.js', route => { pending=route; });
     await tab.goto(base,{ waitUntil:'domcontentloaded' });
-    await tab.locator('#orbital-skip').click(); await gone(tab);
-    check(await tab.locator('#scene-status').isVisible(),'Skip hides actual preparing state');
-    check((await tab.locator('#window-mode').textContent()) !== '3D ONLINE','Skip falsely marks scene ready');
+    check(await tab.locator('#orbital-skip').count() === 0,'Preparing view still offers Skip');
+    await tab.keyboard.press('Enter');
+    await tab.mouse.wheel(0,180);
+    check(await tab.locator('#orbital-enter').isHidden(),'Preparation allows early entry');
+    check(await tab.locator('#orbital-status').innerText() === 'Preparing Bridge','Delayed scene falsely reports readiness');
     await pending.continue();
-    await tab.waitForFunction(() => document.querySelector('#window-mode').textContent === '3D ONLINE');
+    await ready(tab);
+    await tab.locator('#orbital-enter').click(); await gone(tab);
     await cleaned(tab);
     check((await tab.locator('#briefing-title').innerText()).includes('Your next idea'),'Late initialization replaced the Opening view');
     check(await tab.locator('#route-percent').innerText() === '0%','Late initialization advanced the Opening route');
@@ -146,11 +156,11 @@ async (page) => {
     check(await tab.locator('#route-percent').innerText() === '0%','Late scene moved cockpit');
   });
 
-  await run('Skip after ready fallback and Retry 3D preserves station once', async tab => {
+  await run('ready fallback entry and Retry 3D preserve the station once', async tab => {
     await tab.goto(base+'?scene=off#contact'); await ready(tab);
     check(await tab.locator('#window-mode').textContent() === 'TEXT VIEW','Failure was not handled');
-    await tab.locator('#orbital-skip').click(); await gone(tab); await cleaned(tab);
-    check(await tab.locator('#route-percent').innerText() === '100%','Skip lost deliberate deep link');
+    await tab.locator('#orbital-enter').click(); await gone(tab); await cleaned(tab);
+    check(await tab.locator('#route-percent').innerText() === '100%','Entry lost deliberate deep link');
     await tab.locator('#retry-scene').click();
     await tab.waitForFunction(() => document.querySelector('#window-mode').textContent === '3D ONLINE');
     check(await tab.locator('#route-percent').innerText() === '100%','Retry 3D lost station');
@@ -166,7 +176,7 @@ async (page) => {
     await tab.locator('#orbital-enter').click(); await gone(tab); await cleaned(tab);
     check(await tab.locator('#route-percent').innerText() === '0%','Storage failure broke entry');
     await tab.reload(); await ready(tab);
-    await tab.locator('#orbital-skip').click(); await gone(tab); await cleaned(tab);
+    await tab.locator('#orbital-enter').click(); await gone(tab); await cleaned(tab);
   },{ reduced:true, storage:false });
 
   await run('archive timeout, normal fallback, Retry archives recovery', async tab => {
@@ -195,21 +205,52 @@ async (page) => {
     check(await tab.locator('.cockpit-frame').isVisible(),'SVG interior unavailable after failure');
   },{ reduced:true });
 
-  await run('cold module delay shows dark intro with working early Skip', async tab => {
-    let pending;
-    await tab.route('**/orbital-intro.js*', route => { pending=route; });
+  await run('cold module delay keeps the dark intro, then enables normal entry', async tab => {
+    let pending, unblock;
+    const blocked = new Promise(resolve => { unblock=resolve; });
+    await tab.route('**/orbital-intro.js*', route => { pending=route; unblock(); });
     await tab.goto(base,{ waitUntil:'commit' });
-    await tab.locator('#orbital-skip').waitFor({ state:'visible' });
+    await tab.locator('#orbital-intro').waitFor({ state:'visible' });
+    await blocked;
+    check(await tab.locator('#orbital-skip').count() === 0,'Cold module stage still offers Skip');
+    check(await tab.locator('#orbital-enter').isHidden(),'Cold module stage enables early entry');
     check(await tab.locator('#cockpit').evaluate(node => getComputedStyle(node).visibility) === 'hidden','Cockpit flashed before modules arrived');
     check(await tab.locator('.guide,.officer,.holo-projector,.holo-beam,#guide-dialogue').count() === 0,'Mini Me elements remain before the intro module arrives');
-    await tab.locator('#orbital-skip').click();
-    check(await tab.locator('#orbital-intro').isHidden(),'Early Skip depends on optional module');
-    check(await tab.locator('.scene-recovery').isVisible(),'Early Skip has no readable fallback');
-    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === null,'Early Skip marked completion before app handoff');
+    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === null,'Cold module stage completed before app handoff');
     await pending.continue();
-    await gone(tab);
+    await ready(tab);
+    await tab.locator('#orbital-enter').click(); await gone(tab); await cleaned(tab);
+    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === 'complete','Entry completion not recorded after app starts');
+  });
+
+  for (const module of ['prototype.js','orbital-intro.js']) await run(`failed ${module} reveals the existing portfolio recovery`, async tab => {
+    await tab.route(`**/${module}*`, route => route.abort('failed'));
+    await tab.goto(base,{ waitUntil:'domcontentloaded' });
+    await tab.locator('#orbital-intro').waitFor({ state:'hidden' });
+    check(await tab.locator('#orbital-skip').count() === 0,'Failure restored Skip');
+    check(await tab.locator('.scene-recovery').isVisible(),'Module failure hides portfolio recovery');
+    check(await tab.locator('#scene-status span').innerText() === 'The bridge could not start. Read the portfolio below.','Module failure has no useful status');
+    check(await tab.locator('.scene-recovery').evaluate(node => node === document.activeElement),'Module failure did not focus recovery');
+    await tab.locator('.scene-recovery').click();
+    check(tab.url() === new URL('../index.html',base).href,'Recovery does not open the existing portfolio');
+  });
+
+  await run('a module that misses its deadline reveals recovery and cannot reopen the intro later', async tab => {
+    let pending, unblock;
+    const blocked = new Promise(resolve => { unblock=resolve; });
+    await tab.route('**/orbital-intro.js*', route => { pending=route; unblock(); });
+    await tab.goto(base,{ waitUntil:'commit' });
+    await blocked;
+    await tab.locator('#orbital-intro').waitFor({ state:'hidden',timeout:15000 });
+    check(await tab.locator('.scene-recovery').isVisible(),'Module deadline left no recovery');
+    check(await tab.evaluate(() => document.documentElement.dataset.orbitalGate) === 'unavailable','Module deadline did not release the stage gate');
+    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === null,'Failed bootstrap falsely completed the intro');
+    await pending.continue();
+    await tab.locator('#orbital-intro').waitFor({ state:'detached' });
     await tab.waitForFunction(() => document.querySelector('#window-mode').textContent === '3D ONLINE');
-    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === 'complete','Early Skip completion not recorded after app starts');
+    check(await tab.locator('#route-percent').innerText() === '0%','Late bootstrap advanced the journey');
+    check(await tab.evaluate(() => document.activeElement.id) === 'briefing-title','Late module recovery left focus in the hidden status');
+    check(await tab.evaluate(key => sessionStorage.getItem(key),sessionKey) === null,'Late bootstrap recorded a cinematic that was never played');
   });
 
   await run('deep links survive fast initialization and entry', async tab => {
@@ -242,7 +283,7 @@ async (page) => {
     await tab.setViewportSize({width,height});
     await tab.goto(base); await ready(tab);
     check(await tab.evaluate(() => document.documentElement.scrollWidth <= innerWidth),'Horizontal overflow');
-    for (const selector of ['#orbital-skip','#orbital-status','#orbital-enter','#orbital-hint']) {
+    for (const selector of ['#orbital-status','#orbital-enter','#orbital-hint']) {
       const box = await tab.locator(selector).boundingBox();
       check(box && box.x >= 0 && box.y >= 0 && box.x+box.width <= width && box.y+box.height <= height,`${selector} outside ${width}x${height}`);
     }

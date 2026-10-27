@@ -37,6 +37,7 @@ test('the cockpit omits Mini Me and no longer publishes its sprite', async () =>
     const document = new JSDOM(html).window.document;
     assert.equal(document.querySelector('.guide,.officer,.holo-beam,.holo-projector,#guide-dialogue'),null);
     assert.equal(document.querySelector('img[src*="officer-sheet"]'),null);
+    assert.equal(document.querySelector('#orbital-skip'),null);
     assert(document.querySelector('.destination-nav'));
     assert(document.querySelector('#destination-announcement'));
   }

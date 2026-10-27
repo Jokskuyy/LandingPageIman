@@ -42,22 +42,16 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
 
   let completed = false;
   try { completed = view.sessionStorage.getItem(INTRO_SESSION_KEY) === 'complete'; } catch {}
-  const skippedEarly = document.documentElement.dataset.orbitalGate === 'skipped';
+  const unavailable = document.documentElement.dataset.orbitalGate === 'unavailable';
   delete document.documentElement.dataset.orbitalGate;
   document.dispatchEvent(new view.Event('orbital:claimed'));
-  if (!root || completed || skippedEarly) {
+  if (!root || completed || unavailable) {
     root?.remove();
-    if (skippedEarly) view.queueMicrotask(() => {
-      onHandoff();
-      try { view.sessionStorage.setItem(INTRO_SESSION_KEY, 'complete'); } catch {}
-      document.querySelector('#briefing-title')?.focus({ preventScroll:true });
-    });
     return controller;
   }
 
   const status = root.querySelector('#orbital-status');
   const enter = root.querySelector('#orbital-enter');
-  const skip = root.querySelector('#orbital-skip');
   const hint = root.querySelector('#orbital-hint');
   const ring = root.querySelector('#orbital-ring');
   reduced = view.matchMedia('(prefers-reduced-motion: reduce)');
@@ -75,7 +69,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   enter.disabled = true;
   hint.hidden = true;
   active = locked = true;
-  skip.focus({ preventScroll: true });
+  root.querySelector('#orbital-title').focus({ preventScroll: true });
 
   function announce(message) {
     if (status.textContent !== message) status.textContent = message;
@@ -87,6 +81,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
     enter.disabled = false;
     hint.hidden = false;
     announce('Bridge Ready');
+    if (root.contains(document.activeElement)) enter.focus({ preventScroll: true });
   }
   function scheduleFrame() {
     if (active && !frame) frame = view.requestAnimationFrame(draw);
@@ -194,7 +189,6 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   }
 
   enter.addEventListener('click', startEntry, { signal: effects.signal });
-  skip.addEventListener('click', handoff, { signal: effects.signal });
   root.addEventListener('pointermove', event => {
     if (reduced.matches || event.pointerType !== 'mouse' || exitingAt !== null) return;
     targetX = Math.max(-1, Math.min(1, event.clientX / view.innerWidth * 2 - 1));
@@ -245,7 +239,7 @@ export function createOrbitalIntro({ onHandoff = () => {} } = {}) {
   view.addEventListener('keydown', event => {
     if (!locked) return;
     const routeKeys = ['PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', ' '];
-    const controls = [skip, enter].filter(button => !button.hidden && !button.disabled);
+    const controls = [enter].filter(button => !button.hidden && !button.disabled);
     if (active) {
       event.stopImmediatePropagation();
       if (event.key === 'Tab') {
