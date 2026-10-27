@@ -7,7 +7,6 @@
   color:var(--paper); font-family:var(--mono); touch-action:none;
 }
 html[data-orbital-gate='intro'] #orbital-intro { display:block!important; }
-html[data-orbital-gate='intro'] .guide { visibility:hidden; }
 html[data-orbital-gate='intro'] { overflow:hidden; }
 html[data-orbital-gate='intro'] #cockpit,
 html[data-orbital-gate='intro'] .skip-link,
@@ -95,8 +94,6 @@ html[data-orbital-gate='intro'] .prototype-bar { visibility:hidden; }
 .orbital-intro[data-phase='exiting'] .orbital-chrome { opacity:0; transition:opacity 140ms ease; }
 /* The ring traces the aperture after the rest of the diorama has dissolved. */
 .orbital-intro[data-phase='exiting'] .orbital-ring { opacity:.6; transition:opacity 850ms ease; }
-body[data-intro] .guide { visibility:hidden; }
-body[data-intro] .guide *,body[data-intro] .guide *::before,body[data-intro] .guide *::after { animation-play-state:paused!important; }
 @media(max-width:700px) {
   .orbital-header p { font-size:9px; }
   .orbital-header p span { font-size:6px; letter-spacing:.12em; }

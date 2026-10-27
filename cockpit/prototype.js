@@ -9,23 +9,13 @@ const isReduced = () => reduced.matches || calm;
 const stops = ['Opening', 'Selected work', 'Capabilities', 'About & experience', 'Contact'];
 const slugs = ['opening', 'selected-work', 'capabilities', 'about-experience', 'contact'];
 const variants = { A: 'Panoramic bridge', B: 'Command console', C: 'Navigation chart' };
-const dialogues = [
-  'Captain, follow the light to explore the work.',
-  "Captain, choose a project. I'll bring its moon into view.",
-  'Captain, these are the capabilities behind the work.',
-  'Captain, here are my background and experience.',
-  'Captain, ready for a new mission? Open a channel.'
-];
 const opening = $('#briefing-content').innerHTML;
 let variant = 'A', currentStop = -1, progress = 0, sectionTravel = 0, source, sourceError = false, projects = [], scene;
-let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0, welcomed = false;
+let routeImmediate = false, sceneFailed = false, returnFocus, savedScroll = 0, moonRequest = 0;
 let snapTimer, scrollDirection = 0, lastScrollY = scrollY, crossedStop = null;
 const detail = $('#project-detail');
 const moonAccents = ['#81cae8','#78e6bc','#ffb56d','#c3b5ff'];
 const intro = createOrbitalIntro({ onHandoff() {
-  welcomed = true;
-  $('#guide-dialogue').textContent = currentStop === 0
-    ? 'Captain, welcome aboard. Navigation is ready.' : dialogues[currentStop];
   announceDestination(`Arrived at ${stops[currentStop]}.`);
 } });
 const bridgeParts = { interior:null, source:null, scene:null };
@@ -152,7 +142,6 @@ function renderStop(index, announce = true) {
   document.querySelectorAll('.project-picks button').forEach(button => button.disabled = document.body.dataset.travel === 'transit');
   if (titleFocused) $('#briefing-title').focus({ preventScroll: true });
   $('#briefing').scrollTop = 0;
-  if (!intro.active && !(welcomed && index === 0 && previousStop === 0)) $('#guide-dialogue').textContent = dialogues[index];
   document.querySelectorAll('[data-stop]').forEach(link => {
     if (Number(link.dataset.stop) === index) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
@@ -165,7 +154,6 @@ function renderStop(index, announce = true) {
     const panel = $('#briefing-content');
     panel.getAnimations().forEach(animation => animation.cancel());
     panel.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}], {duration:520,easing:'cubic-bezier(.2,.7,.2,1)'});
-    $('#guide-dialogue').animate([{opacity:.15},{opacity:1}], {duration:600});
   }
   scene?.render();
 }
@@ -175,7 +163,6 @@ function arriveAtStop(index) {
   crossedStop = null;
   sectionTravel = index;
   document.body.dataset.travel = 'holding';
-  $('.officer').dataset.state = index === 0 ? 'idle' : 'explaining';
   $('#travel-status').textContent = 'HOLDING POSITION';
   document.querySelectorAll('.project-picks button').forEach(button => button.disabled = false);
   document.querySelectorAll('.route-track b').forEach((dot,i) => dot.classList.toggle('reached',i<=index));
@@ -212,7 +199,6 @@ function updateRoute() {
   if (!atStop || index !== currentStop) {
     document.body.dataset.travel = 'transit';
     $('#travel-status').textContent = 'IN TRANSIT';
-    $('.officer').dataset.state = 'traveling';
     document.querySelectorAll('.project-picks button').forEach(button => button.disabled = true);
   }
   if (atStop && (!scene || sceneFailed || routeImmediate || isReduced())) arriveAtStop(index);
@@ -271,7 +257,6 @@ async function openMoon(index, origin) {
   savedScroll = scrollY;
   document.body.style.overflow = 'hidden';
   document.body.dataset.approaching = 'true';
-  $('.officer').dataset.state = 'traveling';
   $('#travel-status').textContent = 'APPROACHING · ESC TO CANCEL';
   await scene?.setMoon(index);
   if (request !== moonRequest || !document.body.dataset.approaching) return;
@@ -287,7 +272,6 @@ async function openMoon(index, origin) {
   if (!isReduced()) detail.animate([{opacity:0,transform:'translateX(-8px)'},{opacity:1,transform:'translateX(0)'}], {duration:420,easing:'cubic-bezier(.2,.7,.2,1)'});
   detail.scrollTop = 0;
   $('#return-to-planet').focus();
-  $('.officer').dataset.state = 'explaining';
   $('#travel-status').textContent = 'READING PROJECT';
   delete document.body.dataset.approaching;
 }

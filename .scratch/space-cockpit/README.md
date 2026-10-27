@@ -22,6 +22,14 @@ chat before the full implementation, per the owner's UI guide.
 | B — Command console | Compact navigation and reading console on the left | Consistent reading area; narrower exterior view |
 | C — Navigation chart | Thin navigation, open central window, wide lower briefing | More room for the flight path; less height for detailed text |
 
+## Current refinement — 2026-10-27
+
+The owner requested removing Mini Me. The holographic character, projector,
+beam and dialogue are no longer part of the bridge. Their runtime state,
+animation rules and published sprite are removed. Navigation, the flight path,
+project moons, reading content, status announcements and the orbital intro
+remain. The guide choices recorded below describe earlier iterations.
+
 ## Selected direction — 2026-10-18
 
 The owner selected **A — Panoramic bridge** through chat. Carry its broad front

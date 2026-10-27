@@ -104,8 +104,9 @@ The DOM controller is authored in `.scratch/space-cockpit/orbital-intro.js`, wit
 isolated styles in `orbital-intro.css`. It shares the cockpit's renderer and
 planet geometry/materials. Enter returns that renderer to its original host
 before opening the orbital aperture; the camera remains at its route position.
-The guide and welcome are revealed after handoff, and continued wheel/touch
-input is consumed until it has been quiet for 350ms. Reduced motion uses a
+Destination arrival is announced after handoff, and continued wheel/touch
+input is consumed until it has been quiet for 350ms. Mini Me, its dialogue and
+hologram projector have been removed from the cockpit. Reduced motion uses a
 180ms initialization and 120ms fade without parallax.
 
 Successful entry/skip stores `iman:orbital-intro:v1=complete` in sessionStorage.
@@ -119,9 +120,11 @@ existing Playwright CLI against `/cockpit/` for first-session and failure cases.
 its largest frame step under normal, delayed-import and CPU-throttled startup.
 The responsive cockpit suite intentionally bypasses the intro; its first-visit
 layouts are covered by `check-intro.js`. The static allowlist now packages
-thirteen files and continues to exclude the source workspace and browser tests.
+twelve files and continues to exclude the source workspace and browser tests.
+The retired officer sprite remains only as a source reference; it is removed
+from generated output even when building over an older cockpit package.
 
-Local-only staging is enforced for `feat/orbital-intro` and `staging` with
+The task branches listed in `vercel.json` and `staging` disable Git deployments with
 [`git.deploymentEnabled`](https://vercel.com/docs/project-configuration/git-configuration#git.deploymentenabled)
 in `vercel.json`. GitHub Pages still publishes only `main`; releasing that
 branch requires the owner's approval.

@@ -4,6 +4,7 @@
     "deploymentEnabled": {
       "feat/orbital-intro": false,
       "fix/intro-frame-timing": false,
+      "feat/remove-mini-me": false,
       "staging": false
     }
   }

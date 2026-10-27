@@ -2,7 +2,10 @@
 
 Both assets were generated with the built-in imagegen tool. They are project-local preview assets, kept here with the code. No source images were replaced.
 
-## officer-sheet-v1.png
+## officer-sheet-v1.png — retired source reference
+
+Removed from the cockpit on 2026-10-27 at the owner's request. This source
+reference is no longer rendered, fetched, or copied into the published package.
 
 Reference: the existing `imgs/iman-avatar-comic-sage.webp`. Four roleplay poses on a real transparent background. Original size 1983 by 793 RGBA. CSS selects the poses; idle breathing is disabled by reduced motion.
 

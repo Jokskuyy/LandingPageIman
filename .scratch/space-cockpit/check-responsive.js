@@ -46,7 +46,7 @@ async page=>{
           const center=planetSpecs[0].position.clone().add(offset),v=center.clone().project(camera),x=left+(v.x+1)*width/2,y=top+(1-v.y)*height/2;
           const clear=[new THREE.Vector3(),right.clone().multiplyScalar(.67),right.clone().multiplyScalar(-.67),up.clone().multiplyScalar(.67),up.clone().multiplyScalar(-.67)].every(edge=>{
             const point=center.clone().add(edge).project(camera),px=left+(point.x+1)*width/2,py=top+(1-point.y)*height/2,hit=document.elementFromPoint(px,py);
-            return !hit?.closest('.briefing,nav,.identity-bar,.guide,.flight-console')&&drawing.getImageData(Math.floor(px-left),Math.floor(py-top),1,1).data[3]<64;
+            return !hit?.closest('.briefing,nav,.identity-bar,.flight-console')&&drawing.getImageData(Math.floor(px-left),Math.floor(py-top),1,1).data[3]<64;
           });return {x,y,clear};
         });
       });

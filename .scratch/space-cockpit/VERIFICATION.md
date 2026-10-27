@@ -471,7 +471,52 @@ remain. Keyboard/reduced-motion, responsive layouts and cleanup passed the
 same browser coverage. Physical devices, Safari/WebKit and GPU profiling remain
 unverified. This is a local/staging fix, not evidence of a new production deploy.
 
-## Remaining implementation work after layout choice
+## Mini Me removal — 2026-10-27
+
+The owner requested removing Mini Me. The bridge no longer renders the
+character, dialogue, hologram beam or projector. Their CSS and runtime state
+updates were deleted. The 1,060,637-byte officer sprite remains a historical
+source reference but is neither requested nor copied into the public package.
+The build removes that exact generated file from older output directories;
+the package now contains 12 files. Destination announcements, flight controls,
+route and moon interactions, factual content and the startup clock fix remain.
+
+Verified on the local packaged route `http://127.0.0.1:43188/cockpit/`:
+
+- All 69 root tests, route/moon geometry checks, `build:cockpit` and the root
+  build passed. The only build notice was the existing Browserslist database.
+- All 15 intro scenarios and seven cockpit browser suites passed. Coverage
+  includes 16 arrivals, 41 crossing cases, 16 moon cases, refresh/recovery,
+  keyboard/focus, reduced motion and seven responsive sizes from 320x568 to
+  1024x1366, including landscape and native Chromium touch input.
+- No uncaught page errors. The intro suite's console errors came only from
+  its deliberately injected archive timeout and interior-image failure;
+  the other seven suites returned empty error arrays.
+- Current desktop 1440x900, tablet 820x1180 and phone 390x844 screenshots were
+  inspected. Mini Me is absent; controls/content remain readable and no
+  horizontal overflow was found. All three recorded zero sprite requests.
+- Startup profiles again consumed zero fill before the prepared scene and
+  stayed at or below 1.67 percentage points per observed frame. Observed
+  cinematic intervals were 2965ms normally, 2972ms with a 1400ms delayed
+  Three.js import and 3354ms with 6x CPU throttling. These preserve animation
+  time; they do not establish a hardware FPS improvement.
+- Independent read-only review found no blockers. Its CSS AST comparison
+  confirmed that rules for other UI elements remain unchanged; all seven
+  authored/generated file pairs match the publish transform.
+
+Scoped Nielsen evaluation: **#1 pass** (arrival/live status remains), **#2
+pass** (existing route language), **#3 pass** (Skip, return and Retry), **#4
+pass** (same controls and visual tokens), **#5 pass** (no stale character
+callbacks or sprite output), **#6 pass** (visible destinations and project
+choices), **#7 pass** (keyboard, touch and motion preferences), **#8 pass**
+(removed the requested decorative guide while retaining the composition),
+**#9 pass** (fallback/context-loss recovery), **#10 pass** (scroll/swipe and
+flight-control hints remain). This is scoped browser evidence, not a complete
+accessibility certification. Physical devices, Safari/WebKit and hardware GPU
+profiling remain unverified. This change targets staging; no production
+release is included.
+
+## Historical implementation notes after layout choice
 
 - Migrate all original factual content and links into production progressive
   enhancement; preserve useful existing fragment links and CV behavior.
